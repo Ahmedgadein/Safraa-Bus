@@ -6,6 +6,7 @@ import com.dinder.rihlabus.data.repository.auth.FirebaseAuthRepository
 import com.dinder.rihlabus.ui.login.LoginFragment
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
