@@ -1,4 +1,4 @@
-package com.dinder.rihlabus.ui.verification
+package com.dinder.rihlabus.ui.registration
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -8,11 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.dinder.rihlabus.R
 
-class Verification : Fragment() {
-
-    companion object {
-        fun newInstance() = Verification()
-    }
+class VerificationFragment : Fragment() {
 
     private lateinit var viewModel: VerificationViewModel
 

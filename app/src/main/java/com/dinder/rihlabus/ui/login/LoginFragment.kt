@@ -47,8 +47,7 @@ class LoginFragment : Fragment() {
         }
 
         binding.loginButton.setOnClickListener {
-            val mobile = "+249" + binding.phoneNumber.text.toString()
-            sendSms(mobile)
+            navigateToVerification()
         }
 
         lifecycleScope.launch {
@@ -114,7 +113,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun navigateToVerification() {
-        val action = LoginFragmentDirections.actionLoginFragmentToVerification()
+        val action = LoginFragmentDirections.actionLoginFragmentToVerificationFragment()
         findNavController().navigate(action)
     }
 
