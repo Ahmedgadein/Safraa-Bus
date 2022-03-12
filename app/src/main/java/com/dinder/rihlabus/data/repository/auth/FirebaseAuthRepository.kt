@@ -1,52 +1,54 @@
 package com.dinder.rihlabus.data.repository.auth
 
-import com.dinder.rihlabus.common.FireStoreCollection
-import com.dinder.rihlabus.common.Result
+import android.util.Log
+import com.dinder.rihlabus.common.Constants
 import com.dinder.rihlabus.data.model.Company
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-enum class AuthError {
-    unregistered,
-    loginError
-}
 
-class FirebaseAuthRepository @Inject constructor() : AuthRepository {
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val ref = Firebase.firestore.collection(FireStoreCollection.USERS)
+class FirebaseAuthRepository @Inject constructor(private val ioDispatcher: CoroutineDispatcher) :
+    AuthRepository {
+    private val _auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val _ref = Firebase.firestore.collection(Constants.FireStoreCollection.USERS)
 
-    override val isLoggedIn: Boolean
-        get() = auth.currentUser != null
+    private val _state: MutableStateFlow<AuthRepoState> = MutableStateFlow(AuthRepoState())
+    override val state: StateFlow<AuthRepoState> = _state
 
-    override val isRegistered: Boolean
-        get() {
-            val query = ref.whereEqualTo("id", auth.currentUser?.uid).get()
-            return if (query.isSuccessful) query.result.documents.isNotEmpty() else false
-        }
+    init {
+        CoroutineScope(ioDispatcher).launch {
+            val logged = _auth.currentUser != null
+            val registered = _ref.document(_auth.uid.toString()).get().isSuccessful
 
-    override suspend fun login(credential: AuthCredential): Result<Boolean, AuthError> {
-        lateinit var signInResult : Result<Boolean, AuthError>
-        if (!isRegistered)
-            return Result.Error(AuthError.unregistered)
-
-        auth.signInWithCredential(credential).addOnCompleteListener {
-            signInResult = if (it.isSuccessful) {
-                Result.Success(true)
-            } else {
-                Result.Error(AuthError.loginError)
+            _state.update {
+                it.copy(isLoggedIn = logged, isRegistered = registered)
             }
         }
+    }
 
-        return signInResult
+    override suspend fun login(credential: AuthCredential) {
+        Log.i("Ahmed", "login: Logging in")
+        CoroutineScope(ioDispatcher).launch {
+            _auth.signInWithCredential(credential).addOnCompleteListener {
+                if (it.isSuccessful)
+                    _state.update {
+                        it.copy(isLoggedIn = true)
+                    }
+            }
+        }
     }
 
     override suspend fun register(
         credential: AuthCredential,
         name: String,
         company: Company
-    ): Result<Boolean, AuthError> {
+    ) {
         TODO("Not yet implemented")
     }
 }

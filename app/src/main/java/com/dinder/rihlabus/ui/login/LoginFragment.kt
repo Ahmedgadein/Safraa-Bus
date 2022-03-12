@@ -2,20 +2,18 @@ package com.dinder.rihlabus.ui.login
 
 import android.app.Activity
 import android.os.Bundle
-import android.text.BoringLayout.make
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.databinding.DataBindingUtil
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.dinder.rihlabus.R
+import com.dinder.rihlabus.common.RihlaFragment
+import com.dinder.rihlabus.data.model.AuthCodeToken
 import com.dinder.rihlabus.databinding.LoginFragmentBinding
-import com.google.android.material.snackbar.Snackbar
+import com.dinder.rihlabus.utils.PhoneNumberValidator
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -23,18 +21,17 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
-class LoginFragment : Fragment() {
+class LoginFragment : RihlaFragment() {
 
     private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = LoginFragmentBinding.inflate(inflater, container, false)
         setUI(binding)
 
@@ -42,19 +39,31 @@ class LoginFragment : Fragment() {
     }
 
     private fun setUI(binding: LoginFragmentBinding) {
+        binding.phoneNumber.addTextChangedListener {
+            it?.let {
+                val message = PhoneNumberValidator.validate(it.toString())
+                binding.phoneNumberContainer.helperText = message
+            }
+        }
         binding.signupButton.setOnClickListener {
             navigateToSignup()
         }
 
         binding.loginButton.setOnClickListener {
-            navigateToVerification()
+            with(binding.phoneNumberContainer.helperText) {
+                if (this != null) {
+                    showToast("Phone $this")
+                    return@setOnClickListener
+                }
+            }
+            val phone = binding.phoneNumber.text.toString()
+            sendSms(phone)
         }
 
-        lifecycleScope.launch {
+        lifecycleScope.launchWhenCreated {
             viewModel.loginUiState.collect {
-                if (it.isLoggedIn) {
-                    navigateToHome()
-                }
+                binding.loginProgressBar.visibility =
+                    if (it.loading) View.VISIBLE else View.INVISIBLE
 
                 it.messages.firstOrNull()?.let { message ->
                     showSnackbar(message.content)
@@ -71,25 +80,30 @@ class LoginFragment : Fragment() {
         }
 
         val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
-            .setPhoneNumber(mobile)       // Phone number to verify
+            .setPhoneNumber("+249$mobile")       // Phone number to verify
             .setTimeout(60L, TimeUnit.SECONDS)
-            .setActivity(activity as Activity)
+            .setActivity(this.activity!!)
             .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(credentials: PhoneAuthCredential) {
                     viewModel.login(credentials)
                 }
 
                 override fun onVerificationFailed(exception: FirebaseException) {
+                    Log.i("Ahmed", "onVerificationFailed: $exception")
                     showSnackbar("Verification Failed")
                 }
 
-                override fun onCodeSent(code: String, token: PhoneAuthProvider.ForceResendingToken) {
+                override fun onCodeSent(
+                    code: String,
+                    token: PhoneAuthProvider.ForceResendingToken
+                ) {
                     super.onCodeSent(code, token)
-                    navigateToVerification()
+                    Log.i("Ahmed", "onCodeSent: $code")
+                    val codeToken = AuthCodeToken(code = code, token = token)
+                    navigateToVerification(codeToken)
                 }
 
-            })// Timeout and unit
-            .build()
+            }).build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
@@ -98,26 +112,12 @@ class LoginFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun showSnackbar(message: String) {
-        Snackbar.make(view!!, message, Snackbar.LENGTH_SHORT)
-            .show()
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT)
-            .show()
-    }
-
     private fun navigateToHome() {
 
     }
 
-    private fun navigateToVerification() {
-        val action = LoginFragmentDirections.actionLoginFragmentToVerificationFragment()
+    private fun navigateToVerification(codeToken: AuthCodeToken) {
+        val action = LoginFragmentDirections.actionLoginFragmentToVerificationFragment(codeToken)
         findNavController().navigate(action)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
     }
 }

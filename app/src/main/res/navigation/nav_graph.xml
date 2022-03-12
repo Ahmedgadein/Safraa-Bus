@@ -24,6 +24,10 @@
         tools:layout="@layout/fragment_signup" />
     <fragment
         android:id="@+id/verificationFragment"
-        android:name="com.dinder.rihlabus.ui.registration.VerificationFragment"
-        android:label="VerificationFragment" />
+        android:name="com.dinder.rihlabus.ui.verification.VerificationFragment"
+        android:label="VerificationFragment">
+        <argument
+            android:name="codeToken"
+            app:argType="com.dinder.rihlabus.data.model.AuthCodeToken" />
+    </fragment>
 </navigation>
