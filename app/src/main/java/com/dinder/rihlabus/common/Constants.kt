@@ -1,5 +1,8 @@
 package com.dinder.rihlabus.common
 
-object FireStoreCollection{
-    const val USERS = "users"
+object Constants{
+    object FireStoreCollection{
+        const val USERS = "users"
+    }
+    const val VERIFICATION_CODE_LENGTH = 6
 }

@@ -14,8 +14,8 @@
             android:id="@+id/action_loginFragment_to_signupFragment"
             app:destination="@id/signupFragment" />
         <action
-            android:id="@+id/action_loginFragment_to_verification"
-            app:destination="@id/verification" />
+            android:id="@+id/action_loginFragment_to_verificationFragment"
+            app:destination="@id/verificationFragment" />
     </fragment>
     <fragment
         android:id="@+id/signupFragment"
@@ -23,8 +23,11 @@
         android:label="fragment_signup"
         tools:layout="@layout/fragment_signup" />
     <fragment
-        android:id="@+id/verification"
-        android:name="com.dinder.rihlabus.ui.verification.Verification"
-        android:label="verification_fragment"
-        tools:layout="@layout/verification_fragment" />
+        android:id="@+id/verificationFragment"
+        android:name="com.dinder.rihlabus.ui.verification.VerificationFragment"
+        android:label="VerificationFragment">
+        <argument
+            android:name="codeToken"
+            app:argType="com.dinder.rihlabus.data.model.AuthCodeToken" />
+    </fragment>
 </navigation>
