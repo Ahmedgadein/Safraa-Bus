@@ -42,7 +42,7 @@ class LoginFragment : RihlaFragment() {
         binding.phoneNumber.addTextChangedListener {
             it?.let {
                 val message = PhoneNumberValidator.validate(it.toString())
-                binding.phoneNumberContainer.helperText = message
+                binding.loginPhoneNumberContainer.helperText = message
             }
         }
         binding.signupButton.setOnClickListener {
@@ -50,7 +50,7 @@ class LoginFragment : RihlaFragment() {
         }
 
         binding.loginButton.setOnClickListener {
-            with(binding.phoneNumberContainer.helperText) {
+            with(binding.loginPhoneNumberContainer.helperText) {
                 if (this != null) {
                     showToast("Phone $this")
                     return@setOnClickListener
