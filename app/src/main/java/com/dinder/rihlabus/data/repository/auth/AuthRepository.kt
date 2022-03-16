@@ -10,5 +10,8 @@ import kotlinx.coroutines.flow.StateFlow
 interface AuthRepository {
     val state: StateFlow<AuthRepoState>
     suspend fun login(credential: AuthCredential)
-    suspend fun register(credential: AuthCredential, name: String, company: Company)
+    suspend fun register(
+        credential: AuthCredential, name: String, phoneNumber: String,
+        company: Company
+    )
 }

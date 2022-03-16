@@ -3,13 +3,17 @@ package com.dinder.rihlabus.data.repository.auth
 import android.util.Log
 import com.dinder.rihlabus.common.Constants
 import com.dinder.rihlabus.data.model.Company
-import com.google.firebase.auth.*
+import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -23,22 +27,26 @@ class FirebaseAuthRepository @Inject constructor(private val ioDispatcher: Corou
 
     init {
         CoroutineScope(ioDispatcher).launch {
-            val logged = _auth.currentUser != null
-            val registered = _ref.document(_auth.uid.toString()).get().isSuccessful
+            _ref.whereEqualTo("id", _auth.currentUser?.uid).addSnapshotListener { value, error ->
+                _state.update { state ->
+                    Log.i(
+                        "Verification",
+                        "AuthRepo init: logged=${value != null} registered=${_auth.currentUser != null}"
+                    )
+                    state.copy(isRegistered = value != null, isLoggedIn = _auth.currentUser != null)
 
-            _state.update {
-                it.copy(isLoggedIn = logged, isRegistered = registered)
+                }
             }
         }
     }
 
     override suspend fun login(credential: AuthCredential) {
         Log.i("Ahmed", "login: Logging in")
-        CoroutineScope(ioDispatcher).launch {
+        withContext(CoroutineScope(ioDispatcher).coroutineContext) {
             _auth.signInWithCredential(credential).addOnCompleteListener {
                 if (it.isSuccessful)
-                    _state.update {
-                        it.copy(isLoggedIn = true)
+                    _state.update { state ->
+                        state.copy(isLoggedIn = true)
                     }
             }
         }
@@ -47,8 +55,35 @@ class FirebaseAuthRepository @Inject constructor(private val ioDispatcher: Corou
     override suspend fun register(
         credential: AuthCredential,
         name: String,
+        phoneNumber: String,
         company: Company
     ) {
-        TODO("Not yet implemented")
+        withContext(CoroutineScope(ioDispatcher).coroutineContext) {
+            _auth.signInWithCredential(credential).addOnCompleteListener {
+                if (it.isSuccessful)
+                    _state.update { state ->
+                        state.copy(isLoggedIn = true)
+                    }
+            }
+        }
+
+        if (_state.value.isRegistered)
+            return
+
+        CoroutineScope(ioDispatcher).launch {
+            _ref.document(_auth.currentUser?.uid!!).set(
+                hashMapOf(
+                    "id" to _auth.currentUser?.uid,
+                    "phoneNumber" to phoneNumber,
+                    "name" to name,
+                    "company" to company
+                )
+            ).addOnCompleteListener {
+                if (it.isSuccessful)
+                    _state.update { state ->
+                        state.copy(isRegistered = true)
+                    }
+            }
+        }
     }
 }

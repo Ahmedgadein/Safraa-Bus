@@ -34,11 +34,12 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/signupNameField"
+        android:id="@+id/signupNameContainer"
         style="?textInputOutlinedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
+        app:helperTextTextColor="@android:color/holo_red_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat3">
@@ -59,11 +60,10 @@
         android:hint="@string/mobile"
         app:counterEnabled="true"
         app:counterMaxLength="9"
-        app:helperText="Required"
         app:helperTextTextColor="@android:color/holo_red_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signupNameField"
+        app:layout_constraintTop_toBottomOf="@+id/signupNameContainer"
         app:startIconDrawable="@drawable/mobile_label"
         app:startIconTint="@color/teal_700">
 
@@ -71,8 +71,8 @@
             android:id="@+id/phoneNumber"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:labelFor="@string/mobile"
             android:inputType="phone"
+            android:labelFor="@string/mobile"
             android:maxLength="9"
             android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -82,8 +82,9 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/company"
         android:layout_marginTop="16dp"
+        android:hint="@string/company"
+        app:helperTextTextColor="@android:color/holo_red_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signupPhoneNumberContainer">
@@ -92,7 +93,7 @@
             android:id="@+id/companiesDropDown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none"/>
+            android:inputType="none" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -103,6 +104,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:hint="@string/location"
+        app:helperTextTextColor="@android:color/holo_red_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signupCompanyContainer">
@@ -115,7 +117,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/signupButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
@@ -131,5 +133,5 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/signupButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

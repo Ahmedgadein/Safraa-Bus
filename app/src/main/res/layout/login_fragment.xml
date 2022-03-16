@@ -39,7 +39,6 @@
         android:hint="Mobile"
         app:counterEnabled="true"
         app:counterMaxLength="9"
-        app:helperText="Required"
         app:helperTextTextColor="@android:color/holo_red_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

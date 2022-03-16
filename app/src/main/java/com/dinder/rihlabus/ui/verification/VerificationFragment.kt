@@ -47,7 +47,7 @@ class VerificationFragment : RihlaFragment() {
                     showToast("Got it!")
                     val credentials =
                         PhoneAuthProvider.getCredential(authCodeToken.code, s.toString())
-                    viewModel.onNumberVerified(credentials)
+//                    viewModel.onNumberVerified(credentials)
                 }
             }
 
@@ -57,7 +57,12 @@ class VerificationFragment : RihlaFragment() {
                 binding.verificationProgressBar.visibility =
                     if (it.loading) View.VISIBLE else View.INVISIBLE
 
-                if (it.isLoggedIn)
+                Log.i(
+                    "Verification",
+                    "SignupFragment: logged=${it.isLoggedIn} registered=${it.isRegistered}"
+                )
+                val registeredAndLogged = it.isLoggedIn && it.isRegistered
+                if (registeredAndLogged)
                     navigateToHome()
 
                 it.messages.firstOrNull()?.let { message ->
@@ -69,6 +74,6 @@ class VerificationFragment : RihlaFragment() {
     }
 
     private fun navigateToHome() {
-        showToast("MADE IT MAAAAAAAAAAAAAAAAAN")
+        showToast("Why is this showing")
     }
 }

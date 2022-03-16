@@ -1,8 +1,10 @@
 package com.dinder.rihlabus.utils
 
 object PhoneNumberValidator {
-    fun validate(mobile: String): String?{
+    fun validate(mobile: String?): String? {
         return when {
+            mobile.isNullOrEmpty() -> "Required"
+
             !mobile.matches(Regex("[0-9]{9}")) -> {
                 "Should be 9 numbers"
             }

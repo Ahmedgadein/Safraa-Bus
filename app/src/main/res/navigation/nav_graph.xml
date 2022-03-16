@@ -29,5 +29,9 @@
         android:id="@+id/signupFragment"
         android:name="com.dinder.rihlabus.ui.signup.SignupFragment"
         android:label="signup_fragment"
-        tools:layout="@layout/signup_fragment" />
+        tools:layout="@layout/signup_fragment" >
+        <action
+            android:id="@+id/action_signupFragment_to_verificationFragment"
+            app:destination="@id/verificationFragment" />
+    </fragment>
 </navigation>

@@ -1,6 +1,5 @@
 package com.dinder.rihlabus.ui.login
 
-import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -50,12 +49,9 @@ class LoginFragment : RihlaFragment() {
         }
 
         binding.loginButton.setOnClickListener {
-            with(binding.loginPhoneNumberContainer.helperText) {
-                if (this != null) {
-                    showToast("Phone $this")
-                    return@setOnClickListener
-                }
-            }
+            if(!_validForm(binding))
+                return@setOnClickListener
+
             val phone = binding.phoneNumber.text.toString()
             sendSms(phone)
         }
@@ -73,6 +69,16 @@ class LoginFragment : RihlaFragment() {
         }
     }
 
+    private fun _validateNumber(binding: LoginFragmentBinding){
+        with(binding.loginPhoneNumberContainer){
+            this.helperText = PhoneNumberValidator.validate(this.editText?.text.toString())
+        }
+    }
+
+    private  fun _validForm(binding: LoginFragmentBinding): Boolean{
+        _validateNumber(binding)
+        return  binding.loginPhoneNumberContainer.helperText == null
+    }
     private fun sendSms(mobile: String) {
         if (!viewModel.loginUiState.value.isRegistered) {
             showToast("Unregistered, please sign up")

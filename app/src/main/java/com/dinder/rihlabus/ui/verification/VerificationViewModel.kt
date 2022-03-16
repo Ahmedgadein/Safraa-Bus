@@ -3,7 +3,6 @@ package com.dinder.rihlabus.ui.verification
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
-import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.repository.auth.AuthRepository
 import com.google.firebase.auth.AuthCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +22,10 @@ class VerificationViewModel @Inject constructor(private val repository: AuthRepo
         viewModelScope.launch {
             repository.state.collect { repositoryState ->
                 _verificationUiState.update {
-                    it.copy(isLoggedIn = repositoryState.isLoggedIn)
+                    it.copy(
+                        isLoggedIn = repositoryState.isLoggedIn,
+                        isRegistered = repositoryState.isRegistered
+                    )
                 }
             }
         }
