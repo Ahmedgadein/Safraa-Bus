@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="locations">
+        <item name="omdurman">Omdurman</item>
+        <item name="bahri">Bahri</item>
+        <item name="khartoum">Khartoum</item>
+    </string-array>
+</resources>

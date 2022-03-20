@@ -1,10 +1,11 @@
 package com.dinder.rihlabus.ui.verification
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
-import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.repository.auth.AuthRepository
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.AuthCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +24,11 @@ class VerificationViewModel @Inject constructor(private val repository: AuthRepo
         viewModelScope.launch {
             repository.state.collect { repositoryState ->
                 _verificationUiState.update {
-                    it.copy(isLoggedIn = repositoryState.isLoggedIn)
+                    it.copy(
+                        isLoggedIn = repositoryState.isLoggedIn,
+                        isRegistered = repositoryState.isRegistered,
+                        loading = repositoryState.loading
+                    )
                 }
             }
         }
@@ -33,13 +38,10 @@ class VerificationViewModel @Inject constructor(private val repository: AuthRepo
     val verificationUiState = _verificationUiState.asStateFlow()
 
 
-    fun onNumberVerified(credential: AuthCredential) {
-        _verificationUiState.update {
-            it.copy(loading = true)
-        }
+    fun onNumberVerified(credential: AuthCredential, phoneNumber: String) {
         try {
             viewModelScope.launch {
-                repository.login(credential)
+                repository.login(credential, phoneNumber)
             }
         } catch (exception: Exception) {
             _verificationUiState.update {
@@ -49,9 +51,6 @@ class VerificationViewModel @Inject constructor(private val repository: AuthRepo
                 )
                 it.copy(messages = messages)
             }
-        }
-        _verificationUiState.update {
-            it.copy(loading = false)
         }
     }
 

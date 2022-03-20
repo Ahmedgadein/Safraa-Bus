@@ -3,8 +3,8 @@ package com.dinder.rihlabus.ui.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
-import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.repository.auth.AuthRepository
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.AuthCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,15 +33,15 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
     private val _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState())
     val loginUiState = _loginUiState.asStateFlow()
 
-    fun login(credential: AuthCredential) {
+    fun login(credential: AuthCredential, phoneNumber:String) {
         _loginUiState.update {
             it.copy(loading = true)
         }
         try {
             viewModelScope.launch {
-                repository.login(credential)
+                repository.login(credential, phoneNumber)
             }
-        } catch (exception: Exception) {
+        } catch (exception: FirebaseException) {
             _loginUiState.update {
                 val messages = it.messages + Message(
                     id = UUID.randomUUID().mostSignificantBits,
