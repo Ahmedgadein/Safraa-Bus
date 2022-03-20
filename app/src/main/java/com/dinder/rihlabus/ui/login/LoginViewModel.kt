@@ -33,13 +33,13 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
     private val _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState())
     val loginUiState = _loginUiState.asStateFlow()
 
-    fun login(credential: AuthCredential) {
+    fun login(credential: AuthCredential, phoneNumber:String) {
         _loginUiState.update {
             it.copy(loading = true)
         }
         try {
             viewModelScope.launch {
-                repository.login(credential)
+                repository.login(credential, phoneNumber)
             }
         } catch (exception: FirebaseException) {
             _loginUiState.update {

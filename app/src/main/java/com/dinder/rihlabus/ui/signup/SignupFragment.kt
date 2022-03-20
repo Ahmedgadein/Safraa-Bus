@@ -15,8 +15,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.RihlaFragment
-import com.dinder.rihlabus.data.model.AuthCodeToken
 import com.dinder.rihlabus.data.model.Company
+import com.dinder.rihlabus.data.model.Credential
+import com.dinder.rihlabus.data.model.User
 import com.dinder.rihlabus.databinding.SignupFragmentBinding
 import com.dinder.rihlabus.utils.NameValidator
 import com.dinder.rihlabus.utils.PhoneNumberValidator
@@ -33,6 +34,12 @@ import java.util.concurrent.TimeUnit
 class SignupFragment : RihlaFragment() {
     private val viewModel: SignupViewModel by viewModels()
     private lateinit var binding: SignupFragmentBinding
+    private lateinit var phoneNumber: String
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        phoneNumber = SignupFragmentArgs.fromBundle(arguments!!).phoneNumber
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +60,17 @@ class SignupFragment : RihlaFragment() {
             if (!_validForm())
                 return@setOnClickListener
 
-            sendSms()
+            viewModel.signup(
+                user = User(
+                    id = "",
+                    name = binding.signupNameContainer.editText?.text.toString(),
+                    phone = phoneNumber,
+                    company = Company(
+                        name = binding.signupCompanyContainer.editText?.text.toString(),
+                        location = binding.signupLocationContainer.editText?.text.toString(),
+                    )
+                )
+            )
         }
 
         lifecycleScope.launchWhenCreated {
@@ -63,8 +80,10 @@ class SignupFragment : RihlaFragment() {
                     viewModel.userMessageShown(message.id)
                 }
 
-                if (it.isRegistered && it.isLoggedIn)
+                if (it.isRegistered && it.isLoggedIn){
                     navigateToHome()
+                    return@collect
+                }
             }
         }
     }
@@ -109,12 +128,6 @@ class SignupFragment : RihlaFragment() {
         }
     }
 
-    private fun _validateNumber() {
-        with(binding.signupPhoneNumberContainer) {
-            this.helperText = PhoneNumberValidator.validate(this.editText?.text.toString())
-        }
-    }
-
     private fun _validateCompany() {
         with(binding.signupCompanyContainer) {
             this.helperText = if (this.editText?.text.isNullOrEmpty()) "Required" else null
@@ -128,61 +141,61 @@ class SignupFragment : RihlaFragment() {
     }
 
     private fun _validForm(): Boolean {
-        _validateNumber()
         _validateName()
         _validateCompany()
         _validateLocation()
         return binding.let {
-            it.signupPhoneNumberContainer.helperText == null && it.signupNameContainer.helperText == null
+            it.signupNameContainer.helperText == null
         }
     }
 
-    private fun navigateToVerification(codeToken: AuthCodeToken) {
-        val action = SignupFragmentDirections.actionSignupFragmentToVerificationFragment(codeToken)
-        findNavController().navigate(action)
-    }
+//    private fun navigateToVerification(credential: Credential) {
+//        val action = SignupFragmentDirections.actionSignupFragmentToVerificationFragment(credential)
+//        findNavController().navigate(action)
+//    }
 
-    private fun sendSms() {
-        val mobile = binding.signupPhoneNumberContainer.editText?.text.toString()
-        val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
-            .setPhoneNumber("+249$mobile")       // Phone number to verify
-            .setTimeout(60L, TimeUnit.SECONDS)
-            .setActivity(this.activity!!)
-            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                override fun onVerificationCompleted(credentials: PhoneAuthCredential) {
-                    val name = binding.signupNameContainer.editText?.text.toString()
-                    val phoneNumber = binding.signupPhoneNumberContainer.editText?.text.toString()
-                    val company = binding.signupCompanyContainer.editText?.text.toString()
-                    val location = binding.signupLocationContainer.editText?.text.toString()
-
-                    viewModel.signup(
-                        credentials,
-                        name,
-                        phoneNumber,
-                        Company(name = company, location = location)
-                    )
-                }
-
-                override fun onVerificationFailed(exception: FirebaseException) {
-                    Log.i("Ahmed", "onVerificationFailed: $exception")
-                    showSnackbar("Verification Failed")
-                }
-
-                override fun onCodeSent(
-                    code: String,
-                    token: PhoneAuthProvider.ForceResendingToken
-                ) {
-                    super.onCodeSent(code, token)
-                    Log.i("Ahmed", "onCodeSent: $code")
-                    val codeToken = AuthCodeToken(code = code, token = token)
-                    navigateToVerification(codeToken)
-                }
-
-            }).build()
-        PhoneAuthProvider.verifyPhoneNumber(options)
-    }
+//    private fun sendSms() {
+//        val mobile = "+249" + binding.signupPhoneNumberContainer.editText?.text.toString()
+//        val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
+//            .setPhoneNumber(mobile)       // Phone number to verify
+//            .setTimeout(60L, TimeUnit.SECONDS)
+//            .setActivity(this.activity!!)
+//            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+//                override fun onVerificationCompleted(credentials: PhoneAuthCredential) {
+//                    val name = binding.signupNameContainer.editText?.text.toString()
+//                    val phoneNumber = binding.signupPhoneNumberContainer.editText?.text.toString()
+//                    val company = binding.signupCompanyContainer.editText?.text.toString()
+//                    val location = binding.signupLocationContainer.editText?.text.toString()
+//
+//                    viewModel.signup(
+//                        credentials,
+//                        name,
+//                        phoneNumber,
+//                        Company(name = company, location = location)
+//                    )
+//                }
+//
+//                override fun onVerificationFailed(exception: FirebaseException) {
+//                    Log.i("Ahmed", "onVerificationFailed: $exception")
+//                    showSnackbar("Verification Failed")
+//                }
+//
+//                override fun onCodeSent(
+//                    code: String,
+//                    token: PhoneAuthProvider.ForceResendingToken
+//                ) {
+//                    super.onCodeSent(code, token)
+//                    Log.i("Ahmed", "onCodeSent: $code")
+//                    val credentials = Credential(code = code, token = token, phoneNumber = mobile)
+//                    navigateToVerification(credentials)
+//                }
+//
+//            }).build()
+//        PhoneAuthProvider.verifyPhoneNumber(options)
+//    }
 
     fun navigateToHome() {
-
+        val action = SignupFragmentDirections.actionSignupFragmentToHomeFragment()
+        findNavController().navigate(action)
     }
 }

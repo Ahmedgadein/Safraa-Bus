@@ -14,24 +14,38 @@
             android:id="@+id/action_loginFragment_to_verificationFragment"
             app:destination="@id/verificationFragment" />
         <action
-            android:id="@+id/action_loginFragment_to_signupFragment"
-            app:destination="@id/signupFragment" />
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/verificationFragment"
         android:name="com.dinder.rihlabus.ui.verification.VerificationFragment"
         android:label="VerificationFragment">
         <argument
-            android:name="codeToken"
-            app:argType="com.dinder.rihlabus.data.model.AuthCodeToken" />
+            android:name="credentials"
+            app:argType="com.dinder.rihlabus.data.model.Credential" />
+        <action
+            android:id="@+id/action_verificationFragment_to_signupFragment"
+            app:destination="@id/signupFragment" />
+        <action
+            android:id="@+id/action_verificationFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/signupFragment"
         android:name="com.dinder.rihlabus.ui.signup.SignupFragment"
         android:label="signup_fragment"
         tools:layout="@layout/signup_fragment" >
+        <argument
+            android:name="phoneNumber"
+            app:argType="string" />
         <action
-            android:id="@+id/action_signupFragment_to_verificationFragment"
-            app:destination="@id/verificationFragment" />
+            android:id="@+id/action_signupFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.dinder.rihlabus.ui.home.HomeFragment"
+        android:label="home_fragment"
+        tools:layout="@layout/home_fragment" />
 </navigation>

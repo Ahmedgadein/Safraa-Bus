@@ -5,5 +5,8 @@ import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AuthCodeToken(val code: String, val token: PhoneAuthProvider.ForceResendingToken?) :
-    Parcelable
+data class Credential(
+    val code: String,
+    val token: PhoneAuthProvider.ForceResendingToken?,
+    val phoneNumber: String
+) : Parcelable

@@ -5,12 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dinder.rihlabus.common.RihlaFragment
-import com.dinder.rihlabus.data.model.AuthCodeToken
+import com.dinder.rihlabus.data.model.Credential
 import com.dinder.rihlabus.databinding.LoginFragmentBinding
 import com.dinder.rihlabus.utils.PhoneNumberValidator
 import com.google.firebase.FirebaseException
@@ -20,24 +21,28 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class LoginFragment : RihlaFragment() {
 
     private val viewModel: LoginViewModel by viewModels()
+    private lateinit var binding: LoginFragmentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = LoginFragmentBinding.inflate(inflater, container, false)
-        setUI(binding)
+        binding = LoginFragmentBinding.inflate(inflater, container, false)
+        setUI()
 
         return binding.root
     }
 
-    private fun setUI(binding: LoginFragmentBinding) {
+    private fun setUI() {
         binding.phoneNumber.addTextChangedListener {
             it?.let {
                 val message = PhoneNumberValidator.validate(it.toString())
@@ -49,54 +54,57 @@ class LoginFragment : RihlaFragment() {
         }
 
         binding.loginButton.setOnClickListener {
-            if(!_validForm(binding))
+            if (!_validForm())
                 return@setOnClickListener
-
-            val phone = binding.phoneNumber.text.toString()
-            sendSms(phone)
+            sendSms()
         }
 
-        lifecycleScope.launchWhenCreated {
+        lifecycleScope.launch {
             viewModel.loginUiState.collect {
-                binding.loginProgressBar.visibility =
-                    if (it.loading) View.VISIBLE else View.INVISIBLE
-
                 it.messages.firstOrNull()?.let { message ->
                     showSnackbar(message.content)
                     viewModel.userMessageShown(message.id)
+                    return@collect
+                }
+
+                if(it.isLoggedIn){
+                    navigateToHome()
+                    return@collect
+                }
+
+                if(!it.isRegistered && it.isLoggedIn){
+                    navigateToSignup()
+                    return@collect
                 }
             }
         }
     }
 
-    private fun _validateNumber(binding: LoginFragmentBinding){
-        with(binding.loginPhoneNumberContainer){
+    private fun _validateNumber() {
+        with(binding.loginPhoneNumberContainer) {
             this.helperText = PhoneNumberValidator.validate(this.editText?.text.toString())
         }
     }
 
-    private  fun _validForm(binding: LoginFragmentBinding): Boolean{
-        _validateNumber(binding)
-        return  binding.loginPhoneNumberContainer.helperText == null
+    private fun _validForm(): Boolean {
+        _validateNumber()
+        return binding.loginPhoneNumberContainer.helperText == null
     }
-    private fun sendSms(mobile: String) {
-        if (!viewModel.loginUiState.value.isRegistered) {
-            showToast("Unregistered, please sign up")
-            return
-        }
 
+    private fun sendSms() {
+        val mobile = binding.loginPhoneNumberContainer.editText?.text.toString()
         val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
             .setPhoneNumber("+249$mobile")       // Phone number to verify
             .setTimeout(60L, TimeUnit.SECONDS)
-            .setActivity(this.activity!!)
+            .setActivity(requireActivity())
             .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(credentials: PhoneAuthCredential) {
-                    viewModel.login(credentials)
+                    viewModel.login(credentials, mobile)
                 }
 
                 override fun onVerificationFailed(exception: FirebaseException) {
                     Log.i("Ahmed", "onVerificationFailed: $exception")
-                    showSnackbar("Verification Failed")
+                    showSnackbar("Login Failed Failed")
                 }
 
                 override fun onCodeSent(
@@ -105,7 +113,7 @@ class LoginFragment : RihlaFragment() {
                 ) {
                     super.onCodeSent(code, token)
                     Log.i("Ahmed", "onCodeSent: $code")
-                    val codeToken = AuthCodeToken(code = code, token = token)
+                    val codeToken = Credential(code = code, token = token, phoneNumber = mobile)
                     navigateToVerification(codeToken)
                 }
 
@@ -114,16 +122,18 @@ class LoginFragment : RihlaFragment() {
     }
 
     private fun navigateToSignup() {
-        val action = LoginFragmentDirections.actionLoginFragmentToSignupFragment()
-        findNavController().navigate(action)
+//        val action = LoginFragmentDirections.actionLoginFragmentToSignupFragment()
+//        findNavController().navigate(action)
+        showToast("Navigating to SIGNUP")
     }
 
     private fun navigateToHome() {
-
+        val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment()
+        findNavController().navigate(action)
     }
 
-    private fun navigateToVerification(codeToken: AuthCodeToken) {
-        val action = LoginFragmentDirections.actionLoginFragmentToVerificationFragment(codeToken)
+    private fun navigateToVerification(credential: Credential) {
+        val action = LoginFragmentDirections.actionLoginFragmentToVerificationFragment(credential)
         findNavController().navigate(action)
     }
 }

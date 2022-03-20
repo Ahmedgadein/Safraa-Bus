@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
+import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.Company
+import com.dinder.rihlabus.data.model.User
 import com.dinder.rihlabus.data.repository.auth.AuthRepository
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.AuthCredential
@@ -40,29 +42,31 @@ class SignupViewModel @Inject constructor(private val repository: AuthRepository
     }
 
     fun signup(
-        credential: AuthCredential, name: String, phoneNumber: String,
-        company: Company
+        user: User
     ) {
-        _signupUiState.update {
-            it.copy(loading = true)
+        viewModelScope.launch {
+            repository.register(user).collect { result ->
+                when (result) {
+                    is Result.Loading -> {
+                        _signupUiState.update { it.copy(loading = true) }
+                    }
+                    is Result.Error -> {
+                        showErrorMessage(result.message)
+                    }
+                    is Result.Success -> {
+                        _signupUiState.update { state ->
+                            state.copy(loading = false, isRegistered = true)
+                        }
+                    }
+                }
+            }
         }
+    }
 
-        try {
-            viewModelScope.launch {
-                repository.register(credential, name, phoneNumber, company)
-            }
-        } catch (exception: FirebaseException) {
-            _signupUiState.update {
-                val messages = it.messages + Message(
-                    id = UUID.randomUUID().mostSignificantBits,
-                    "Signup Failed, please try again"
-                )
-                it.copy(messages = messages)
-            }
-        } finally {
-            _signupUiState.update {
-                it.copy(loading = false)
-            }
+    private fun showErrorMessage(message: String) {
+        _signupUiState.update {
+            val messages = it.messages + Message(UUID.randomUUID().mostSignificantBits, message)
+            it.copy(messages = messages, loading = false)
         }
     }
 

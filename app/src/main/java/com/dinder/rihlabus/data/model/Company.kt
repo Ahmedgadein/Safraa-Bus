@@ -8,4 +8,10 @@ data class Company(
     val name: String,
     val arabicName: String? = null,
     val location: String
-) : Parcelable
+) : Parcelable{
+    fun toJson(): Map<String, Any> = mapOf(
+        "name" to name,
+        "arabicName" to name,
+        "location" to location
+    )
+}
