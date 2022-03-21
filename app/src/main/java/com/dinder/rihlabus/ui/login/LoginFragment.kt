@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.data.model.Credential
 import com.dinder.rihlabus.databinding.LoginFragmentBinding
+import com.dinder.rihlabus.utils.PhoneNumberFormatter
 import com.dinder.rihlabus.utils.PhoneNumberValidator
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -21,8 +22,6 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -31,6 +30,7 @@ class LoginFragment : RihlaFragment() {
 
     private val viewModel: LoginViewModel by viewModels()
     private lateinit var binding: LoginFragmentBinding
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,36 +43,45 @@ class LoginFragment : RihlaFragment() {
     }
 
     private fun setUI() {
-        binding.phoneNumber.addTextChangedListener {
+        binding.loginPhoneNumberContainer.editText?.addTextChangedListener {
             it?.let {
                 val message = PhoneNumberValidator.validate(it.toString())
                 binding.loginPhoneNumberContainer.helperText = message
             }
         }
-        binding.signupButton.setOnClickListener {
-            navigateToSignup()
-        }
 
         binding.loginButton.setOnClickListener {
             if (!_validForm())
                 return@setOnClickListener
+            binding.loginPhoneNumberContainer.editText?.isEnabled = false
             sendSms()
         }
 
         lifecycleScope.launch {
             viewModel.loginUiState.collect {
+                with(it.loading) {
+                    binding.loginProgressBar.isVisible = this
+                    binding.loginPhoneNumberContainer.editText?.isEnabled = this.not()
+
+                }
+
                 it.messages.firstOrNull()?.let { message ->
                     showSnackbar(message.content)
                     viewModel.userMessageShown(message.id)
                     return@collect
                 }
 
-                if(it.isLoggedIn){
+                if (it.isLoggedIn) {
                     navigateToHome()
                     return@collect
                 }
 
-                if(!it.isRegistered && it.isLoggedIn){
+                if (it.navigateToHome) {
+                    navigateToHome()
+                    return@collect
+                }
+
+                if (it.navigateToSignup) {
                     navigateToSignup()
                     return@collect
                 }
@@ -92,19 +101,25 @@ class LoginFragment : RihlaFragment() {
     }
 
     private fun sendSms() {
-        val mobile = binding.loginPhoneNumberContainer.editText?.text.toString()
+        viewModel.onSendingSms()
+        val phoneNumber =
+            PhoneNumberFormatter.getFullNumber(binding.loginPhoneNumberContainer.editText?.text.toString())
         val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
-            .setPhoneNumber("+249$mobile")       // Phone number to verify
+            .setPhoneNumber(phoneNumber)       // Phone number to verify
             .setTimeout(60L, TimeUnit.SECONDS)
             .setActivity(requireActivity())
             .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(credentials: PhoneAuthCredential) {
-                    viewModel.login(credentials, mobile)
+
+                    with(viewModel) {
+                        onSmsSent()
+                        onNumberVerified(credentials, phoneNumber)
+                    }
                 }
 
                 override fun onVerificationFailed(exception: FirebaseException) {
                     Log.i("Ahmed", "onVerificationFailed: $exception")
-                    showSnackbar("Login Failed Failed")
+                    viewModel.onVerificationFailed()
                 }
 
                 override fun onCodeSent(
@@ -112,8 +127,9 @@ class LoginFragment : RihlaFragment() {
                     token: PhoneAuthProvider.ForceResendingToken
                 ) {
                     super.onCodeSent(code, token)
-                    Log.i("Ahmed", "onCodeSent: $code")
-                    val codeToken = Credential(code = code, token = token, phoneNumber = mobile)
+                    viewModel.onSmsSent()
+                    val codeToken =
+                        Credential(code = code, token = token, phoneNumber = phoneNumber)
                     navigateToVerification(codeToken)
                 }
 
@@ -122,9 +138,11 @@ class LoginFragment : RihlaFragment() {
     }
 
     private fun navigateToSignup() {
-//        val action = LoginFragmentDirections.actionLoginFragmentToSignupFragment()
-//        findNavController().navigate(action)
-        showToast("Navigating to SIGNUP")
+        val phoneNumber =
+            PhoneNumberFormatter.getFullNumber(binding.loginPhoneNumberContainer.editText!!.text.toString())
+        val action =
+            LoginFragmentDirections.actionLoginFragmentToSignupFragment(phoneNumber = phoneNumber)
+        findNavController().navigate(action)
     }
 
     private fun navigateToHome() {

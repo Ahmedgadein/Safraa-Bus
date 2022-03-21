@@ -4,7 +4,8 @@ import com.dinder.rihlabus.common.Message
 
 data class LoginUiState(
     val loading: Boolean = false,
-    val isRegistered: Boolean = false,
+    val navigateToHome: Boolean = false,
+    val navigateToSignup: Boolean = false,
     val isLoggedIn: Boolean = false,
     val messages: List<Message> = listOf()
 )

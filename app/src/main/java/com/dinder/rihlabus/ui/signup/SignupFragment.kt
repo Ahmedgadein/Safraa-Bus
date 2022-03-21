@@ -5,7 +5,6 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,19 +15,11 @@ import androidx.navigation.fragment.findNavController
 import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.data.model.Company
-import com.dinder.rihlabus.data.model.Credential
 import com.dinder.rihlabus.data.model.User
 import com.dinder.rihlabus.databinding.SignupFragmentBinding
 import com.dinder.rihlabus.utils.NameValidator
-import com.dinder.rihlabus.utils.PhoneNumberValidator
-import com.google.firebase.FirebaseException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.PhoneAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class SignupFragment : RihlaFragment() {
@@ -64,7 +55,7 @@ class SignupFragment : RihlaFragment() {
                 user = User(
                     id = "",
                     name = binding.signupNameContainer.editText?.text.toString(),
-                    phone = phoneNumber,
+                    phoneNumber = phoneNumber,
                     company = Company(
                         name = binding.signupCompanyContainer.editText?.text.toString(),
                         location = binding.signupLocationContainer.editText?.text.toString(),
@@ -80,7 +71,7 @@ class SignupFragment : RihlaFragment() {
                     viewModel.userMessageShown(message.id)
                 }
 
-                if (it.isRegistered && it.isLoggedIn){
+                if (it.navigateToHome) {
                     navigateToHome()
                     return@collect
                 }
@@ -149,52 +140,7 @@ class SignupFragment : RihlaFragment() {
         }
     }
 
-//    private fun navigateToVerification(credential: Credential) {
-//        val action = SignupFragmentDirections.actionSignupFragmentToVerificationFragment(credential)
-//        findNavController().navigate(action)
-//    }
-
-//    private fun sendSms() {
-//        val mobile = "+249" + binding.signupPhoneNumberContainer.editText?.text.toString()
-//        val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
-//            .setPhoneNumber(mobile)       // Phone number to verify
-//            .setTimeout(60L, TimeUnit.SECONDS)
-//            .setActivity(this.activity!!)
-//            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-//                override fun onVerificationCompleted(credentials: PhoneAuthCredential) {
-//                    val name = binding.signupNameContainer.editText?.text.toString()
-//                    val phoneNumber = binding.signupPhoneNumberContainer.editText?.text.toString()
-//                    val company = binding.signupCompanyContainer.editText?.text.toString()
-//                    val location = binding.signupLocationContainer.editText?.text.toString()
-//
-//                    viewModel.signup(
-//                        credentials,
-//                        name,
-//                        phoneNumber,
-//                        Company(name = company, location = location)
-//                    )
-//                }
-//
-//                override fun onVerificationFailed(exception: FirebaseException) {
-//                    Log.i("Ahmed", "onVerificationFailed: $exception")
-//                    showSnackbar("Verification Failed")
-//                }
-//
-//                override fun onCodeSent(
-//                    code: String,
-//                    token: PhoneAuthProvider.ForceResendingToken
-//                ) {
-//                    super.onCodeSent(code, token)
-//                    Log.i("Ahmed", "onCodeSent: $code")
-//                    val credentials = Credential(code = code, token = token, phoneNumber = mobile)
-//                    navigateToVerification(credentials)
-//                }
-//
-//            }).build()
-//        PhoneAuthProvider.verifyPhoneNumber(options)
-//    }
-
-    fun navigateToHome() {
+    private fun navigateToHome() {
         val action = SignupFragmentDirections.actionSignupFragmentToHomeFragment()
         findNavController().navigate(action)
     }

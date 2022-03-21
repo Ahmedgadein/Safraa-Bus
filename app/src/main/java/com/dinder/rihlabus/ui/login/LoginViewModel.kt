@@ -3,8 +3,8 @@ package com.dinder.rihlabus.ui.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
+import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.repository.auth.AuthRepository
-import com.google.firebase.FirebaseException
 import com.google.firebase.auth.AuthCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,6 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
             repository.state.collect { repositoryState ->
                 _loginUiState.update {
                     it.copy(
-                        isRegistered = repositoryState.isRegistered,
                         isLoggedIn = repositoryState.isLoggedIn
                     )
                 }
@@ -30,31 +29,75 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
         }
     }
 
-    private val _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState())
+    private val _loginUiState = MutableStateFlow(LoginUiState())
     val loginUiState = _loginUiState.asStateFlow()
 
-    fun login(credential: AuthCredential, phoneNumber:String) {
+    fun onNumberVerified(credential: AuthCredential, phoneNumber: String) {
+        viewModelScope.launch {
+            repository.isRegistered(phoneNumber).collect { registered ->
+                when (registered) {
+                    is Result.Loading -> {
+                        _loginUiState.update { it.copy(loading = true) }
+                    }
+                    is Result.Error -> {
+                        showUserMessage(registered.message)
+                    }
+                    is Result.Success -> {
+                        repository.login(credential, phoneNumber).collect { login ->
+                            when (login) {
+                                is Result.Loading -> {
+                                    _loginUiState.update { it.copy(loading = true) }
+                                }
+                                is Result.Error -> {
+                                    showUserMessage(login.message)
+                                }
+                                is Result.Success -> {
+                                    _loginUiState.update {
+                                        it.copy(
+                                            loading = false,
+                                            navigateToHome = login.value && registered.value,
+                                            navigateToSignup = login.value && !registered.value
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun onVerificationFailed() {
+        hideLoading()
+        showUserMessage("Login failed")
+    }
+
+    fun onSmsSent() {
+        hideLoading()
+    }
+
+    fun onSendingSms() {
+        showLoading()
+    }
+
+    private fun showLoading() {
         _loginUiState.update {
             it.copy(loading = true)
         }
-        try {
-            viewModelScope.launch {
-                repository.login(credential, phoneNumber)
-            }
-        } catch (exception: FirebaseException) {
-            _loginUiState.update {
-                val messages = it.messages + Message(
-                    id = UUID.randomUUID().mostSignificantBits,
-                    "Login Failed"
-                )
+    }
 
-                it.copy(messages = messages)
-            }
-        }
+    private fun hideLoading() {
         _loginUiState.update {
             it.copy(loading = false)
         }
+    }
 
+    private fun showUserMessage(content: String) {
+        _loginUiState.update {
+            val messages = it.messages + Message(UUID.randomUUID().mostSignificantBits, content)
+            it.copy(messages = messages, loading = false)
+        }
     }
 
     fun userMessageShown(messageId: Long) {
