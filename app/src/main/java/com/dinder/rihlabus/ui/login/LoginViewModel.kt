@@ -19,12 +19,17 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(private val repository: AuthRepository) : ViewModel() {
     init {
         viewModelScope.launch {
-            repository.state.collect { repositoryState ->
-                _loginUiState.update {
-                    it.copy(
-                        isLoggedIn = repositoryState.isLoggedIn
-                    )
+            repository.isLoggedIn().collect { loggedIn ->
+                when (loggedIn) {
+                    is Result.Loading -> {}
+                    is Result.Error -> {}
+                    is Result.Success -> {
+                        _loginUiState.update { state ->
+                            state.copy(isLoggedIn = loggedIn.value)
+                        }
+                    }
                 }
+
             }
         }
     }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -50,7 +51,11 @@ class SignupFragment : RihlaFragment() {
         binding.signupButton.setOnClickListener {
             if (!_validForm())
                 return@setOnClickListener
-
+            with(binding) {
+                signupCompanyContainer.editText?.isEnabled = false
+                signupNameContainer.editText?.isEnabled = false
+                signupLocationContainer.editText?.isEnabled = false
+            }
             viewModel.signup(
                 user = User(
                     id = "",
@@ -66,6 +71,12 @@ class SignupFragment : RihlaFragment() {
 
         lifecycleScope.launchWhenCreated {
             viewModel.signupUiState.collect {
+                with(it.loading) {
+                    binding.signupProgressBar.isVisible = this
+                    binding.signupCompanyContainer.editText?.isEnabled = this.not()
+                    binding.signupNameContainer.editText?.isEnabled = this.not()
+                    binding.signupLocationContainer.editText?.isEnabled = this.not()
+                }
                 it.messages.firstOrNull()?.let { message ->
                     showSnackbar(message.content)
                     viewModel.userMessageShown(message.id)
