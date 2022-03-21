@@ -1,15 +1,11 @@
 package com.dinder.rihlabus.ui.signup
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
 import com.dinder.rihlabus.common.Result
-import com.dinder.rihlabus.data.model.Company
 import com.dinder.rihlabus.data.model.User
 import com.dinder.rihlabus.data.repository.auth.AuthRepository
-import com.google.firebase.FirebaseException
-import com.google.firebase.auth.AuthCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,22 +20,6 @@ class SignupViewModel @Inject constructor(private val repository: AuthRepository
     private val _signupUiState = MutableStateFlow(SignupUiState())
     val signupUiState: Flow<SignupUiState> = _signupUiState
 
-    init {
-        viewModelScope.launch {
-            repository.state.collect { repositoryState ->
-                _signupUiState.update { state ->
-                    Log.i(
-                        "Verification",
-                        "SignupViewModel init: logged=${repositoryState.isLoggedIn} registered=${repositoryState.isRegistered}"
-                    )
-                    state.copy(
-                        isLoggedIn = repositoryState.isLoggedIn,
-                        isRegistered = repositoryState.isRegistered
-                    )
-                }
-            }
-        }
-    }
 
     fun signup(
         user: User
@@ -55,7 +35,7 @@ class SignupViewModel @Inject constructor(private val repository: AuthRepository
                     }
                     is Result.Success -> {
                         _signupUiState.update { state ->
-                            state.copy(loading = false, isRegistered = true)
+                            state.copy(navigateToHome = result.value)
                         }
                     }
                 }

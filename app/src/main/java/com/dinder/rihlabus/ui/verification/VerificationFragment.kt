@@ -3,7 +3,6 @@ package com.dinder.rihlabus.ui.verification
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,38 +50,35 @@ class VerificationFragment : RihlaFragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                Log.i("Ahmed", "Text: ${s.toString()}")
-                Log.i("Ahmed", "Code Needed: ${credentials.code}")
                 if (s?.length == Constants.VERIFICATION_CODE_LENGTH) {
+                    binding.verificationCode.isEnabled = false
                     val phoneAuthCredential =
                         PhoneAuthProvider.getCredential(credentials.code, s.toString())
-                    viewModel.onNumberVerified(phoneAuthCredential, credentials.phoneNumber)
+                    viewModel.onVerificationAttempt(phoneAuthCredential, credentials.phoneNumber)
                 }
             }
 
         })
         lifecycleScope.launch {
             viewModel.verificationUiState.collect {
-                Log.i("Loading", "Verification Fragment Loading: ${it.loading}")
-                binding.verificationProgressBar.isVisible = it.loading
-                Log.i(
-                    "Verification",
-                    "Verification Fragment: logged=${it.isLoggedIn} registered=${it.isRegistered}"
-                )
+                with(it.loading) {
+                    binding.verificationProgressBar.isVisible = this
+                    binding.verificationCode.isEnabled = this.not()
+                }
 
                 it.messages.firstOrNull()?.let { message ->
-                    showToast(message.content)
+                    showSnackbar(message.content)
                     viewModel.userMessageShown(message.id)
                     return@collect
                 }
 
-                if (it.isRegistered && it.isLoggedIn) {
+                if (it.navigateToHome) {
                     navigateToHome()
                     return@collect
                 }
 
-                if (!it.isRegistered && it.isLoggedIn) {
-                    navigateToSignup(credentials.phoneNumber)
+                if (it.navigateToSignup) {
+                    navigateToSignup()
                     return@collect
                 }
 
@@ -95,7 +91,7 @@ class VerificationFragment : RihlaFragment() {
         findNavController().navigate(action)
     }
 
-    private fun navigateToSignup(phoneNumber: String) {
+    private fun navigateToSignup() {
         val action =
             VerificationFragmentDirections.actionVerificationFragmentToSignupFragment(credentials.phoneNumber)
         findNavController().navigate(action)

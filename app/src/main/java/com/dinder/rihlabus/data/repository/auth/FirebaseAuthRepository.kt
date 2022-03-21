@@ -1,25 +1,19 @@
 package com.dinder.rihlabus.data.repository.auth
 
-import android.util.Log
 import com.dinder.rihlabus.common.Constants
 import com.dinder.rihlabus.common.Result
-import com.dinder.rihlabus.data.model.Company
 import com.dinder.rihlabus.data.model.User
-import com.dinder.rihlabus.data.model.toJson
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.Exception
 import javax.inject.Inject
 
 
+@ExperimentalCoroutinesApi
 class FirebaseAuthRepository @Inject constructor(private val ioDispatcher: CoroutineDispatcher) :
     AuthRepository {
     private val _auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -29,27 +23,21 @@ class FirebaseAuthRepository @Inject constructor(private val ioDispatcher: Corou
     override val state: StateFlow<AuthRepoState> = _state
 
     init {
+//        _auth.signOut()
         _state.update { state ->
-            Log.i(
-                "Verification",
-                "AuthRepo init: logged In=${_auth.currentUser != null}"
-            )
             state.copy(isLoggedIn = _auth.currentUser != null)
-
         }
     }
 
-    suspend fun isRegistered(phoneNumber: String) = callbackFlow<Result<Boolean>> {
+    override suspend fun isRegistered(phoneNumber: String) = callbackFlow {
         withContext(CoroutineScope(ioDispatcher).coroutineContext) {
-            _ref.whereEqualTo("phoneNumber", "+249$phoneNumber").get()
-                .addOnCompleteListener { registrationListener ->
-                    if (registrationListener.isSuccessful) {
-                        trySend(Result.Success(true))
-                        Log.i(
-                            "Verification",
-                            "isRegistered Update: ${!registrationListener.result.documents.isNullOrEmpty()}"
-                        )
-                    }
+            trySend(Result.Loading)
+            _ref.whereEqualTo("phoneNumber", phoneNumber).get()
+                .addOnSuccessListener {
+                    trySend(Result.Success(!it.isEmpty))
+                }
+                .addOnFailureListener {
+                    trySend(Result.Error("Failed to check registration"))
                 }
         }
         awaitClose {
@@ -57,61 +45,38 @@ class FirebaseAuthRepository @Inject constructor(private val ioDispatcher: Corou
         }
     }
 
-    override suspend fun login(credential: AuthCredential, phoneNumber: String) {
-        _state.update { state ->
-            state.copy(loading = true)
-        }
-        Log.i("Loading", "Loading: ${_state.value.loading}")
+    override suspend fun login(
+        credential: AuthCredential,
+        phoneNumber: String
+    ): Flow<Result<Boolean>> = callbackFlow {
         withContext(CoroutineScope(ioDispatcher).coroutineContext) {
-            _ref.whereEqualTo("phoneNumber", phoneNumber).get()
-                .addOnSuccessListener { document ->
-
-                        Log.i(
-                            "Verification",
-                            "isRegistered Update: Number: $phoneNumber \n${!document.isEmpty}"
-                        )
-
-                    _auth.signInWithCredential(credential)
-                        .addOnCompleteListener { loginListener ->
-                            if (loginListener.isSuccessful) {
-                                Log.i(
-                                    "Verification",
-                                    "isLoggedIn Update: ${loginListener.isSuccessful}"
-                                )
-                            }else{
-                                Log.i(
-                                    "Verification",
-                                    "isLoggedIn Update: YOU FAILED MAN"
-                                )
-                            }
-                            Log.i("Loading", "Loading: ${false}")
-
-                            _state.update { state ->
-                                state.copy(
-                                    isLoggedIn = _auth.currentUser != null,
-                                    isRegistered = !document.isEmpty,
-                                    loading = false
-                                )
-                            }
-                        }
+            trySend(Result.Loading)
+            _auth.signInWithCredential(credential)
+                .addOnSuccessListener {
+                    trySend(Result.Success(true))
                 }
+                .addOnFailureListener {
+                    trySend(Result.Error("Login Failed"))
+                }
+        }
+        awaitClose {
+
         }
     }
 
     override suspend fun register(
         user: User
     ): Flow<Result<Boolean>> = callbackFlow {
-        trySend(Result.Loading)
-        try {
+        withContext(CoroutineScope(ioDispatcher).coroutineContext) {
+            trySend(Result.Loading)
             val id = _auth.currentUser?.uid!!
-            val listener =
-                _ref.document(id).set(user.copy(id = id).toJson()).addOnCompleteListener {
-                    val result =
-                        if (it.isSuccessful) Result.Success(true) else Result.Error("registration failed")
-                    trySend(result)
+            _ref.document(id).set(user.copy(id = id).toJson())
+                .addOnSuccessListener {
+                    trySend(Result.Success(true))
                 }
-        } catch (e: Exception) {
-            trySend(Result.Error("registration failed"))
+                .addOnFailureListener {
+                    trySend(Result.Error("Registration failure"))
+                }
         }
         awaitClose {
 
