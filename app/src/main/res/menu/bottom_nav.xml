@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/currentTrips"
+        android:icon="@drawable/ic_bus"
+        android:title="Current Trips" />
+    <item
+        android:id="@+id/lastTrips"
+        android:icon="@drawable/ic_old_trips"
+        android:title="Last Trips" />
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_settings"
+        android:title="Settings" />
+</menu>
