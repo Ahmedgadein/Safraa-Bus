@@ -19,14 +19,8 @@ class FirebaseAuthRepository @Inject constructor(private val ioDispatcher: Corou
     private val _auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val _ref = Firebase.firestore.collection(Constants.FireStoreCollection.USERS)
 
-    private val _state: MutableStateFlow<AuthRepoState> = MutableStateFlow(AuthRepoState())
-    override val state: StateFlow<AuthRepoState> = _state
-
-    init {
-//        _auth.signOut()
-        _state.update { state ->
-            state.copy(isLoggedIn = _auth.currentUser != null)
-        }
+    override suspend fun isLoggedIn(): Flow<Result<Boolean>> = flow {
+        emit(Result.Success(_auth.currentUser != null))
     }
 
     override suspend fun isRegistered(phoneNumber: String) = callbackFlow {
@@ -67,16 +61,29 @@ class FirebaseAuthRepository @Inject constructor(private val ioDispatcher: Corou
     override suspend fun register(
         user: User
     ): Flow<Result<Boolean>> = callbackFlow {
+        trySend(Result.Loading)
         withContext(CoroutineScope(ioDispatcher).coroutineContext) {
-            trySend(Result.Loading)
-            val id = _auth.currentUser?.uid!!
-            _ref.document(id).set(user.copy(id = id).toJson())
-                .addOnSuccessListener {
-                    trySend(Result.Success(true))
+            isLoggedIn().collect {
+                when (it) {
+                    Result.Loading -> {}
+                    is Result.Error -> {}
+                    is Result.Success -> {
+                        if (!it.value) {
+                            trySend(Result.Error("Registration failed"))
+                            return@collect
+                        } else {
+                            val id = _auth.currentUser?.uid!!
+                            _ref.document(id).set(user.copy(id = id).toJson())
+                                .addOnSuccessListener {
+                                    trySend(Result.Success(true))
+                                }
+                                .addOnFailureListener {
+                                    trySend(Result.Error("Registration failed"))
+                                }
+                        }
+                    }
                 }
-                .addOnFailureListener {
-                    trySend(Result.Error("Registration failure"))
-                }
+            }
         }
         awaitClose {
 

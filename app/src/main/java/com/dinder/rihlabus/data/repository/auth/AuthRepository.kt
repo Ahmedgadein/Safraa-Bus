@@ -7,11 +7,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface AuthRepository {
-    val state: StateFlow<AuthRepoState>
+    suspend fun isLoggedIn(): Flow<Result<Boolean>>
+    suspend fun isRegistered(phoneNumber: String): Flow<Result<Boolean>>
     suspend fun login(credential: AuthCredential, phoneNumber: String): Flow<Result<Boolean>>
     suspend fun register(
         user: User
     ): Flow<Result<Boolean>>
 
-    suspend fun isRegistered(phoneNumber: String): Flow<Result<Boolean>>
 }
