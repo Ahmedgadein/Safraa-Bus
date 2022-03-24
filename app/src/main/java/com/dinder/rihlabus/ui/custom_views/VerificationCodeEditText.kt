@@ -1,4 +1,4 @@
-package com.dinder.rihlabus.ui.custom
+package com.dinder.rihlabus.ui.custom_views
 
 import android.R
 import android.content.Context
@@ -25,9 +25,9 @@ class VerificationCodeEditText : androidx.appcompat.widget.AppCompatEditText {
     private var _lineStroke = 1F
     private lateinit var _linePaint: Paint
     private val _states: Array<IntArray> = arrayOf(
-        intArrayOf(android.R.attr.state_selected), // selected
-        intArrayOf(android.R.attr.state_focused), // selected
-        intArrayOf(-android.R.attr.state_selected), // sel
+        intArrayOf(R.attr.state_selected), // selected
+        intArrayOf(R.attr.state_focused), // selected
+        intArrayOf(-R.attr.state_selected), // sel
     )
     private val _colors: IntArray = intArrayOf(Color.GREEN, Color.BLACK, Color.GRAY)
     private val colorStates = ColorStateList(_states, _colors)
