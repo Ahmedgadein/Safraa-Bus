@@ -50,7 +50,7 @@
             android:text="Code"
             android:textSize="16sp" />
 
-        <com.dinder.rihlabus.ui.custom.VerificationCodeEditText
+        <com.dinder.rihlabus.ui.custom_views.VerificationCodeEditText
             android:id="@+id/verificationCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
