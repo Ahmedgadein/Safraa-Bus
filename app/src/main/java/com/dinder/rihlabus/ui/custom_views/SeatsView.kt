@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.MeasureSpec
 import com.dinder.rihlabus.data.model.SquareBound
 
 class SeatsView : View {
@@ -15,31 +16,26 @@ class SeatsView : View {
         Pair(it, false)
     }.toMap().toMutableMap()
 
-    private lateinit var paint: Paint
-    private lateinit var textPaint: Paint
+    private var paint: Paint = Paint()
+    private var textPaint: Paint = Paint()
     private val _bounds: MutableList<SquareBound> = mutableListOf()
 
 
     val _space = 20f
-    var startX = 0f
-    var startY = 0f
-    var _squareSize = 0f
-    var _textSize = 0f
+//    var startX = 0f
+//    var startY = 0f
+//    var _squareSize = 0f
+//    var _textSize = 0f
 
-    constructor(context: Context?) : super(context) {
-        init()
-    }
+    constructor(context: Context?) : super(context)
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        init()
-    }
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
     )
-
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val eventAction = event?.action
@@ -69,31 +65,21 @@ class SeatsView : View {
         return true
     }
 
-    private fun init() {
-        val availableWidth = width - paddingRight - paddingLeft
-        _squareSize = (availableWidth - (_space * (7 - 1))) / 7
-        _textSize = 0.34f * _squareSize
-        startX = paddingLeft.toFloat()
-        startY = (height - 12 * _squareSize - 11 * _space) / 2
-
-        paint = Paint()
-        textPaint = Paint()
-        paint.color = Color.GRAY
-
-        textPaint.textAlign = Paint.Align.CENTER
-        textPaint.color = Color.WHITE
-        textPaint.textSize = _textSize
-    }
-
     fun setSeats(seats: Map<Int, Boolean>) {
         this.seats = seats.toMutableMap()
     }
 
     fun getSeats() = seats
 
-    private fun initializeSeat(seatNumber: Int) {
+    private fun initializeSeat(
+        seatNumber: Int,
+        left: Float,
+        right: Float,
+        top: Float,
+        bottom: Float
+    ) {
         setSeatColor(seatNumber)
-        addBound(seatNumber, startX, startX + _squareSize, startY, startY + _squareSize)
+        addBound(seatNumber, left, right, top, bottom)
     }
 
     private fun addBound(index: Int, left: Float, right: Float, top: Float, bottom: Float) {
@@ -146,29 +132,18 @@ class SeatsView : View {
         paint.color = getSeatColor(seatNumber)
     }
 
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
-        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
-        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
-        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
-
-        var totalWidth = widthSize
-        if(heightMode == MeasureSpec.EXACTLY){
-            totalWidth = (heightSize / 1.72).toInt()
-        }
-
-        setMeasuredDimension(totalWidth, height)
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        init()
-    }
-
-    override fun dispatchDraw(canvas: Canvas?) {
-        init()
-        super.dispatchDraw(canvas)
-    }
-
     override fun onDraw(canvas: Canvas?) {
+        val availableWidth = width - paddingRight - paddingLeft
+        val _squareSize = (availableWidth - (_space * (7 - 1))) / 7
+        val _textSize = 0.34f * _squareSize
+        var startX = paddingLeft.toFloat()
+        var startY = (height - 12 * _squareSize - 11 * _space) / 2
+
+        paint.color = Color.GRAY
+        textPaint.textAlign = Paint.Align.CENTER
+        textPaint.color = Color.WHITE
+        textPaint.textSize = _textSize
+
         for (i in 0..11) {
             for (j in 0..7) {
                 val seats = mutableListOf(1, 2, 4, 5).also {
@@ -178,12 +153,16 @@ class SeatsView : View {
 
                 if (seats.contains(j)) {
                     val seatNumber = (4 * i + seats.indexOf(j) + 1)
-                    initializeSeat(seatNumber)
+                    val left = startX
+                    val right = startX + _squareSize
+                    val top = startY
+                    val bottom = startY + _squareSize
+
+                    initializeSeat(seatNumber, left, right, top, bottom)
                     canvas?.drawRect(
-                        startX,
-                        startY,
-                        startX + _squareSize,
-                        startY + _squareSize,
+                        left,
+                        top, right,
+                        bottom,
                         paint
                     )
 

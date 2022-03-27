@@ -2,6 +2,8 @@ package com.dinder.rihlabus.di
 
 import com.dinder.rihlabus.data.repository.auth.AuthRepository
 import com.dinder.rihlabus.data.repository.auth.FirebaseAuthRepository
+import com.dinder.rihlabus.data.repository.trip.TripRepository
+import com.dinder.rihlabus.data.repository.trip.TripRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,4 +23,9 @@ object AppModule {
     fun getAuthRepository(
         ioDispatcher: CoroutineDispatcher
     ): AuthRepository = FirebaseAuthRepository(ioDispatcher)
+
+    @Provides
+    fun getTripRepository(
+        ioDispatcher: CoroutineDispatcher
+    ): TripRepository = TripRepositoryImpl(ioDispatcher)
 }
