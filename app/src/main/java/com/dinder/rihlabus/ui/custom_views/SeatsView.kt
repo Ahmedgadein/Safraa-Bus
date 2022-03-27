@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.MeasureSpec
 import com.dinder.rihlabus.data.model.SquareBound
 
 class SeatsView : View {
@@ -19,13 +18,11 @@ class SeatsView : View {
     private var paint: Paint = Paint()
     private var textPaint: Paint = Paint()
     private val _bounds: MutableList<SquareBound> = mutableListOf()
+    private val _space = 20f
 
-
-    val _space = 20f
-//    var startX = 0f
-//    var startY = 0f
-//    var _squareSize = 0f
-//    var _textSize = 0f
+    companion object{
+        const val NUMBER_OF_SEATS_ROWS = 11
+    }
 
     constructor(context: Context?) : super(context)
 
@@ -137,17 +134,17 @@ class SeatsView : View {
         val _squareSize = (availableWidth - (_space * (7 - 1))) / 7
         val _textSize = 0.34f * _squareSize
         var startX = paddingLeft.toFloat()
-        var startY = (height - 12 * _squareSize - 11 * _space) / 2
+        var startY = (height - 12 * _squareSize - NUMBER_OF_SEATS_ROWS * _space) / 2
 
         paint.color = Color.GRAY
         textPaint.textAlign = Paint.Align.CENTER
         textPaint.color = Color.WHITE
         textPaint.textSize = _textSize
 
-        for (i in 0..11) {
+        for (i in 0..NUMBER_OF_SEATS_ROWS) {
             for (j in 0..7) {
                 val seats = mutableListOf(1, 2, 4, 5).also {
-                    if (i == 11)
+                    if (i == NUMBER_OF_SEATS_ROWS)
                         it.addAll(2, listOf(3))
                 }
 
