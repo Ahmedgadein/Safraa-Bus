@@ -49,6 +49,15 @@ class SeatsView : View {
         invalidate()
     }
 
+    fun unselectAll(){
+        seats = seats.map {
+            Pair(it.key, false)
+        }.toMap().toMutableMap()
+
+        listener(seats.filter { it.value }.size)
+        invalidate()
+    }
+
     fun setSeats(seats: Map<Int, Boolean>) {
         this.seats = seats.toMutableMap()
     }

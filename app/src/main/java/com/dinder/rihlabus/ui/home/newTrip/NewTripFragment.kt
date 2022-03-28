@@ -45,6 +45,8 @@ class NewTripFragment : RihlaFragment() {
         binding.newTripSelectAllButton.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 binding.newTripSeatView.selectAll()
+            }else{
+                binding.newTripSeatView.unselectAll()
             }
         }
 
