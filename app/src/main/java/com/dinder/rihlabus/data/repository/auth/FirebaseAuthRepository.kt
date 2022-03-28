@@ -14,13 +14,15 @@ import javax.inject.Inject
 
 
 @ExperimentalCoroutinesApi
-class FirebaseAuthRepository @Inject constructor(private val ioDispatcher: CoroutineDispatcher) :
+class FirebaseAuthRepository @Inject constructor(
+    private val ioDispatcher: CoroutineDispatcher,
+    private val firebaseAuth: FirebaseAuth
+) :
     AuthRepository {
-    private val _auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val _ref = Firebase.firestore.collection(Constants.FireStoreCollection.USERS)
 
     override suspend fun isLoggedIn(): Flow<Result<Boolean>> = flow {
-        emit(Result.Success(_auth.currentUser != null))
+        emit(Result.Success(firebaseAuth.currentUser != null))
     }
 
     override suspend fun isRegistered(phoneNumber: String) = callbackFlow {
@@ -45,7 +47,7 @@ class FirebaseAuthRepository @Inject constructor(private val ioDispatcher: Corou
     ): Flow<Result<Boolean>> = callbackFlow {
         withContext(CoroutineScope(ioDispatcher).coroutineContext) {
             trySend(Result.Loading)
-            _auth.signInWithCredential(credential)
+            firebaseAuth.signInWithCredential(credential)
                 .addOnSuccessListener {
                     trySend(Result.Success(true))
                 }
@@ -72,7 +74,7 @@ class FirebaseAuthRepository @Inject constructor(private val ioDispatcher: Corou
                             trySend(Result.Error("Registration failed"))
                             return@collect
                         } else {
-                            val id = _auth.currentUser?.uid!!
+                            val id = firebaseAuth.currentUser?.uid!!
                             _ref.document(id).set(user.copy(id = id).toJson())
                                 .addOnSuccessListener {
                                     trySend(Result.Success(true))

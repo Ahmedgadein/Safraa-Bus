@@ -56,11 +56,11 @@ class NewTripFragment : RihlaFragment() {
             val trip = Trip(
                 date = DateTimeUtils.getDateInstance(binding.newTripDateContainer.editText?.text.toString()),
                 time = DateTimeUtils.getTimeInstance(binding.newTripTimeContainer.editText?.text.toString()),
-                "Here",
-                "There",
-                binding.newTripPriceContainer.editText?.text.toString().toInt(),
-                SeatUtils.getSelectedSeatsAsUnbooked(binding.newTripSeatView.getSeats())
+                to = binding.newTripDestinationContainer.editText?.text.toString(),
+                price = binding.newTripPriceContainer.editText?.text.toString().toInt(),
+                seats = SeatUtils.getSelectedSeatsAsUnbooked(binding.newTripSeatView.getSeats())
             )
+
             viewModel.addTrip(trip)
         }
 

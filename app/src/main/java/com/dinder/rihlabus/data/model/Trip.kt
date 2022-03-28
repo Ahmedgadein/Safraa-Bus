@@ -5,7 +5,7 @@ import java.util.*
 data class Trip(
     val date: Date,
     val time: Date,
-    val from: String,
+    val from: String = "",
     val to: String,
     val price: Int,
     val seats: Map<String, String>

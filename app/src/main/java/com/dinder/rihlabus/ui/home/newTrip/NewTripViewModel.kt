@@ -6,6 +6,7 @@ import com.dinder.rihlabus.common.Message
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.data.repository.trip.TripRepository
+import com.dinder.rihlabus.domain.AddTripUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,13 +17,13 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class NewTripViewModel @Inject constructor(private val repository: TripRepository) : ViewModel() {
+class NewTripViewModel @Inject constructor(private val useCase: AddTripUseCase) : ViewModel() {
     private val _newTripUiState = MutableStateFlow(NewTripUiState())
     val state = _newTripUiState.asStateFlow()
 
     fun addTrip(trip: Trip) {
         viewModelScope.launch {
-            repository.addTrip(trip).collect {
+            useCase(trip).collect {
                 when (it) {
                     Result.Loading -> _newTripUiState.update { state ->
                         state.copy(loading = true)
