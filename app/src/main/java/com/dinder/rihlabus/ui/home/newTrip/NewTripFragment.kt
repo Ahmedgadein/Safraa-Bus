@@ -3,12 +3,9 @@ package com.dinder.rihlabus.ui.home.newTrip
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
-import android.widget.TimePicker
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,7 +13,8 @@ import androidx.navigation.fragment.findNavController
 import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.databinding.NewTripFragmentBinding
-import com.google.type.DateTime
+import com.dinder.rihlabus.utils.DateTimeUtils
+import com.dinder.rihlabus.utils.SeatUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import java.util.*
@@ -37,50 +35,61 @@ class NewTripFragment : RihlaFragment() {
     }
 
     private fun setUI() {
+        binding.newTripSeatsCount.setText(binding.newTripSeatView.getSeats().values.filter { it }.size.toString())
+
+        binding.newTripSeatView.setOnSeatSelectedListener {
+            binding.newTripSeatsCount.setText(it.toString())
+        }
+
+        binding.newTripSelectAllButton.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                binding.newTripSeatView.selectAll()
+            }
+        }
+
         binding.addTripButton.setOnClickListener {
             if (!_validForm()) {
                 return@setOnClickListener
             }
 
+
             val trip = Trip(
-                date = Date(),
-                time = Date(),
+                date = DateTimeUtils.getDateInstance(binding.newTripDateContainer.editText?.text.toString()),
+                time = DateTimeUtils.getTimeInstance(binding.newTripTimeContainer.editText?.text.toString()),
                 "Here",
                 "There",
-                1000,
-                binding.newTripSeatView.getSeats()
+                binding.newTripPriceContainer.editText?.text.toString().toInt(),
+                SeatUtils.getSelectedSeatsAsUnbooked(binding.newTripSeatView.getSeats())
             )
             viewModel.addTrip(trip)
         }
 
         binding.newTripDateContainer.editText?.setOnClickListener {
-            showSnackbar("Click")
-            val currentDate = DateTime.newBuilder()
+            val currentDate = Calendar.getInstance()
             val dialog = DatePickerDialog(
                 requireContext(),
                 { _, year, month, dayOfMonth ->
                     binding.newTripDateContainer.editText?.setText("$dayOfMonth/$month/$year")
                 },
-                currentDate.year,
-                currentDate.month,
-                currentDate.day
+                currentDate.get(Calendar.YEAR),
+                currentDate.get(Calendar.MONTH),
+                currentDate.get(Calendar.DAY_OF_MONTH)
             )
             dialog.setTitle("Pick date")
             dialog.show()
         }
 
         binding.newTripTimeContainer.editText?.setOnClickListener {
-            showSnackbar("Click")
-            val currentDate = DateTime.newBuilder()
+            val currentDate = Calendar.getInstance()
 
             val dialog = TimePickerDialog(
                 requireContext(),
                 { _, hourOfDay, minute ->
                     binding.newTripTimeContainer.editText?.setText("$hourOfDay:$minute")
                 },
-                currentDate.hours,
-                currentDate.minutes,
-                false
+                currentDate.get(Calendar.HOUR_OF_DAY),
+                currentDate.get(Calendar.MINUTE),
+                true
             )
             dialog.setTitle("Pick date")
             dialog.show()
@@ -88,7 +97,10 @@ class NewTripFragment : RihlaFragment() {
 
         lifecycleScope.launchWhenStarted {
             viewModel.state.collect {
-                binding.newTripProgressBar.isVisible = it.loading
+                with(binding) {
+                    this.newTripProgressBar.isVisible = it.loading
+                    this.addTripButton.isEnabled = !it.loading
+                }
 
                 it.messages.firstOrNull()?.let { message ->
                     showSnackbar(message.content)

@@ -11,7 +11,7 @@ import android.view.View
 import com.dinder.rihlabus.data.model.SquareBound
 
 class SeatsView : View {
-    private var seats: MutableMap<Int, Boolean> = (1..50).toList().map {
+    private var seats: MutableMap<Int, Boolean> = (1..NUMBER_OF_SEATS).map {
         Pair(it, false)
     }.toMap().toMutableMap()
 
@@ -19,9 +19,11 @@ class SeatsView : View {
     private var textPaint: Paint = Paint()
     private val _bounds: MutableList<SquareBound> = mutableListOf()
     private val _space = 20f
+    private lateinit var listener: (Int) -> Unit
 
-    companion object{
+    companion object {
         const val NUMBER_OF_SEATS_ROWS = 11
+        const val NUMBER_OF_SEATS = 49
     }
 
     constructor(context: Context?) : super(context)
@@ -33,6 +35,25 @@ class SeatsView : View {
         attrs,
         defStyleAttr
     )
+
+    fun setOnSeatSelectedListener(listener: (Int) -> Unit) {
+        this.listener = listener
+    }
+
+    fun selectAll() {
+        seats = seats.map {
+            Pair(it.key, true)
+        }.toMap().toMutableMap()
+
+        listener(seats.filter { it.value }.size)
+        invalidate()
+    }
+
+    fun setSeats(seats: Map<Int, Boolean>) {
+        this.seats = seats.toMutableMap()
+    }
+
+    fun getSeats() = seats
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val eventAction = event?.action
@@ -62,11 +83,6 @@ class SeatsView : View {
         return true
     }
 
-    fun setSeats(seats: Map<Int, Boolean>) {
-        this.seats = seats.toMutableMap()
-    }
-
-    fun getSeats() = seats
 
     private fun initializeSeat(
         seatNumber: Int,
@@ -103,6 +119,7 @@ class SeatsView : View {
         } else {
             selectSeat(seatNumber)
         }
+        this.listener(seats.values.filter { it }.size)
     }
 
     private fun selectSeat(seatNumber: Int) {

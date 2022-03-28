@@ -8,14 +8,14 @@ data class Trip(
     val from: String,
     val to: String,
     val price: Int,
-    val seats: Map<Int, Boolean>
+    val seats: Map<String, String>
 ) {
     fun toJson() = mapOf(
         "from" to from,
         "to" to to,
         "time" to time,
         "date" to date,
-//        "seats" to seats,      TODO(Figure out how to serialize)
+        "seats" to seats,
         "price" to price
     )
 }
