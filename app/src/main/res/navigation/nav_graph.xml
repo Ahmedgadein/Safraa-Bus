@@ -50,5 +50,14 @@
         android:id="@+id/homeFragment"
         android:name="com.dinder.rihlabus.ui.home.HomeFragment"
         android:label="home_fragment"
-        tools:layout="@layout/home_fragment" />
+        tools:layout="@layout/home_fragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_newTripFragment"
+            app:destination="@id/newTripFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newTripFragment"
+        android:name="com.dinder.rihlabus.ui.home.newTrip.NewTripFragment"
+        android:label="new_trip_fragment"
+        tools:layout="@layout/new_trip_fragment" />
 </navigation>

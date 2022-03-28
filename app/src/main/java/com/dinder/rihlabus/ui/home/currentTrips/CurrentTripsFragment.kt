@@ -1,35 +1,36 @@
 package com.dinder.rihlabus.ui.home.currentTrips
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.dinder.rihlabus.R
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.dinder.rihlabus.common.RihlaFragment
+import com.dinder.rihlabus.databinding.CurrentTripsFragmentBinding
+import com.dinder.rihlabus.ui.home.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CurrentTripsFragment : RihlaFragment() {
-
-    companion object {
-        fun newInstance() = CurrentTripsFragment()
-    }
-
-    private lateinit var viewModel: CurrentTripsViewModel
-
+    private val viewModel: CurrentTripsViewModel by viewModels()
+    private lateinit var binding: CurrentTripsFragmentBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.current_trips_fragment, container, false)
+    ): View {
+        binding = CurrentTripsFragmentBinding.inflate(inflater, container, false)
+        setUI()
+        return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(CurrentTripsViewModel::class.java)
-        // TODO: Use the ViewModel
+    private fun setUI() {
+        binding.newTripFab.setOnClickListener {
+            navigateToNewTrip()
+        }
     }
 
+    private fun navigateToNewTrip() {
+        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToNewTripFragment())
+    }
 }
