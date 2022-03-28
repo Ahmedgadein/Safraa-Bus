@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.databinding.NewTripFragmentBinding
@@ -69,7 +70,8 @@ class NewTripFragment : RihlaFragment() {
             val dialog = DatePickerDialog(
                 requireContext(),
                 { _, year, month, dayOfMonth ->
-                    binding.newTripDateContainer.editText?.setText("$dayOfMonth/$month/$year")
+                    val date = resources.getString(R.string.formatted_date, dayOfMonth, month, year)
+                    binding.newTripDateContainer.editText?.setText(date)
                 },
                 currentDate.get(Calendar.YEAR),
                 currentDate.get(Calendar.MONTH),
@@ -85,7 +87,8 @@ class NewTripFragment : RihlaFragment() {
             val dialog = TimePickerDialog(
                 requireContext(),
                 { _, hourOfDay, minute ->
-                    binding.newTripTimeContainer.editText?.setText("$hourOfDay:$minute")
+                    val time = resources.getString(R.string.formatted_time, hourOfDay, minute)
+                    binding.newTripTimeContainer.editText?.setText(time)
                 },
                 currentDate.get(Calendar.HOUR_OF_DAY),
                 currentDate.get(Calendar.MINUTE),
