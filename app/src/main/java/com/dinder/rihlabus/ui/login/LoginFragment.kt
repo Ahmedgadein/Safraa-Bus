@@ -33,9 +33,9 @@ class LoginFragment : RihlaFragment() {
     private val viewModel: LoginViewModel by viewModels()
     private lateinit var binding: LoginFragmentBinding
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = LoginFragmentBinding.inflate(inflater, container, false)
@@ -60,12 +60,11 @@ class LoginFragment : RihlaFragment() {
         }
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.loginUiState.collect {
                     with(it.loading) {
                         binding.loginProgressBar.isVisible = this
                         binding.loginPhoneNumberContainer.editText?.isEnabled = this.not()
-
                     }
 
                     it.messages.firstOrNull()?.let { message ->
@@ -109,7 +108,7 @@ class LoginFragment : RihlaFragment() {
         val phoneNumber =
             PhoneNumberFormatter.getFullNumber(binding.loginPhoneNumberContainer.editText?.text.toString())
         val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
-            .setPhoneNumber(phoneNumber)       // Phone number to verify
+            .setPhoneNumber(phoneNumber) // Phone number to verify
             .setTimeout(60L, TimeUnit.SECONDS)
             .setActivity(requireActivity())
             .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -136,7 +135,6 @@ class LoginFragment : RihlaFragment() {
                         Credential(code = code, token = token, phoneNumber = phoneNumber)
                     navigateToVerification(codeToken)
                 }
-
             }).build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }

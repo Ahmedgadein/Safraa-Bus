@@ -12,7 +12,6 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-
 @ExperimentalCoroutinesApi
 class FirebaseAuthRepository @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
@@ -37,7 +36,6 @@ class FirebaseAuthRepository @Inject constructor(
                 }
         }
         awaitClose {
-
         }
     }
 
@@ -56,7 +54,6 @@ class FirebaseAuthRepository @Inject constructor(
                 }
         }
         awaitClose {
-
         }
     }
 
@@ -88,7 +85,6 @@ class FirebaseAuthRepository @Inject constructor(
             }
         }
         awaitClose {
-
         }
     }
 }

@@ -33,7 +33,8 @@ class VerificationFragment : RihlaFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = VerificationFragmentBinding.inflate(inflater, container, false)
@@ -59,7 +60,6 @@ class VerificationFragment : RihlaFragment() {
                     viewModel.onVerificationAttempt(phoneAuthCredential, credentials.phoneNumber)
                 }
             }
-
         })
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -84,7 +84,6 @@ class VerificationFragment : RihlaFragment() {
                         navigateToSignup()
                         return@collect
                     }
-
                 }
             }
         }

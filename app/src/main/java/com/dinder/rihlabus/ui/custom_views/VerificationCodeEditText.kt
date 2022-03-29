@@ -8,11 +8,10 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.text.Editable
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
-import android.util.TypedValue
-
 
 class VerificationCodeEditText : androidx.appcompat.widget.AppCompatEditText {
     // Spacing and sizing
@@ -32,7 +31,6 @@ class VerificationCodeEditText : androidx.appcompat.widget.AppCompatEditText {
     private val _colors: IntArray = intArrayOf(Color.GREEN, Color.BLACK, Color.GRAY)
     private val colorStates = ColorStateList(_states, _colors)
     private var _listener: OnClickListener? = null
-
 
     private fun getColorForState(state: IntArray) =
         colorStates.getColorForState(state, Color.GRAY)
@@ -92,7 +90,7 @@ class VerificationCodeEditText : androidx.appcompat.widget.AppCompatEditText {
         setBackgroundResource(0)
         setThemeColors()
         val density = context.resources.displayMetrics.density
-        _space *= density   // convert to pixels
+        _space *= density // convert to pixels
         _lineSpacing *= density
 
         _lineStroke *= density
@@ -115,7 +113,6 @@ class VerificationCodeEditText : androidx.appcompat.widget.AppCompatEditText {
 
             override fun onDestroyActionMode(mode: ActionMode?) {
             }
-
         })
 
         super.setOnClickListener { v -> _listener?.onClick(v) }
@@ -146,7 +143,7 @@ class VerificationCodeEditText : androidx.appcompat.widget.AppCompatEditText {
                     (middle - textSize * 0.5 / 2).toFloat(),
                     bottom - _lineSpacing,
                     paint
-                );
+                )
             }
 
             startX += if (_space < 0) {

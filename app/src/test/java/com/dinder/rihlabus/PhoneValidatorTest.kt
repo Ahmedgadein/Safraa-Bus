@@ -3,8 +3,8 @@ package com.dinder.rihlabus
 import com.dinder.rihlabus.utils.PhoneNumberValidator
 import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertNull
-import org.junit.Test
 import kotlin.random.Random
+import org.junit.Test
 
 class PhoneValidatorTest {
     private val validNumbers = listOf("123456789", "912345678")
@@ -13,6 +13,7 @@ class PhoneValidatorTest {
     fun phoneValidator_CorrectNumber() {
         assertNull(PhoneNumberValidator.validate("901145980"))
     }
+
     @Test
     fun phoneValidator_EmptyOrNullNumber() {
         assertNotNull(PhoneNumberValidator.validate(""))

@@ -23,7 +23,6 @@ class VerificationViewModel @Inject constructor(private val repository: AuthRepo
     private val _verificationUiState = MutableStateFlow(VerificationUiState())
     val verificationUiState = _verificationUiState.asStateFlow()
 
-
     fun onVerificationAttempt(credential: AuthCredential, phoneNumber: String) {
         viewModelScope.launch {
             repository.isRegistered(phoneNumber).collect { registered ->

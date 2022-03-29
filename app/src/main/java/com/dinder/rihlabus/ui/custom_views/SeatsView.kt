@@ -49,7 +49,7 @@ class SeatsView : View {
         invalidate()
     }
 
-    fun unselectAll(){
+    fun unselectAll() {
         seats = seats.map {
             Pair(it.key, false)
         }.toMap().toMutableMap()
@@ -67,11 +67,9 @@ class SeatsView : View {
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val eventAction = event?.action
 
-
         // Click Coordinates
         val x = event?.x
         val y = event?.y
-
 
         when (eventAction) {
             MotionEvent.ACTION_DOWN -> {
@@ -87,11 +85,9 @@ class SeatsView : View {
             MotionEvent.ACTION_MOVE -> {}
         }
 
-
         invalidate()
         return true
     }
-
 
     private fun initializeSeat(
         seatNumber: Int,
@@ -188,7 +184,6 @@ class SeatsView : View {
                         bottom,
                         paint
                     )
-
 
                     canvas!!.drawText(
                         seatNumber.toString(),

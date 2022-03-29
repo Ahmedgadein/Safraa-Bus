@@ -1,7 +1,7 @@
 package com.dinder.rihlabus.common
 
-object Constants{
-    object FireStoreCollection{
+object Constants {
+    object FireStoreCollection {
         const val USERS = "users"
         const val TRIPS = "trips"
     }

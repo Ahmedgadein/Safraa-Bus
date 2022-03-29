@@ -29,7 +29,6 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
                         }
                     }
                 }
-
             }
         }
     }

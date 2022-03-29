@@ -2,7 +2,6 @@ package com.dinder.rihlabus
 
 import com.dinder.rihlabus.utils.DateTimeUtils
 import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
 import org.junit.Test
 import java.util.*
 

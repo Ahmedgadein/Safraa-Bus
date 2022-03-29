@@ -20,7 +20,6 @@ class SignupViewModel @Inject constructor(private val repository: AuthRepository
     private val _signupUiState = MutableStateFlow(SignupUiState())
     val signupUiState: Flow<SignupUiState> = _signupUiState
 
-
     fun signup(
         user: User
     ) {

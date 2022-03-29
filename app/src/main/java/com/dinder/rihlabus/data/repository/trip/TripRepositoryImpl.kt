@@ -26,7 +26,6 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
                 }
         }
         awaitClose {
-
         }
     }
 }

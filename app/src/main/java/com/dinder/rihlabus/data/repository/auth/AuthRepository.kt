@@ -4,7 +4,6 @@ import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.User
 import com.google.firebase.auth.AuthCredential
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 
 interface AuthRepository {
     suspend fun isLoggedIn(): Flow<Result<Boolean>>
@@ -13,5 +12,4 @@ interface AuthRepository {
     suspend fun register(
         user: User
     ): Flow<Result<Boolean>>
-
 }
