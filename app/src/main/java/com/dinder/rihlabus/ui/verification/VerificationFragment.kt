@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dinder.rihlabus.common.Constants
 import com.dinder.rihlabus.common.RihlaFragment
@@ -60,28 +62,30 @@ class VerificationFragment : RihlaFragment() {
 
         })
         lifecycleScope.launch {
-            viewModel.verificationUiState.collect {
-                with(it.loading) {
-                    binding.verificationProgressBar.isVisible = this
-                    binding.verificationCode.isEnabled = this.not()
-                }
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.verificationUiState.collect {
+                    with(it.loading) {
+                        binding.verificationProgressBar.isVisible = this
+                        binding.verificationCode.isEnabled = this.not()
+                    }
 
-                it.messages.firstOrNull()?.let { message ->
-                    showSnackbar(message.content)
-                    viewModel.userMessageShown(message.id)
-                    return@collect
-                }
+                    it.messages.firstOrNull()?.let { message ->
+                        showSnackbar(message.content)
+                        viewModel.userMessageShown(message.id)
+                        return@collect
+                    }
 
-                if (it.navigateToHome) {
-                    navigateToHome()
-                    return@collect
-                }
+                    if (it.navigateToHome) {
+                        navigateToHome()
+                        return@collect
+                    }
 
-                if (it.navigateToSignup) {
-                    navigateToSignup()
-                    return@collect
-                }
+                    if (it.navigateToSignup) {
+                        navigateToSignup()
+                        return@collect
+                    }
 
+                }
             }
         }
     }

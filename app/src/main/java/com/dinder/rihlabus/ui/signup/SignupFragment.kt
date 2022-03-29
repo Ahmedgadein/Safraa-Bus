@@ -11,7 +11,9 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.RihlaFragment
@@ -21,6 +23,7 @@ import com.dinder.rihlabus.databinding.SignupFragmentBinding
 import com.dinder.rihlabus.utils.NameValidator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignupFragment : RihlaFragment() {
@@ -69,22 +72,24 @@ class SignupFragment : RihlaFragment() {
             )
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.signupUiState.collect {
-                with(it.loading) {
-                    binding.signupProgressBar.isVisible = this
-                    binding.signupCompanyContainer.editText?.isEnabled = this.not()
-                    binding.signupNameContainer.editText?.isEnabled = this.not()
-                    binding.signupLocationContainer.editText?.isEnabled = this.not()
-                }
-                it.messages.firstOrNull()?.let { message ->
-                    showSnackbar(message.content)
-                    viewModel.userMessageShown(message.id)
-                }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.signupUiState.collect {
+                    with(it.loading) {
+                        binding.signupProgressBar.isVisible = this
+                        binding.signupCompanyContainer.editText?.isEnabled = this.not()
+                        binding.signupNameContainer.editText?.isEnabled = this.not()
+                        binding.signupLocationContainer.editText?.isEnabled = this.not()
+                    }
+                    it.messages.firstOrNull()?.let { message ->
+                        showSnackbar(message.content)
+                        viewModel.userMessageShown(message.id)
+                    }
 
-                if (it.navigateToHome) {
-                    navigateToHome()
-                    return@collect
+                    if (it.navigateToHome) {
+                        navigateToHome()
+                        return@collect
+                    }
                 }
             }
         }
