@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.dinder.rihlabus.R
@@ -21,7 +20,8 @@ class HomeFragment : RihlaFragment() {
         listOf(CurrentTripsFragment(), LastTripsFragment(), SettingsFragment())
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = HomeFragmentBinding.inflate(inflater, container, false)
@@ -37,14 +37,13 @@ class HomeFragment : RihlaFragment() {
         }
 
         binding.homeViewPagger.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                binding.bottomNavigationView.selectedItemId =
-                    listOf(R.id.currentTrips, R.id.lastTrips, R.id.settings)[position]
-
-            }
-        })
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    binding.bottomNavigationView.selectedItemId =
+                        listOf(R.id.currentTrips, R.id.lastTrips, R.id.settings)[position]
+                }
+            })
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {

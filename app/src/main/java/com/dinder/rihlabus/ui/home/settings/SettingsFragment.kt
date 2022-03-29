@@ -1,11 +1,10 @@
 package com.dinder.rihlabus.ui.home.settings
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.RihlaFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +19,8 @@ class SettingsFragment : RihlaFragment() {
     private lateinit var viewModel: SettingsViewModel
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.settings_fragment, container, false)
@@ -31,5 +31,4 @@ class SettingsFragment : RihlaFragment() {
         viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
         // TODO: Use the ViewModel
     }
-
 }

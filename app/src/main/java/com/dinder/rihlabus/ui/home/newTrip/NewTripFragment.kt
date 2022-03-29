@@ -20,14 +20,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import java.util.*
 
-
 @AndroidEntryPoint
 class NewTripFragment : RihlaFragment() {
     private val viewModel: NewTripViewModel by viewModels()
     private lateinit var binding: NewTripFragmentBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = NewTripFragmentBinding.inflate(inflater, container, false)
@@ -45,7 +45,7 @@ class NewTripFragment : RihlaFragment() {
         binding.newTripSelectAllButton.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 binding.newTripSeatView.selectAll()
-            }else{
+            } else {
                 binding.newTripSeatView.unselectAll()
             }
         }
@@ -54,7 +54,6 @@ class NewTripFragment : RihlaFragment() {
             if (!_validForm()) {
                 return@setOnClickListener
             }
-
 
             val trip = Trip(
                 date = DateTimeUtils.getDateInstance(binding.newTripDateContainer.editText?.text.toString()),
@@ -129,9 +128,9 @@ class NewTripFragment : RihlaFragment() {
         _validatePrice()
         return with(binding) {
             return@with this.newTripDestinationContainer.helperText.isNullOrEmpty() &&
-                    this.newTripDateContainer.helperText.isNullOrEmpty() &&
-                    this.newTripTimeContainer.helperText.isNullOrEmpty() &&
-                    this.newTripPriceContainer.helperText.isNullOrEmpty()
+                this.newTripDateContainer.helperText.isNullOrEmpty() &&
+                this.newTripTimeContainer.helperText.isNullOrEmpty() &&
+                this.newTripPriceContainer.helperText.isNullOrEmpty()
         }
     }
 

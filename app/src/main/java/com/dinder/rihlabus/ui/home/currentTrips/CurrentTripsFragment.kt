@@ -16,7 +16,8 @@ class CurrentTripsFragment : RihlaFragment() {
     private val viewModel: CurrentTripsViewModel by viewModels()
     private lateinit var binding: CurrentTripsFragmentBinding
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = CurrentTripsFragmentBinding.inflate(inflater, container, false)

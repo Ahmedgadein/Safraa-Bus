@@ -30,7 +30,6 @@ class UserRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
                 }
         }
         awaitClose {
-
         }
     }
 }
