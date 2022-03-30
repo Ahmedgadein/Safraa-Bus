@@ -13,7 +13,7 @@ import javax.inject.Inject
 class AddTripUseCase @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val userRepository: UserRepository,
-    private val tripRepository: TripRepository,
+    private val tripRepository: TripRepository
 ) {
     suspend operator fun invoke(trip: Trip): Flow<Result<Boolean>> = flow {
         userRepository.get(firebaseAuth.currentUser?.uid!!).collect {
@@ -21,7 +21,12 @@ class AddTripUseCase @Inject constructor(
                 Result.Loading -> emit(Result.Loading)
                 is Result.Error -> emit(Result.Error(it.message))
                 is Result.Success -> {
-                    tripRepository.addTrip(trip.copy(from = it.value.company.location))
+                    tripRepository.addTrip(
+                        trip.copy(
+                            from = it.value.company.location,
+                            company = it.value.company.name
+                        )
+                    )
                         .collect { result ->
                             when (result) {
                                 Result.Loading -> Unit
