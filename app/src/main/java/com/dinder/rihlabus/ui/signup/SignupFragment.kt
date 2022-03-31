@@ -17,7 +17,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.RihlaFragment
-import com.dinder.rihlabus.data.model.Company
 import com.dinder.rihlabus.data.model.User
 import com.dinder.rihlabus.databinding.SignupFragmentBinding
 import com.dinder.rihlabus.utils.NameValidator
@@ -65,12 +64,10 @@ class SignupFragment : RihlaFragment() {
                 user = User(
                     id = "",
                     name = binding.signupNameContainer.editText?.text.toString(),
-                    phoneNumber = phoneNumber,
-                    company = Company(
-                        name = binding.signupCompanyContainer.editText?.text.toString(),
-                        location = binding.signupLocationContainer.editText?.text.toString()
-                    )
-                )
+                    phoneNumber = phoneNumber
+                ),
+                company = binding.signupCompanyContainer.editText?.text.toString(),
+                location = binding.signupLocationContainer.editText?.text.toString()
             )
         }
 

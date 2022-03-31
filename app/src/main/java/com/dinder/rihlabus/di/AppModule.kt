@@ -2,6 +2,10 @@ package com.dinder.rihlabus.di
 
 import com.dinder.rihlabus.data.repository.auth.AuthRepository
 import com.dinder.rihlabus.data.repository.auth.FirebaseAuthRepository
+import com.dinder.rihlabus.data.repository.company.CompanyRepository
+import com.dinder.rihlabus.data.repository.company.CompanyRepositoryImpl
+import com.dinder.rihlabus.data.repository.location.CompanyLocationRepository
+import com.dinder.rihlabus.data.repository.location.CompanyLocationRepositoryImpl
 import com.dinder.rihlabus.data.repository.trip.TripRepository
 import com.dinder.rihlabus.data.repository.trip.TripRepositoryImpl
 import com.dinder.rihlabus.data.repository.user.UserRepository
@@ -40,4 +44,14 @@ object AppModule {
     fun getUserRepository(
         ioDispatcher: CoroutineDispatcher
     ): UserRepository = UserRepositoryImpl(ioDispatcher)
+
+    @Provides
+    fun getCompanyRepository(
+        ioDispatcher: CoroutineDispatcher
+    ): CompanyRepository = CompanyRepositoryImpl(ioDispatcher)
+
+    @Provides
+    fun getCompanyLocationRepository(
+        ioDispatcher: CoroutineDispatcher
+    ): CompanyLocationRepository = CompanyLocationRepositoryImpl(ioDispatcher)
 }
