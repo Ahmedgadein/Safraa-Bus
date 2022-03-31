@@ -23,9 +23,9 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class LoginFragment : RihlaFragment() {
@@ -53,8 +53,9 @@ class LoginFragment : RihlaFragment() {
         }
 
         binding.loginButton.setOnClickListener {
-            if (!_validForm())
+            if (!_validForm()) {
                 return@setOnClickListener
+            }
             binding.loginPhoneNumberContainer.editText?.isEnabled = false
             sendSms()
         }
@@ -106,14 +107,15 @@ class LoginFragment : RihlaFragment() {
     private fun sendSms() {
         viewModel.onSendingSms()
         val phoneNumber =
-            PhoneNumberFormatter.getFullNumber(binding.loginPhoneNumberContainer.editText?.text.toString())
+            PhoneNumberFormatter.getFullNumber(
+                binding.loginPhoneNumberContainer.editText?.text.toString()
+            )
         val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
             .setPhoneNumber(phoneNumber) // Phone number to verify
             .setTimeout(60L, TimeUnit.SECONDS)
             .setActivity(requireActivity())
             .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(credentials: PhoneAuthCredential) {
-
                     with(viewModel) {
                         onSmsSent()
                         onNumberVerified(credentials, phoneNumber)
@@ -141,7 +143,9 @@ class LoginFragment : RihlaFragment() {
 
     private fun navigateToSignup() {
         val phoneNumber =
-            PhoneNumberFormatter.getFullNumber(binding.loginPhoneNumberContainer.editText!!.text.toString())
+            PhoneNumberFormatter.getFullNumber(
+                binding.loginPhoneNumberContainer.editText!!.text.toString()
+            )
         val action =
             LoginFragmentDirections.actionLoginFragmentToSignupFragment(phoneNumber = phoneNumber)
         findNavController().navigate(action)

@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.RihlaFragment
@@ -17,8 +19,9 @@ import com.dinder.rihlabus.databinding.NewTripFragmentBinding
 import com.dinder.rihlabus.utils.DateTimeUtils
 import com.dinder.rihlabus.utils.SeatUtils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import java.util.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class NewTripFragment : RihlaFragment() {
@@ -36,7 +39,9 @@ class NewTripFragment : RihlaFragment() {
     }
 
     private fun setUI() {
-        binding.newTripSeatsCount.setText(binding.newTripSeatView.getSeats().values.filter { it }.size.toString())
+        binding.newTripSeatsCount.setText(
+            binding.newTripSeatView.getSeats().values.filter { it }.size.toString()
+        )
 
         binding.newTripSeatView.setOnSeatSelectedListener {
             binding.newTripSeatsCount.setText(it.toString())
@@ -56,8 +61,12 @@ class NewTripFragment : RihlaFragment() {
             }
 
             val trip = Trip(
-                date = DateTimeUtils.getDateInstance(binding.newTripDateContainer.editText?.text.toString()),
-                time = DateTimeUtils.getTimeInstance(binding.newTripTimeContainer.editText?.text.toString()),
+                date = DateTimeUtils.getDateInstance(
+                    binding.newTripDateContainer.editText?.text.toString()
+                ),
+                time = DateTimeUtils.getTimeInstance(
+                    binding.newTripTimeContainer.editText?.text.toString()
+                ),
                 to = binding.newTripDestinationContainer.editText?.text.toString(),
                 price = binding.newTripPriceContainer.editText?.text.toString().toInt(),
                 seats = SeatUtils.getSelectedSeatsAsUnbooked(binding.newTripSeatView.getSeats())
@@ -99,23 +108,25 @@ class NewTripFragment : RihlaFragment() {
             dialog.show()
         }
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.state.collect {
-                with(binding) {
-                    this.newTripProgressBar.isVisible = it.loading
-                    this.addTripButton.isEnabled = !it.loading
-                }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect {
+                    with(binding) {
+                        this.newTripProgressBar.isVisible = it.loading
+                        this.addTripButton.isEnabled = !it.loading
+                    }
 
-                it.messages.firstOrNull()?.let { message ->
-                    showSnackbar(message.content)
-                    viewModel.userMessageShown(message.id)
-                    return@collect
-                }
+                    it.messages.firstOrNull()?.let { message ->
+                        showSnackbar(message.content)
+                        viewModel.userMessageShown(message.id)
+                        return@collect
+                    }
 
-                if (it.isAdded) {
-                    showSnackbar("Added successfully")
-                    findNavController().navigateUp()
-                    return@collect
+                    if (it.isAdded) {
+                        showSnackbar("Added successfully")
+                        findNavController().navigateUp()
+                        return@collect
+                    }
                 }
             }
         }

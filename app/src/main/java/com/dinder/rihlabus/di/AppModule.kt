@@ -28,7 +28,7 @@ object AppModule {
     @Provides
     fun getAuthRepository(
         ioDispatcher: CoroutineDispatcher,
-        firebaseAuth: FirebaseAuth,
+        firebaseAuth: FirebaseAuth
     ): AuthRepository = FirebaseAuthRepository(ioDispatcher, firebaseAuth)
 
     @Provides

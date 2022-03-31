@@ -44,7 +44,6 @@ class VerificationFragment : RihlaFragment() {
     }
 
     private fun setUI() {
-
         binding.verificationCode.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -96,7 +95,9 @@ class VerificationFragment : RihlaFragment() {
 
     private fun navigateToSignup() {
         val action =
-            VerificationFragmentDirections.actionVerificationFragmentToSignupFragment(credentials.phoneNumber)
+            VerificationFragmentDirections.actionVerificationFragmentToSignupFragment(
+                credentials.phoneNumber
+            )
         findNavController().navigate(action)
     }
 }

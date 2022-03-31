@@ -1,9 +1,9 @@
 package com.dinder.rihlabus
 
 import com.dinder.rihlabus.utils.DateTimeUtils
+import java.util.*
 import junit.framework.Assert.assertEquals
 import org.junit.Test
-import java.util.*
 
 class DateTimeUtilsTest {
     @Test

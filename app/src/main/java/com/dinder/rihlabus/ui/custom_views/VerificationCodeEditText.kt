@@ -26,7 +26,7 @@ class VerificationCodeEditText : androidx.appcompat.widget.AppCompatEditText {
     private val _states: Array<IntArray> = arrayOf(
         intArrayOf(R.attr.state_selected), // selected
         intArrayOf(R.attr.state_focused), // selected
-        intArrayOf(-R.attr.state_selected), // sel
+        intArrayOf(-R.attr.state_selected) // sel
     )
     private val _colors: IntArray = intArrayOf(Color.GREEN, Color.BLACK, Color.GRAY)
     private val colorStates = ColorStateList(_states, _colors)
@@ -51,21 +51,24 @@ class VerificationCodeEditText : androidx.appcompat.widget.AppCompatEditText {
         val outValue = TypedValue()
         context.theme.resolveAttribute(
             R.attr.colorControlActivated,
-            outValue, true
+            outValue,
+            true
         )
         val colorActivated = outValue.data
         _colors[0] = colorActivated
 
         context.theme.resolveAttribute(
             R.attr.colorPrimaryDark,
-            outValue, true
+            outValue,
+            true
         )
         val colorDark = outValue.data
         _colors[1] = colorDark
 
         context.theme.resolveAttribute(
             R.attr.colorControlHighlight,
-            outValue, true
+            outValue,
+            true
         )
         val colorHighlight = outValue.data
         _colors[2] = colorHighlight

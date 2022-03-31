@@ -1,16 +1,18 @@
 package com.dinder.rihlabus.data.repository.trip
 
+import android.util.Log
 import com.dinder.rihlabus.common.Constants
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.Trip
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 class TripRepositoryImpl @Inject constructor(private val ioDispatcher: CoroutineDispatcher) :
     TripRepository {
@@ -23,8 +25,26 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
             }
                 .addOnFailureListener {
                     trySend(Result.Error("Failed to add trip"))
+                    cancel()
                 }
         }
+        awaitClose {
+        }
+    }
+
+    override suspend fun getCurrentTrips(
+        company: String,
+        location: String
+    ): Flow<Result<List<Trip>>> = callbackFlow {
+        _ref.whereEqualTo("from", location).whereEqualTo("company", company).get()
+            .addOnSuccessListener { snapshot ->
+                val results = snapshot.documents.map { Trip.fromJson(it.data!!) }
+                trySend(Result.Success(results))
+            }
+            .addOnFailureListener {
+                Log.i("CurrentTrips", "Error: $it")
+                trySend(Result.Error(it.toString()))
+            }
         awaitClose {
         }
     }
