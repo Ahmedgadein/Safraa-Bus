@@ -5,10 +5,10 @@ import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.data.repository.trip.TripRepository
 import com.dinder.rihlabus.data.repository.user.UserRepository
 import com.google.firebase.auth.FirebaseAuth
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
 class AddTripUseCase @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
