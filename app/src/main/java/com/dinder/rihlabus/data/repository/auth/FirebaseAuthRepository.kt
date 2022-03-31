@@ -7,10 +7,10 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import javax.inject.Inject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class FirebaseAuthRepository @Inject constructor(
@@ -19,7 +19,9 @@ class FirebaseAuthRepository @Inject constructor(
 ) :
     AuthRepository {
     private val _ref = Firebase.firestore.collection(Constants.FireStoreCollection.USERS)
-
+    init {
+//        firebaseAuth.signOut()
+    }
     override suspend fun isLoggedIn(): Flow<Result<Boolean>> = flow {
         emit(Result.Success(firebaseAuth.currentUser != null))
     }

@@ -22,8 +22,8 @@ class CurrentTripsUseCase @Inject constructor(
                 is Result.Error -> emit(Result.Error(user.message))
                 is Result.Success -> {
                     tripRepository.getCurrentTrips(
-                        user.value.company.name,
-                        user.value.company.location
+                        user.value.company,
+                        user.value.location
                     ).collect {
                         when (it) {
                             Result.Loading -> Unit

@@ -23,8 +23,8 @@ class AddTripUseCase @Inject constructor(
                 is Result.Success -> {
                     tripRepository.addTrip(
                         trip.copy(
-                            from = it.value.company.location,
-                            company = it.value.company.name
+                            from = it.value.location,
+                            company = it.value.company
                         )
                     )
                         .collect { result ->

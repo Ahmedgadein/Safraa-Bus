@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.User
-import com.dinder.rihlabus.data.repository.auth.AuthRepository
+import com.dinder.rihlabus.domain.RegisterUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
 import javax.inject.Inject
@@ -16,15 +16,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class SignupViewModel @Inject constructor(private val repository: AuthRepository) : ViewModel() {
+class SignupViewModel @Inject constructor(private val useCase: RegisterUserUseCase) : ViewModel() {
     private val _signupUiState = MutableStateFlow(SignupUiState())
     val signupUiState: Flow<SignupUiState> = _signupUiState
 
     fun signup(
-        user: User
+        user: User,
+        company: String,
+        location: String
     ) {
         viewModelScope.launch {
-            repository.register(user).collect { result ->
+            useCase(user, company, location).collect { result ->
                 when (result) {
                     is Result.Loading -> {
                         _signupUiState.update { it.copy(loading = true) }

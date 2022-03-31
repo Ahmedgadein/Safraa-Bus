@@ -4,13 +4,15 @@ data class User(
     val id: String,
     val name: String,
     val phoneNumber: String,
-    val company: Company
+    val company: String = "",
+    val location: String = ""
 ) {
     fun toJson(): Map<String, Any> = mapOf(
         "id" to id,
         "name" to name,
         "phoneNumber" to phoneNumber,
-        "company" to company.toJson()
+        "company" to company,
+        "location" to location
     )
 
     companion object {
@@ -19,7 +21,8 @@ data class User(
                 id = json["id"].toString(),
                 name = json["name"].toString(),
                 phoneNumber = json["phoneNumber"].toString(),
-                company = Company.fromJson(json["company"] as Map<String, String>)
+                company = json["company"].toString(),
+                location = json["location"].toString()
             )
     }
 }
