@@ -53,8 +53,9 @@ class SignupFragment : RihlaFragment() {
         _setTermsAndConditionsView()
 
         binding.signupButton.setOnClickListener {
-            if (!_validForm())
+            if (!_validForm()) {
                 return@setOnClickListener
+            }
             with(binding) {
                 signupCompanyContainer.editText?.isEnabled = false
                 signupNameContainer.editText?.isEnabled = false
@@ -67,7 +68,7 @@ class SignupFragment : RihlaFragment() {
                     phoneNumber = phoneNumber,
                     company = Company(
                         name = binding.signupCompanyContainer.editText?.text.toString(),
-                        location = binding.signupLocationContainer.editText?.text.toString(),
+                        location = binding.signupLocationContainer.editText?.text.toString()
                     )
                 )
             )

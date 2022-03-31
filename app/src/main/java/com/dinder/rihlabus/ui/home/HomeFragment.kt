@@ -1,12 +1,10 @@
 package com.dinder.rihlabus.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
 import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.databinding.HomeFragmentBinding
@@ -27,7 +25,6 @@ class HomeFragment : RihlaFragment() {
     ): View {
         binding = HomeFragmentBinding.inflate(inflater, container, false)
         setUI()
-        Log.i("CurrentTrips", "Parent")
         return binding.root
     }
 
@@ -38,14 +35,7 @@ class HomeFragment : RihlaFragment() {
             override fun createFragment(position: Int) = fragments[position]
         }
 
-        binding.homeViewPagger.registerOnPageChangeCallback(object :
-                ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    binding.bottomNavigationView.selectedItemId =
-                        listOf(R.id.currentTrips, R.id.lastTrips, R.id.settings)[position]
-                }
-            })
+        binding.homeViewPagger.isUserInputEnabled = false
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {

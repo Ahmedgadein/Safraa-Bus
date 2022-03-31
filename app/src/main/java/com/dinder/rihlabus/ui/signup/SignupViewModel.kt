@@ -7,13 +7,13 @@ import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.User
 import com.dinder.rihlabus.data.repository.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.*
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.*
-import javax.inject.Inject
 
 @HiltViewModel
 class SignupViewModel @Inject constructor(private val repository: AuthRepository) : ViewModel() {

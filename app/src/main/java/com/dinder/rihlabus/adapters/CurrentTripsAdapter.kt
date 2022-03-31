@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.databinding.CurrentTripItemListBinding
+import com.dinder.rihlabus.utils.DateTimeUtils
+import com.dinder.rihlabus.utils.SeatUtils
 
 class CurrentTripsAdapter :
     ListAdapter<Trip, CurrentTripsAdapter.CurrentTripHolder>(CurrentTripsDiffCallback()) {
@@ -35,6 +37,8 @@ class CurrentTripsAdapter :
 
         fun bind(trip: Trip) {
             binding.trip = trip
+            binding.dateTimeUtils = DateTimeUtils
+            binding.seatUtils = SeatUtils
         }
 
         private fun navigateToTripDetails() {

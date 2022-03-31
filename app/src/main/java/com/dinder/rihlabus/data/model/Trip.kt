@@ -10,7 +10,7 @@ data class Trip(
     val from: String? = null,
     val to: String,
     val price: Int,
-    val seats: Map<String, String>
+    val seats: Map<String, Map<String, Any?>>
 ) {
     fun toJson() = mapOf(
         "from" to from,
@@ -30,7 +30,7 @@ data class Trip(
             from = json["from"].toString(),
             to = json["to"].toString(),
             price = json["price"].toString().toInt(),
-            seats = json["seats"] as Map<String, String>
+            seats = json["seats"] as Map<String, Map<String, Any?>>
         )
     }
 }

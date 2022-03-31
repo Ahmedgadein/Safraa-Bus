@@ -1,7 +1,6 @@
 package com.dinder.rihlabus.ui.home.currentTrips
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,6 +47,7 @@ class CurrentTripsFragment : RihlaFragment() {
         }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getTrips()
                 viewModel.state.collect {
                     binding.currentTripsProgressBar.isVisible = it.loading
 
@@ -55,7 +55,6 @@ class CurrentTripsFragment : RihlaFragment() {
                         showSnackbar(message.content)
                         viewModel.userMessageShown(message.id)
                     }
-                    Log.i("CurrentTrips", "List submitted contains: ${it.trips.size}")
                     tripsAdapter.submitList(it.trips)
                 }
             }

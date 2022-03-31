@@ -166,8 +166,9 @@ class SeatsView : View {
         for (i in 0..NUMBER_OF_SEATS_ROWS) {
             for (j in 0..7) {
                 val seats = mutableListOf(1, 2, 4, 5).also {
-                    if (i == NUMBER_OF_SEATS_ROWS)
+                    if (i == NUMBER_OF_SEATS_ROWS) {
                         it.addAll(2, listOf(3))
+                    }
                 }
 
                 if (seats.contains(j)) {
@@ -180,7 +181,8 @@ class SeatsView : View {
                     initializeSeat(seatNumber, left, right, top, bottom)
                     canvas?.drawRect(
                         left,
-                        top, right,
+                        top,
+                        right,
                         bottom,
                         paint
                     )

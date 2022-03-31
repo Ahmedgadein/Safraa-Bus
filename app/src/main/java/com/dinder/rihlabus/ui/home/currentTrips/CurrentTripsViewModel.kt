@@ -1,16 +1,15 @@
 package com.dinder.rihlabus.ui.home.currentTrips
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.domain.CurrentTripsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class CurrentTripsViewModel @Inject constructor(private val useCase: CurrentTripsUseCase) :
@@ -19,19 +18,15 @@ class CurrentTripsViewModel @Inject constructor(private val useCase: CurrentTrip
     val state: StateFlow<CurrentTripsUiState> = _state.asStateFlow()
 
     init {
-        Log.i("CurrentTrips", "Init ViewModel")
-        viewModelScope.launch {
-            getTrips()
-        }
+        getTrips()
     }
 
-    suspend fun getTrips() = viewModelScope.launch {
+    fun getTrips() = viewModelScope.launch {
         useCase().collect { result ->
             when (result) {
                 Result.Loading -> _state.update { it.copy(loading = true) }
                 is Result.Error -> showUserMessage(result.message)
                 is Result.Success -> _state.update {
-                    Log.i("CurrentTrips", "ViewModel value: ${result.value.size}")
                     it.copy(
                         trips = result.value,
                         loading = false
