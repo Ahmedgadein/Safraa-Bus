@@ -6,13 +6,13 @@ import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.Trip
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 class TripRepositoryImpl @Inject constructor(private val ioDispatcher: CoroutineDispatcher) :
     TripRepository {

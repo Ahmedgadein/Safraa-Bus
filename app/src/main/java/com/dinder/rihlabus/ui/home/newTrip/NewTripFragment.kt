@@ -19,9 +19,9 @@ import com.dinder.rihlabus.databinding.NewTripFragmentBinding
 import com.dinder.rihlabus.utils.DateTimeUtils
 import com.dinder.rihlabus.utils.SeatUtils
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.*
 
 @AndroidEntryPoint
 class NewTripFragment : RihlaFragment() {

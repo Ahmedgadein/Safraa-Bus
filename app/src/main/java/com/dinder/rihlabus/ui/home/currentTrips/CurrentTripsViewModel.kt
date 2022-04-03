@@ -6,10 +6,10 @@ import com.dinder.rihlabus.common.Message
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.domain.CurrentTripsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.*
-import javax.inject.Inject
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.*
+import javax.inject.Inject
 
 @HiltViewModel
 class CurrentTripsViewModel @Inject constructor(private val useCase: CurrentTripsUseCase) :
