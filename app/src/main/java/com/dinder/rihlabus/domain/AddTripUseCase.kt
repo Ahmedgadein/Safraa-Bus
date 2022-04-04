@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import java.util.*
 import javax.inject.Inject
 
 class AddTripUseCase @Inject constructor(
@@ -23,6 +24,7 @@ class AddTripUseCase @Inject constructor(
                 is Result.Success -> {
                     tripRepository.addTrip(
                         trip.copy(
+                            id = UUID.randomUUID().mostSignificantBits,
                             from = it.value.location,
                             company = it.value.company
                         )

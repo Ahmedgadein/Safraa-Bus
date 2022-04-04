@@ -7,6 +7,7 @@ import com.dinder.rihlabus.data.model.Trip
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class TripRepositoryImpl @Inject constructor(private val ioDispatcher: CoroutineDispatcher) :
     TripRepository {
     private val _ref = Firebase.firestore.collection(Constants.FireStoreCollection.TRIPS)
@@ -28,8 +30,7 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
                     cancel()
                 }
         }
-        awaitClose {
-        }
+        awaitClose()
     }
 
     override suspend fun getCurrentTrips(
@@ -45,7 +46,17 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
                 Log.i("CurrentTrips", "Error: $it")
                 trySend(Result.Error(it.toString()))
             }
-        awaitClose {
-        }
+        awaitClose()
+    }
+
+    override suspend fun getTrip(id: Long): Flow<Result<Trip>> = callbackFlow {
+        _ref.whereEqualTo("id", id).get()
+            .addOnSuccessListener {
+                trySend(Result.Success(Trip.fromJson(it.documents[0].data!!)))
+            }
+            .addOnSuccessListener {
+                trySend(Result.Error(it.toString()))
+            }
+        awaitClose()
     }
 }

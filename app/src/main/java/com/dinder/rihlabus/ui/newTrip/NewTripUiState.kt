@@ -1,4 +1,4 @@
-package com.dinder.rihlabus.ui.home.newTrip
+package com.dinder.rihlabus.ui.newTrip
 
 import com.dinder.rihlabus.common.Message
 

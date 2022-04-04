@@ -7,4 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface TripRepository {
     suspend fun addTrip(trip: Trip): Flow<Result<Boolean>>
     suspend fun getCurrentTrips(company: String, location: String): Flow<Result<List<Trip>>>
+    suspend fun getTrip(id: Long): Flow<Result<Trip>>
 }
