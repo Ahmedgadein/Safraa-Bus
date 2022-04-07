@@ -37,6 +37,7 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
         company: String,
         location: String
     ): Flow<Result<List<Trip>>> = callbackFlow {
+        trySend(Result.Loading)
         _ref.whereEqualTo("from", location).whereEqualTo("company", company).get()
             .addOnSuccessListener { snapshot ->
                 val results = snapshot.documents.map { Trip.fromJson(it.data!!) }
@@ -50,11 +51,12 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
     }
 
     override suspend fun getTrip(id: Long): Flow<Result<Trip>> = callbackFlow {
-        _ref.whereEqualTo("id", id).get()
+        trySend(Result.Loading)
+        _ref.whereEqualTo("id", id).limit(1).get()
             .addOnSuccessListener {
-                trySend(Result.Success(Trip.fromJson(it.documents[0].data!!)))
+                trySend(Result.Success(Trip.fromJson(it.documents.first().data!!)))
             }
-            .addOnSuccessListener {
+            .addOnFailureListener {
                 trySend(Result.Error(it.toString()))
             }
         awaitClose()
