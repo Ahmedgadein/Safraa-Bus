@@ -7,7 +7,7 @@
 
         <variable
             name="trip"
-            type="com.dinder.rihlabus.data.model.Trip" />
+            type="com.dinder.rihlabus.data.model.Trip"/>
 
         <import type="com.dinder.rihlabus.utils.DateTimeUtils" />
 
@@ -269,6 +269,7 @@
 
             <com.dinder.rihlabus.ui.custom_views.SeatsView
                 android:id="@+id/tripDetailSeatView"
+                app:selectionCapability="book_and_confirm"
                 android:layout_width="300dp"
                 android:layout_height="600dp"
                 android:layout_marginTop="16dp"

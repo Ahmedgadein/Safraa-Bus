@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SeatsView">
+        <attr name="selectionCapability" format="enum">
+            <enum name="select_only" value="0" />
+            <enum name="book_and_confirm" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>
