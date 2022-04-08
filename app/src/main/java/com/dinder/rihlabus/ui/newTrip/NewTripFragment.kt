@@ -1,4 +1,4 @@
-package com.dinder.rihlabus.ui.home.newTrip
+package com.dinder.rihlabus.ui.newTrip
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -17,6 +17,7 @@ import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.databinding.NewTripFragmentBinding
 import com.dinder.rihlabus.utils.DateTimeUtils
+import com.dinder.rihlabus.utils.SeatState
 import com.dinder.rihlabus.utils.SeatUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -40,7 +41,8 @@ class NewTripFragment : RihlaFragment() {
 
     private fun setUI() {
         binding.newTripSeatsCount.setText(
-            binding.newTripSeatView.getSeats().values.filter { it }.size.toString()
+            binding.newTripSeatView.getSeats().values.filter { it == SeatState.SELECTED }
+                .size.toString()
         )
 
         binding.newTripSeatView.setOnSeatSelectedListener {

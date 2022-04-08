@@ -7,5 +7,8 @@ object Constants {
         const val COMPANIES = "companies"
         const val LOCATIONS = "locations"
     }
+
     const val VERIFICATION_CODE_LENGTH = 6
+    const val NUMBER_OF_SEATS_ROWS = 11
+    const val NUMBER_OF_SEATS = 49
 }

@@ -56,10 +56,22 @@
         <action
             android:id="@+id/action_homeFragment_to_newTripFragment"
             app:destination="@id/newTripFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_tripDetailsFragment"
+            app:destination="@id/tripDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/newTripFragment"
-        android:name="com.dinder.rihlabus.ui.home.newTrip.NewTripFragment"
+        android:name="com.dinder.rihlabus.ui.newTrip.NewTripFragment"
         android:label="new_trip_fragment"
         tools:layout="@layout/new_trip_fragment" />
+    <fragment
+        android:id="@+id/tripDetailsFragment"
+        android:name="com.dinder.rihlabus.ui.tripDetails.TripDetailsFragment"
+        android:label="trip_details_fragment"
+        tools:layout="@layout/trip_details_fragment" >
+        <argument
+            android:name="id"
+            app:argType="long" />
+    </fragment>
 </navigation>

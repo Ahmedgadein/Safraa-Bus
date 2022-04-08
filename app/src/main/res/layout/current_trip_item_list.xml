@@ -9,13 +9,9 @@
             name="trip"
             type="com.dinder.rihlabus.data.model.Trip" />
 
-        <variable
-            name="dateTimeUtils"
-            type="com.dinder.rihlabus.utils.DateTimeUtils" />
+        <import type="com.dinder.rihlabus.utils.DateTimeUtils" />
 
-        <variable
-            name="seatUtils"
-            type="com.dinder.rihlabus.utils.SeatUtils" />
+        <import type="com.dinder.rihlabus.utils.SeatUtils" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -64,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="@{dateTimeUtils.getFormattedDate(trip.date)}"
+                    android:text="@{DateTimeUtils.INSTANCE.getFormattedDate(trip.date)}"
                     android:textColor="@color/teal_700" />
 
                 <TextView
@@ -90,7 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="@{dateTimeUtils.getFormattedTime(trip.time)}"
+                    android:text="@{DateTimeUtils.INSTANCE.getFormattedTime(trip.time)}"
                     android:textColor="@color/teal_700" />
 
                 <TextView
@@ -151,8 +147,8 @@
                         android:background="@drawable/seat_count_rectangle"
                         android:backgroundTint="@color/teal_200"
                         android:gravity="center"
-                        android:textStyle="bold"
-                        android:text="@{seatUtils.getTripSeatsCount(trip.seats)}" />
+                        android:text="@{SeatUtils.INSTANCE.getTripSeatsCount(trip.seats)}"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -176,8 +172,8 @@
                         android:layout_marginBottom="4dp"
                         android:background="@drawable/seat_count_rectangle"
                         android:gravity="center"
-                        android:textStyle="bold"
-                        android:text="@{seatUtils.getTripReservedSeatsCount(trip.seats)}" />
+                        android:text="@{SeatUtils.INSTANCE.getTripReservedSeatsCount(trip.seats)}"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"

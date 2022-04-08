@@ -1,4 +1,4 @@
-package com.dinder.rihlabus.ui.home.newTrip
+package com.dinder.rihlabus.ui.newTrip
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -1,4 +1,4 @@
-package com.dinder.rihlabus.ui.custom_views
+package com.dinder.rihlabus.ui.custom_views // ktlint-disable experimental:package-name
 
 import android.content.Context
 import android.graphics.Canvas
@@ -8,58 +8,102 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import androidx.appcompat.app.AlertDialog
+import com.dinder.rihlabus.R
+import com.dinder.rihlabus.common.Constants.NUMBER_OF_SEATS_ROWS
 import com.dinder.rihlabus.data.model.SquareBound
+import com.dinder.rihlabus.utils.SeatState
+import com.dinder.rihlabus.utils.SeatUtils
+
+enum class SeatViewCapability {
+    SELECT_ONLY,
+    BOOK_AND_CONFIRM
+}
+
+fun getCapabilityFromAttrs(capability: Int): SeatViewCapability {
+    return when (capability) {
+        0 -> SeatViewCapability.SELECT_ONLY
+        else -> SeatViewCapability.BOOK_AND_CONFIRM
+    }
+}
 
 class SeatsView : View {
-    private var seats: MutableMap<Int, Boolean> = (1..NUMBER_OF_SEATS).map {
-        Pair(it, false)
-    }.toMap().toMutableMap()
+    private var seats: MutableMap<String, SeatState> = SeatUtils.emptySeats.toMutableMap()
 
     private var paint: Paint = Paint()
     private var textPaint: Paint = Paint()
     private val _bounds: MutableList<SquareBound> = mutableListOf()
     private val _space = 20f
-    private lateinit var listener: (Int) -> Unit
+    private var onSeatSelectedListener: ((Int) -> Unit)? = null
+    private var onShowBookedSeatPassengerDetails: ((Int) -> Unit)? = null
+    private var onSeatStateUpdateListener: ((Int, SeatState) -> Unit)? = null
+    private lateinit var capability: SeatViewCapability
 
-    companion object {
-        const val NUMBER_OF_SEATS_ROWS = 11
-        const val NUMBER_OF_SEATS = 49
+    fun init(attrs: AttributeSet?) {
+        context.theme.obtainStyledAttributes(
+            attrs,
+            R.styleable.SeatsView,
+            0,
+            0
+        ).apply {
+            try {
+                capability =
+                    getCapabilityFromAttrs(
+                        getInteger(R.styleable.SeatsView_selectionCapability, 0)
+                    )
+            } finally {
+                recycle()
+            }
+        }
     }
 
     constructor(context: Context?) : super(context)
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+        init(attrs)
+    }
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
-    )
+    ) {
+        init(attrs)
+    }
 
     fun setOnSeatSelectedListener(listener: (Int) -> Unit) {
-        this.listener = listener
+        this.onSeatSelectedListener = listener
+    }
+
+    fun setOnShowBookedSeatPassengerDetails(listener: (Int) -> Unit) {
+        this.onShowBookedSeatPassengerDetails = listener
+    }
+
+    fun setOnSeatStateUpdateListener(listener: (Int, SeatState) -> Unit) {
+        this.onSeatStateUpdateListener = listener
     }
 
     fun selectAll() {
         seats = seats.map {
-            Pair(it.key, true)
+            Pair(it.key, SeatState.SELECTED)
         }.toMap().toMutableMap()
 
-        listener(seats.filter { it.value }.size)
+        onSeatSelectedListener?.invoke(seats.values.filter { it == SeatState.SELECTED }.size)
         invalidate()
     }
 
     fun unselectAll() {
         seats = seats.map {
-            Pair(it.key, false)
+            Pair(it.key, SeatState.UN_SELECTED)
         }.toMap().toMutableMap()
 
-        listener(seats.filter { it.value }.size)
+        onSeatSelectedListener?.invoke(seats.values.filter { it == SeatState.SELECTED }.size)
         invalidate()
     }
 
-    fun setSeats(seats: Map<Int, Boolean>) {
+    fun setSeats(seats: Map<String, SeatState>) {
         this.seats = seats.toMutableMap()
+        invalidate()
     }
 
     fun getSeats() = seats
@@ -119,31 +163,66 @@ class SeatsView : View {
     }
 
     private fun onSeatClicked(seatNumber: Int) {
-        if (seats[seatNumber]!!) {
-            unSelectSeat(seatNumber)
-        } else {
-            selectSeat(seatNumber)
+        when (capability) {
+            SeatViewCapability.SELECT_ONLY -> {
+                if (seats["$seatNumber"] == SeatState.SELECTED) {
+                    unSelectSeat(seatNumber)
+                } else {
+                    selectSeat(seatNumber)
+                }
+            }
+            SeatViewCapability.BOOK_AND_CONFIRM -> {
+                if (seats["$seatNumber"] == SeatState.UNBOOKED) {
+                    showBookOptionsDialog(seatNumber)
+                } else {
+                    onShowBookedSeatPassengerDetails?.invoke(seatNumber)
+                }
+            }
         }
-        this.listener(seats.values.filter { it }.size)
+
+        this.onSeatSelectedListener?.invoke(seats.values.filter { it == SeatState.SELECTED }.size)
+    }
+
+    private fun showBookOptionsDialog(seatNumber: Int) {
+        AlertDialog.Builder(this.context)
+            .setTitle("Seat $seatNumber")
+            .setMessage("Not booked yet, click the book button to book locally")
+            .setPositiveButton("Booked") { dialog, which ->
+                onSeatStateUpdateListener?.invoke(seatNumber, SeatState.BOOKED)
+            }
+            .create().show()
     }
 
     private fun selectSeat(seatNumber: Int) {
-        seats[seatNumber] = true
+        seats["$seatNumber"] = SeatState.SELECTED
     }
 
     private fun unSelectSeat(seatNumber: Int) {
-        seats[seatNumber] = false
+        seats["$seatNumber"] = SeatState.UN_SELECTED
     }
 
     private fun getSeatColor(seatNumber: Int): Int {
-        if (!seats.keys.contains(seatNumber)) {
-            return Color.GRAY
-        }
-
-        return if (seats[seatNumber]!!) {
-            Color.GREEN
-        } else {
-            Color.GRAY
+        when (capability) {
+            SeatViewCapability.SELECT_ONLY -> {
+                return if (seats["$seatNumber"] == SeatState.SELECTED) {
+                    Color.GREEN
+                } else {
+                    Color.GRAY
+                }
+            }
+            SeatViewCapability.BOOK_AND_CONFIRM -> {
+                return when (seats["$seatNumber"]) {
+                    SeatState.UNBOOKED -> {
+                        Color.GREEN
+                    }
+                    SeatState.BOOKED -> {
+                        Color.YELLOW
+                    }
+                    else -> {
+                        Color.GRAY
+                    }
+                }
+            }
         }
     }
 
