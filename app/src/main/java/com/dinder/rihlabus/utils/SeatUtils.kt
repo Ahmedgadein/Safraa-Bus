@@ -44,7 +44,7 @@ object SeatUtils {
 
     fun getTripSeatsCount(seats: Map<String, Map<String, Any?>>) = seats.size.toString()
 
-    fun getTripReservedSeatsCount(seats: Map<String, Map<String, Any>>) =
+    fun getTripReservedSeatsCount(seats: Map<String, Map<String, Any?>>) =
         seats.filter { SeatState.valueOf(it.value["status"].toString()) == SeatState.BOOKED }
             .size.toString()
 }
