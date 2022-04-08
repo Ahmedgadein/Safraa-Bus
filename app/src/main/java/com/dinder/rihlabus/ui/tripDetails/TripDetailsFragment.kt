@@ -67,8 +67,8 @@ class TripDetailsFragment : RihlaFragment() {
     private fun showPassengerDetailDialog(seatNumber: Int, passengerName: String?) {
         AlertDialog.Builder(requireContext())
             .setTitle("Seat $seatNumber")
-            .setMessage(if(passengerName.isNullOrEmpty()) "Booked locally" else passengerName)
-            .setPositiveButton("Ok",null)
+            .setMessage(if (passengerName.isNullOrEmpty()) "Booked locally" else passengerName)
+            .setPositiveButton("Ok", null)
             .create().show()
     }
 }
