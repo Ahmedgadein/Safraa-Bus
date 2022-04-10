@@ -1,0 +1,22 @@
+package com.dinder.rihlabus.data.model
+
+import com.dinder.rihlabus.utils.SeatState
+
+data class Seat(val number: Int, val passenger: String?, val status: SeatState) {
+
+    fun toJson() = mapOf(
+        "$number" to mapOf(
+            "passenger" to passenger,
+            "status" to status
+        )
+    )
+
+    companion object {
+        fun fromJson(json: Map<String, Map<String, Any?>>) =
+            Seat(
+                number = json.keys.first().toInt(),
+                passenger = json.values.first()["passenger"] as String?,
+                status = SeatState.valueOf(json.values.first()["status"].toString())
+            )
+    }
+}

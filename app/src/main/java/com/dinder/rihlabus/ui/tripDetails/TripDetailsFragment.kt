@@ -1,7 +1,6 @@
 package com.dinder.rihlabus.ui.tripDetails
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,15 +48,17 @@ class TripDetailsFragment : RihlaFragment() {
 
                     it.trip?.let {
                         binding.trip = it
-                        binding.tripDetailSeatView.setSeats(SeatUtils.getRemoteSeats(it.seats))
-                        binding.tripDetailSeatView.setOnSeatStateUpdateListener { seatNumber, seatState ->
+                        binding.tripDetailSeatView.setSeats(
+                            SeatUtils.getSeatsListAsStateMap(it.seats)
+                        )
+                        binding.tripDetailSeatView.setOnSeatStateUpdateListener { seatNumber, seatState -> // ktlint-disable max-line-length
                             viewModel.updateSeatState(it.id!!, seatNumber, seatState)
                         }
-                        binding.tripDetailSeatView.setOnShowBookedSeatPassengerDetails { seatNumber ->
-                            val passenger = it.seats["$seatNumber"]?.get("passenger") as String?
+                        binding.tripDetailSeatView.setOnShowBookedSeatPassengerDetails { seatNumber -> // ktlint-disable max-line-length
+                            val passenger =
+                                it.seats.first { seat -> seat.number == seatNumber }.passenger
                             showPassengerDetailDialog(seatNumber, passenger)
                         }
-                        Log.i("SeatView", "Seats: ${SeatUtils.getRemoteSeats(it.seats)}")
                     }
                 }
             }

@@ -7,7 +7,7 @@
 
         <variable
             name="trip"
-            type="com.dinder.rihlabus.data.model.Trip"/>
+            type="com.dinder.rihlabus.data.model.Trip" />
 
         <import type="com.dinder.rihlabus.utils.DateTimeUtils" />
 
@@ -36,8 +36,9 @@
                 <ProgressBar
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"/>
+                    android:layout_margin="16dp" />
             </androidx.cardview.widget.CardView>
+
             <TextView
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
@@ -269,13 +270,13 @@
 
             <com.dinder.rihlabus.ui.custom_views.SeatsView
                 android:id="@+id/tripDetailSeatView"
-                app:selectionCapability="book_and_confirm"
                 android:layout_width="300dp"
                 android:layout_height="600dp"
                 android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+                app:selectionCapability="book_and_confirm" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

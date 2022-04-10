@@ -1,5 +1,6 @@
 package com.dinder.rihlabus.data.model
 
+import com.dinder.rihlabus.utils.SeatUtils
 import com.google.firebase.Timestamp
 import java.util.*
 
@@ -11,7 +12,7 @@ data class Trip(
     val from: String? = null,
     val to: String,
     val price: Int,
-    val seats: Map<String, Map<String, Any?>>
+    val seats: List<Seat>
 ) {
     fun toJson() = mapOf(
         "id" to id,
@@ -20,7 +21,7 @@ data class Trip(
         "company" to company,
         "time" to time,
         "date" to date,
-        "seats" to seats,
+        "seats" to SeatUtils.seatsModelToMap(seats),
         "price" to price
     )
 
@@ -33,7 +34,7 @@ data class Trip(
             from = json["from"].toString(),
             to = json["to"].toString(),
             price = json["price"].toString().toInt(),
-            seats = json["seats"] as Map<String, Map<String, Any?>>
+            seats = SeatUtils.seatsMapToModel(json["seats"] as Map<String, Map<String, Any?>>)
         )
     }
 }
