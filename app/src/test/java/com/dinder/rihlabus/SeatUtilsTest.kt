@@ -1,5 +1,6 @@
 package com.dinder.rihlabus
 
+import com.dinder.rihlabus.data.model.Seat
 import com.dinder.rihlabus.utils.SeatState
 import com.dinder.rihlabus.utils.SeatUtils
 import junit.framework.Assert.assertEquals
@@ -13,16 +14,9 @@ class SeatUtilsTest {
             "1" to SeatState.SELECTED,
             "2" to SeatState.SELECTED
         )
-        val expected: Map<String, Map<String, Any?>> = mapOf(
-            "1" to mapOf(
-                "status" to SeatState.UNBOOKED,
-                "passenger" to null
-            ),
-
-            "2" to mapOf(
-                "status" to SeatState.UNBOOKED,
-                "passenger" to null
-            )
+        val expected = listOf(
+            Seat(number = 1, status = SeatState.UNBOOKED),
+            Seat(number = 2, status = SeatState.UNBOOKED)
         )
 
         assertEquals(expected, SeatUtils.getSelectedSeatsAsUnbooked(data))
@@ -30,38 +24,30 @@ class SeatUtilsTest {
 
     @Test
     fun `get remote seats as local format should return true`() {
-        val data: Map<String, Map<String, Any?>> = mapOf(
-            "1" to mapOf(
-                "status" to SeatState.BOOKED,
-                "passenger" to null
-            ),
-
-            "2" to mapOf(
-                "status" to SeatState.UNBOOKED,
-                "passenger" to null
-            )
+        val data = listOf(
+            Seat(number = 1, status = SeatState.BOOKED),
+            Seat(number = 2, status = SeatState.UNBOOKED)
         )
 
         val expected = mapOf(
-            "1" to SeatState.BOOKED,
-            "2" to SeatState.UNBOOKED
+            "1" to mapOf(
+                "passenger" to null,
+                "status" to SeatState.BOOKED
+            ),
+            "2" to mapOf(
+                "passenger" to null,
+                "status" to SeatState.UNBOOKED
+            )
         )
 
-        assertEquals(expected, SeatUtils.getRemoteSeats(data))
+        assertEquals(expected, SeatUtils.seatsModelToMap(data))
     }
 
     @Test
     fun `get booked seats count as string should return true`() {
-        val data: Map<String, Map<String, Any?>> = mapOf(
-            "1" to mapOf(
-                "status" to SeatState.BOOKED,
-                "passenger" to null
-            ),
-
-            "2" to mapOf(
-                "status" to SeatState.UNBOOKED,
-                "passenger" to null
-            )
+        val data = listOf(
+            Seat(number = 1, status = SeatState.BOOKED),
+            Seat(number = 2, status = SeatState.UNBOOKED)
         )
 
         val expected = "1"
@@ -71,16 +57,9 @@ class SeatUtilsTest {
 
     @Test
     fun `get all seats count as string should return true`() {
-        val data: Map<String, Map<String, Any?>> = mapOf(
-            "1" to mapOf(
-                "status" to SeatState.BOOKED,
-                "passenger" to null
-            ),
-
-            "2" to mapOf(
-                "status" to SeatState.UNBOOKED,
-                "passenger" to null
-            )
+        val data = listOf(
+            Seat(number = 1, status = SeatState.BOOKED),
+            Seat(number = 2, status = SeatState.UNBOOKED)
         )
 
         val expected = "2"

@@ -2,7 +2,7 @@ package com.dinder.rihlabus.data.model
 
 import com.dinder.rihlabus.utils.SeatState
 
-data class Seat(val number: Int, val passenger: String?, val status: SeatState) {
+data class Seat(val number: Int, val passenger: String? = null, val status: SeatState) {
 
     val isAvailable: Boolean
         get() = status == SeatState.UNBOOKED && passenger == null
@@ -21,5 +21,7 @@ data class Seat(val number: Int, val passenger: String?, val status: SeatState) 
                 passenger = json.values.first()["passenger"] as String?,
                 status = SeatState.valueOf(json.values.first()["status"].toString())
             )
+
+        fun empty(): Seat = Seat(0, null, SeatState.UN_SELECTED)
     }
 }
