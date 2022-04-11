@@ -1,5 +1,6 @@
 package com.dinder.rihlabus.utils
 
+import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.Constants.NUMBER_OF_SEATS
 import com.dinder.rihlabus.data.model.Seat
 
@@ -49,7 +50,7 @@ object SeatUtils {
                 )
             )
         )
-    }.toList()
+    }.toList().sortedBy { it.number }
 
     // Convert list of [Seat] to map
     fun seatsModelToMap(seats: List<Seat>): Map<String, Map<String, Any?>> = seats.map {
@@ -58,4 +59,12 @@ object SeatUtils {
             "status" to it.status
         )
     }.toMap()
+
+    fun getSeatStateColor(seat: Seat): Int {
+        return if (seat.isAvailable) {
+            R.color.teal_200
+        } else {
+            R.color.yellow
+        }
+    }
 }

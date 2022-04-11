@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.databinding.TripDetailsFragmentBinding
@@ -35,6 +36,10 @@ class TripDetailsFragment : RihlaFragment() {
     }
 
     private fun setUI() {
+        binding.seatDetailsButton.setOnClickListener {
+            navigateToSeatDetails()
+        }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getTrip(args.id)
@@ -71,5 +76,13 @@ class TripDetailsFragment : RihlaFragment() {
             .setMessage(if (passengerName.isNullOrEmpty()) "Booked locally" else passengerName)
             .setPositiveButton("Ok", null)
             .create().show()
+    }
+
+    private fun navigateToSeatDetails() {
+        findNavController().navigate(
+            TripDetailsFragmentDirections.actionTripDetailsFragmentToSeatDetailsFragment(
+                args.id
+            )
+        )
     }
 }

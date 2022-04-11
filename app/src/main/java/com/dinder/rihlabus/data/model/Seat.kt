@@ -4,6 +4,9 @@ import com.dinder.rihlabus.utils.SeatState
 
 data class Seat(val number: Int, val passenger: String?, val status: SeatState) {
 
+    val isAvailable: Boolean
+        get() = status == SeatState.UNBOOKED && passenger == null
+
     fun toJson() = mapOf(
         "$number" to mapOf(
             "passenger" to passenger,
