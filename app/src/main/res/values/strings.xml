@@ -32,4 +32,6 @@
     <string name="price_capitalized">PRICE</string>
     <string name="total_seats_capitalized">TOTAL SEATS</string>
     <string name="reserved_capitalized">RESERVED</string>
+    <string name="seat">SEAT</string>
+    <string name="name_capitalized">NAME</string>
 </resources>

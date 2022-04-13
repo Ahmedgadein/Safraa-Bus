@@ -73,5 +73,17 @@
         <argument
             android:name="id"
             app:argType="long" />
+        <action
+            android:id="@+id/action_tripDetailsFragment_to_seatDetailsFragment"
+            app:destination="@id/seatDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/seatDetailsFragment"
+        android:name="com.dinder.rihlabus.ui.common.seatsDetails.SeatDetailsFragment"
+        android:label="seat_details_fragment"
+        tools:layout="@layout/seat_details_fragment" >
+        <argument
+            android:name="tripId"
+            app:argType="long" />
     </fragment>
 </navigation>

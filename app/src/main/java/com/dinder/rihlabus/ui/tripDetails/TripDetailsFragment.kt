@@ -1,7 +1,6 @@
 package com.dinder.rihlabus.ui.tripDetails
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.databinding.TripDetailsFragmentBinding
@@ -36,6 +36,10 @@ class TripDetailsFragment : RihlaFragment() {
     }
 
     private fun setUI() {
+        binding.seatDetailsButton.setOnClickListener {
+            navigateToSeatDetails()
+        }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getTrip(args.id)
@@ -49,15 +53,17 @@ class TripDetailsFragment : RihlaFragment() {
 
                     it.trip?.let {
                         binding.trip = it
-                        binding.tripDetailSeatView.setSeats(SeatUtils.getRemoteSeats(it.seats))
-                        binding.tripDetailSeatView.setOnSeatStateUpdateListener { seatNumber, seatState ->
+                        binding.tripDetailSeatView.setSeats(
+                            SeatUtils.getSeatsListAsStateMap(it.seats)
+                        )
+                        binding.tripDetailSeatView.setOnSeatStateUpdateListener { seatNumber, seatState -> // ktlint-disable max-line-length
                             viewModel.updateSeatState(it.id!!, seatNumber, seatState)
                         }
-                        binding.tripDetailSeatView.setOnShowBookedSeatPassengerDetails { seatNumber ->
-                            val passenger = it.seats["$seatNumber"]?.get("passenger") as String?
+                        binding.tripDetailSeatView.setOnShowBookedSeatPassengerDetails { seatNumber -> // ktlint-disable max-line-length
+                            val passenger =
+                                it.seats.first { seat -> seat.number == seatNumber }.passenger
                             showPassengerDetailDialog(seatNumber, passenger)
                         }
-                        Log.i("SeatView", "Seats: ${SeatUtils.getRemoteSeats(it.seats)}")
                     }
                 }
             }
@@ -70,5 +76,13 @@ class TripDetailsFragment : RihlaFragment() {
             .setMessage(if (passengerName.isNullOrEmpty()) "Booked locally" else passengerName)
             .setPositiveButton("Ok", null)
             .create().show()
+    }
+
+    private fun navigateToSeatDetails() {
+        findNavController().navigate(
+            TripDetailsFragmentDirections.actionTripDetailsFragmentToSeatDetailsFragment(
+                args.id
+            )
+        )
     }
 }
