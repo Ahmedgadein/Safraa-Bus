@@ -7,32 +7,30 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dinder.rihlabus.common.TripDiffCallback
 import com.dinder.rihlabus.data.model.Trip
-import com.dinder.rihlabus.databinding.CurrentTripItemListBinding
+import com.dinder.rihlabus.databinding.LastTripItemListBinding
 import com.dinder.rihlabus.ui.home.HomeFragmentDirections
 
-class CurrentTripsAdapter :
-    ListAdapter<Trip, CurrentTripsAdapter.CurrentTripHolder>(TripDiffCallback()) {
+class LastTripsAdapter : ListAdapter<Trip, LastTripsAdapter.LastTripHolder>(TripDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrentTripHolder =
-        CurrentTripHolder(
-            CurrentTripItemListBinding.inflate(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LastTripHolder {
+        return LastTripHolder(
+            LastTripItemListBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
             )
         )
+    }
 
-    override fun onBindViewHolder(holder: CurrentTripHolder, position: Int) {
+    override fun onBindViewHolder(holder: LastTripHolder, position: Int) {
         val trip = getItem(position)
         holder.bind(trip)
     }
 
-    class CurrentTripHolder(private val binding: CurrentTripItemListBinding) :
+    class LastTripHolder(private val binding: LastTripItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
         fun bind(trip: Trip) {
             binding.trip = trip
-
             itemView.setOnClickListener {
                 trip.id?.let {
                     navigateToTripDetails(it)
