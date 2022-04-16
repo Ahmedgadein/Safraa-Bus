@@ -76,6 +76,10 @@
         <action
             android:id="@+id/action_tripDetailsFragment_to_seatDetailsFragment"
             app:destination="@id/seatDetailsFragment" />
+        <argument
+            android:name="viewOnly"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/seatDetailsFragment"

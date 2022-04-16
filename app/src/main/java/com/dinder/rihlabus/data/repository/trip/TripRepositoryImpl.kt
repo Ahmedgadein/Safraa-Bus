@@ -5,6 +5,7 @@ import com.dinder.rihlabus.common.Constants
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.utils.SeatState
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -15,6 +16,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -41,7 +43,10 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
     ): Flow<Result<List<Trip>>> = callbackFlow {
         withContext(ioDispatcher) {
             trySend(Result.Loading)
-            _ref.whereEqualTo("from", location).whereEqualTo("company", company).get()
+            _ref.whereEqualTo("from", location)
+                .whereEqualTo("company", company)
+                .orderBy("date", Query.Direction.ASCENDING)
+                .get()
                 .addOnSuccessListener { snapshot ->
                     val results = snapshot.documents.map { Trip.fromJson(it.data!!) }
                     trySend(Result.Success(results))
@@ -53,6 +58,26 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
         }
         awaitClose()
     }
+
+    override suspend fun getLastTrips(company: String, location: String): Flow<Result<List<Trip>>> =
+        callbackFlow {
+            withContext(ioDispatcher) {
+                trySend(Result.Loading)
+                _ref.whereEqualTo("from", location)
+                    .whereEqualTo("company", company)
+                    .whereLessThan("date", Date())
+                    .orderBy("date", Query.Direction.ASCENDING)
+                    .get()
+                    .addOnSuccessListener { snapshot ->
+                        val results = snapshot.documents.map { Trip.fromJson(it.data!!) }
+                        trySend(Result.Success(results))
+                    }
+                    .addOnFailureListener {
+                        trySend(Result.Error(it.toString()))
+                    }
+            }
+            awaitClose()
+        }
 
     override suspend fun getTrip(id: Long): Flow<Result<Trip>> = callbackFlow {
         withContext(ioDispatcher) {

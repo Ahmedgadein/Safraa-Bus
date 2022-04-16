@@ -5,10 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.lastTrips.LastTripsFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Last Trips" />
+    <ProgressBar
+        android:id="@+id/lastTripsProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lastTripsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </FrameLayout>

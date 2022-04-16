@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.domain.CurrentTripsUseCase
+import com.dinder.rihlabus.ui.home.TripsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -14,8 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CurrentTripsViewModel @Inject constructor(private val useCase: CurrentTripsUseCase) :
     ViewModel() {
-    private val _state = MutableStateFlow(CurrentTripsUiState())
-    val state: StateFlow<CurrentTripsUiState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(TripsUiState())
+    val state: StateFlow<TripsUiState> = _state.asStateFlow()
 
     init {
         getTrips()

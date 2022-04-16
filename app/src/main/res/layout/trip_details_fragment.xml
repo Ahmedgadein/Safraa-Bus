@@ -9,6 +9,10 @@
             name="trip"
             type="com.dinder.rihlabus.data.model.Trip" />
 
+        <variable
+            name="viewOnly"
+            type="Boolean" />
+
         <import type="com.dinder.rihlabus.utils.DateTimeUtils" />
 
         <import type="com.dinder.rihlabus.utils.SeatUtils" />
@@ -276,6 +280,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+                app:viewOnly="@{viewOnly}"
                 app:selectionCapability="book_and_confirm" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
