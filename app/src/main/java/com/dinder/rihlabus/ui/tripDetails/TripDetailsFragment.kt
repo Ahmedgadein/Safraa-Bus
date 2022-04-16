@@ -31,6 +31,7 @@ class TripDetailsFragment : RihlaFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = TripDetailsFragmentBinding.inflate(inflater, container, false)
+        binding.viewOnly = args.viewOnly
         setUI()
         return binding.root
     }

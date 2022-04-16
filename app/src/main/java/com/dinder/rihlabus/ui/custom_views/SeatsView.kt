@@ -38,6 +38,7 @@ class SeatsView : View {
     private var onShowBookedSeatPassengerDetails: ((Int) -> Unit)? = null
     private var onSeatStateUpdateListener: ((Int, SeatState) -> Unit)? = null
     private lateinit var capability: SeatViewCapability
+    private var viewOnly: Boolean = false
 
     fun init(attrs: AttributeSet?) {
         context.theme.obtainStyledAttributes(
@@ -69,6 +70,10 @@ class SeatsView : View {
         defStyleAttr
     ) {
         init(attrs)
+    }
+
+    fun setIsViewOnly(isViewOnly: Boolean) {
+        viewOnly = isViewOnly
     }
 
     fun setOnSeatSelectedListener(listener: (Int) -> Unit) {
@@ -109,27 +114,29 @@ class SeatsView : View {
     fun getSeats() = seats
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        val eventAction = event?.action
+        if (!viewOnly) {
+            val eventAction = event?.action
 
-        // Click Coordinates
-        val x = event?.x
-        val y = event?.y
+            // Click Coordinates
+            val x = event?.x
+            val y = event?.y
 
-        when (eventAction) {
-            MotionEvent.ACTION_DOWN -> {
-            }
-            MotionEvent.ACTION_UP -> {
-                val index: Int? = getClickEventSeatNumber(x!!, y!!)
-                Log.i("SeatView", "Coordinates: $x, $y")
-                Log.i("SeatView", "Index: $index")
-                if (index != null) {
-                    onSeatClicked(index)
+            when (eventAction) {
+                MotionEvent.ACTION_DOWN -> {
                 }
+                MotionEvent.ACTION_UP -> {
+                    val index: Int? = getClickEventSeatNumber(x!!, y!!)
+                    Log.i("SeatView", "Coordinates: $x, $y")
+                    Log.i("SeatView", "Index: $index")
+                    if (index != null) {
+                        onSeatClicked(index)
+                    }
+                }
+                MotionEvent.ACTION_MOVE -> {}
             }
-            MotionEvent.ACTION_MOVE -> {}
-        }
 
-        invalidate()
+            invalidate()
+        }
         return true
     }
 

@@ -40,7 +40,12 @@ class LastTripsAdapter : ListAdapter<Trip, LastTripsAdapter.LastTripHolder>(Trip
 
         private fun navigateToTripDetails(id: Long) {
             itemView.findNavController()
-                .navigate(HomeFragmentDirections.actionHomeFragmentToTripDetailsFragment(id))
+                .navigate(
+                    HomeFragmentDirections.actionHomeFragmentToTripDetailsFragment(
+                        id,
+                        viewOnly = true
+                    )
+                )
         }
     }
 }
