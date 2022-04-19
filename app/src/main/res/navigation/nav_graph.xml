@@ -9,15 +9,15 @@
         android:id="@+id/loginFragment"
         android:name="com.dinder.rihlabus.ui.login.LoginFragment"
         android:label="login_fragment"
-        tools:layout="@layout/login_fragment" >
+        tools:layout="@layout/login_fragment">
         <action
             android:id="@+id/action_loginFragment_to_verificationFragment"
             app:destination="@id/verificationFragment" />
         <action
             android:id="@+id/action_loginFragment_to_homeFragment"
             app:destination="@id/homeFragment"
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/nav_graph"/>
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_loginFragment_to_signupFragment"
             app:destination="@id/signupFragment" />
@@ -40,7 +40,7 @@
         android:id="@+id/signupFragment"
         android:name="com.dinder.rihlabus.ui.signup.SignupFragment"
         android:label="signup_fragment"
-        tools:layout="@layout/signup_fragment" >
+        tools:layout="@layout/signup_fragment">
         <argument
             android:name="phoneNumber"
             app:argType="string" />
@@ -52,13 +52,18 @@
         android:id="@+id/homeFragment"
         android:name="com.dinder.rihlabus.ui.home.HomeFragment"
         android:label="home_fragment"
-        tools:layout="@layout/home_fragment" >
+        tools:layout="@layout/home_fragment">
         <action
             android:id="@+id/action_homeFragment_to_newTripFragment"
             app:destination="@id/newTripFragment" />
         <action
             android:id="@+id/action_homeFragment_to_tripDetailsFragment"
             app:destination="@id/tripDetailsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/newTripFragment"
@@ -69,7 +74,7 @@
         android:id="@+id/tripDetailsFragment"
         android:name="com.dinder.rihlabus.ui.tripDetails.TripDetailsFragment"
         android:label="trip_details_fragment"
-        tools:layout="@layout/trip_details_fragment" >
+        tools:layout="@layout/trip_details_fragment">
         <argument
             android:name="id"
             app:argType="long" />
@@ -78,14 +83,14 @@
             app:destination="@id/seatDetailsFragment" />
         <argument
             android:name="viewOnly"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/seatDetailsFragment"
         android:name="com.dinder.rihlabus.ui.common.seatsDetails.SeatDetailsFragment"
         android:label="seat_details_fragment"
-        tools:layout="@layout/seat_details_fragment" >
+        tools:layout="@layout/seat_details_fragment">
         <argument
             android:name="tripId"
             app:argType="long" />
