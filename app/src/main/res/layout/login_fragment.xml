@@ -32,11 +32,12 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/loginPhoneNumberContainer"
+        android:layoutDirection="ltr"
         style="?textInputOutlinedStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Mobile"
+        android:hint="@string/mobile"
         app:counterEnabled="true"
         app:counterMaxLength="9"
         app:helperTextTextColor="@android:color/holo_red_dark"

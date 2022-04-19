@@ -47,7 +47,7 @@
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Trip details"
+                android:text="@string/trip_details"
                 android:textColor="@color/teal_700"
                 android:textSize="28sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -261,7 +261,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="See Seats Details"
+                        android:text="@string/see_seats_details"
                         android:textStyle="bold" />
 
                     <ImageView

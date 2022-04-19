@@ -108,7 +108,7 @@ class SignupFragment : RihlaFragment() {
 
     private fun _setTermsAndConditionsView() {
         val termsAndConditions =
-            SpannableString("By signing up you agree to the terms and conditions of Rihla")
+            SpannableString(getString(R.string.terms_and_conditions_label))
 
         val onShowTermsAndConditions = object : ClickableSpan() {
             override fun onClick(widget: View) {
