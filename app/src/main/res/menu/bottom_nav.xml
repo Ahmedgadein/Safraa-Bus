@@ -3,13 +3,13 @@
     <item
         android:id="@+id/currentTrips"
         android:icon="@drawable/ic_bus"
-        android:title="Current Trips" />
+        android:title="@string/current_trips" />
     <item
         android:id="@+id/lastTrips"
         android:icon="@drawable/ic_old_trips"
-        android:title="Last Trips" />
+        android:title="@string/last_trips" />
     <item
         android:id="@+id/settings"
         android:icon="@drawable/ic_settings"
-        android:title="Settings" />
+        android:title="@string/settings" />
 </menu>

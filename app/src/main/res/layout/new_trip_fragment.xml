@@ -33,7 +33,7 @@
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Trip"
+                android:text="@string/new_trip"
                 android:textColor="@color/teal_700"
                 android:textSize="28sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -142,7 +142,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Select Seats"
+                    android:text="@string/select_seats"
                     android:textSize="20sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -150,7 +150,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Select the seats available to book" />
+                    android:text="@string/select_the_seats_available_to_book" />
             </LinearLayout>
 
             <LinearLayout
@@ -164,7 +164,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="7"
@@ -175,7 +175,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Seats"
+                        android:text="@string/seats"
                         android:textStyle="bold"/>
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -196,7 +196,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        android:text="Select All" />
+                        android:text="@string/select_all" />
 
                     <CheckBox
                         android:id="@+id/newTripSelectAllButton"
@@ -223,5 +223,5 @@
         android:layout_gravity="bottom|center"
         android:layout_margin="16dp"
         android:gravity="center"
-        android:text="Add Trip" />
+        android:text="@string/add_trip" />
 </FrameLayout>

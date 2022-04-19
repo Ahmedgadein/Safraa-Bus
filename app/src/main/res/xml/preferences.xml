@@ -5,29 +5,29 @@
 
     <PreferenceCategory
         app:key="personal"
-        app:title="Personal">
+        app:title="@string/personal_info">
 
         <Preference
             app:key="name"
-            app:title="Name"
+            app:title="@string/name"
             app:defaultValue="NA"/>
 
         <Preference
             app:key="phone"
-            app:title="Phone Number"
+            app:title="@string/mobile_number"
             app:defaultValue="NA"/>
     </PreferenceCategory>
     <PreferenceCategory
         app:key="company"
-        app:title="Company Info">
+        app:title="@string/company_info">
 
         <Preference
             app:key="companyName"
-            app:title="Company"
+            app:title="@string/company"
             app:defaultValue="NA"/>
         <Preference
             app:key="location"
-            app:title="Location"
+            app:title="@string/location"
             app:defaultValue="NA"/>
     </PreferenceCategory>
 </PreferenceScreen>
