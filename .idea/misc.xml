@@ -20,7 +20,7 @@
         <entry key="app/src/main/res/layout/fragment_seats.xml" value="0.136" />
         <entry key="app/src/main/res/layout/fragment_signup.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/layout/fragment_splash_screen.xml" value="0.3229166666666667" />
-        <entry key="app/src/main/res/layout/home_fragment.xml" value="0.30520833333333336" />
+        <entry key="app/src/main/res/layout/home_fragment.xml" value="0.176" />
         <entry key="app/src/main/res/layout/item_list_current_trip.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/layout/last_trip_item_list.xml" value="0.264" />
         <entry key="app/src/main/res/layout/last_trips_fragment.xml" value="0.2" />
@@ -28,7 +28,7 @@
         <entry key="app/src/main/res/layout/new_trip_fragment.xml" value="0.2" />
         <entry key="app/src/main/res/layout/seat_detail_item_list.xml" value="0.264" />
         <entry key="app/src/main/res/layout/seat_details_fragment.xml" value="0.20394736842105263" />
-        <entry key="app/src/main/res/layout/settings_fragment.xml" value="0.3229166666666667" />
+        <entry key="app/src/main/res/layout/settings_fragment.xml" value="0.136" />
         <entry key="app/src/main/res/layout/signup_fragment.xml" value="0.176" />
         <entry key="app/src/main/res/layout/trip_details_fragment.xml" value="0.176" />
         <entry key="app/src/main/res/layout/verification_fragment.xml" value="0.2" />
@@ -36,6 +36,7 @@
         <entry key="app/src/main/res/menu/navigation_items.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_logo.xml" value="0.19010416666666666" />
         <entry key="app/src/main/res/xml/companies.xml" value="0.16979166666666667" />
+        <entry key="app/src/main/res/xml/preferences.xml" value="0.10822368421052632" />
       </map>
     </option>
   </component>
