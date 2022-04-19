@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.domain.GetUserUseCase
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +16,10 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor(private val useCase: GetUserUseCase) : ViewModel() {
+class SettingsViewModel @Inject constructor(
+    private val useCase: GetUserUseCase,
+    private val firebaseAuth: FirebaseAuth
+) : ViewModel() {
     private val _state = MutableStateFlow(SettingsUiState())
     val state = _state.asStateFlow()
 
@@ -34,6 +38,10 @@ class SettingsViewModel @Inject constructor(private val useCase: GetUserUseCase)
                 }
             }
         }
+    }
+
+    fun logout() {
+        firebaseAuth.signOut()
     }
 
     private fun showUserMessage(content: String) {
