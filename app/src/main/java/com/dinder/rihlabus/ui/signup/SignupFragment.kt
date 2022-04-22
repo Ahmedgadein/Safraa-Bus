@@ -1,8 +1,10 @@
 package com.dinder.rihlabus.ui.signup
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
@@ -23,6 +25,7 @@ import com.dinder.rihlabus.utils.NameValidator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.*
 
 @AndroidEntryPoint
 class SignupFragment : RihlaFragment() {
@@ -111,20 +114,37 @@ class SignupFragment : RihlaFragment() {
             SpannableString(getString(R.string.terms_and_conditions_label))
 
         val onShowTermsAndConditions = object : ClickableSpan() {
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.color = resources.getColor(R.color.teal_700, context?.theme)
+                ds.isUnderlineText = false
+            }
+
             override fun onClick(widget: View) {
                 showToast("Terms And Conditions")
+                view?.invalidateOutline()
             }
         }
-        termsAndConditions.setSpan(
-            onShowTermsAndConditions,
-            termsAndConditions.indexOf("terms"),
-            termsAndConditions.indexOf("conditions") + "conditions".length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
 
+        if (Locale.getDefault().language.equals(Locale("ar").language)) {
+            termsAndConditions.setSpan(
+                onShowTermsAndConditions,
+                19,
+                35,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        } else {
+            termsAndConditions.setSpan(
+                onShowTermsAndConditions,
+                termsAndConditions.indexOf("terms"),
+                termsAndConditions.indexOf("conditions") + "conditions".length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
         binding.termsAndConditions.apply {
             text = termsAndConditions
             movementMethod = LinkMovementMethod.getInstance()
+            highlightColor = Color.TRANSPARENT
         }
     }
 

@@ -109,6 +109,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/day_capitalized"
                     android:layout_gravity="center_horizontal"
                     android:text='@{trip!= null ? DateTimeUtils.INSTANCE.getFormattedDate(trip.date) : ""}'
                     android:textColor="@color/teal_700" />
@@ -128,6 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:orientation="vertical"
+                android:contentDescription="@string/time"
                 app:layout_constraintEnd_toStartOf="@id/linearLayout4"
                 app:layout_constraintStart_toEndOf="@+id/linearLayout5"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
@@ -161,6 +163,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/price"
                     android:layout_gravity="center_horizontal"
                     android:text='@{trip != null ? @string/price_in_sdgs(trip.price) : ""}'
                     android:textColor="@color/teal_700" />
@@ -196,6 +199,7 @@
                     android:id="@+id/linearLayout9"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/total_seats_capitalized"
                     android:layout_marginHorizontal="8dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
@@ -225,6 +229,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/reserved_capitalized"
                     android:layout_marginHorizontal="8dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"

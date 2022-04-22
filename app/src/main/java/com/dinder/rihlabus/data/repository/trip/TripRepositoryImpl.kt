@@ -45,6 +45,7 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
             trySend(Result.Loading)
             _ref.whereEqualTo("from", location)
                 .whereEqualTo("company", company)
+                .whereGreaterThan("date", Date())
                 .orderBy("date", Query.Direction.ASCENDING)
                 .get()
                 .addOnSuccessListener { snapshot ->

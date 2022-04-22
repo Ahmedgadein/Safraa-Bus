@@ -5,7 +5,7 @@
     <string name="signup">تسجيل</string>
     <string name="mobile_number">رقم الهاتف</string>
     <string name="_249">+249</string>
-    <string name="fill_up_the_following_to_complete_your_profile">قم بملئ التالي لإنشاء حسابك</string>
+    <string name="fill_up_the_following_to_complete_your_profile">قم بملئ البيانات التالية لإنشاء حسابك</string>
     <string name="name">الإسم</string>
     <string name="mobile">الهاتف</string>
     <string name="company">الشركة</string>
@@ -39,6 +39,11 @@
     <string name="personal_info">المعلومات شخصية</string>
     <string name="company_info">معلومات الشركة</string>
     <string name="verification">التحقق</string>
+    <string name="terms_and_conditions_label">بالتسجيل توافق على الشروط و الأحكام الخاصىة برحلة</string>
     <string name="please_enter_the_verification_code">الرجاء إدخال رمز التحقق</string>
     <string name="code">الرمز</string>
+    <string name="no_current_trips">لا يوجد رحلات حاليا, قم بإضافة رحلة</string>
+    <string name="no_last_trips">لا يوجد رحلات سابقة, قم بإضافة رحلة</string>
+    <string name="unbooked_seat">مقعد غير محجوز</string>
+    <string name="booked_seat">محجوز</string>
 </resources>
