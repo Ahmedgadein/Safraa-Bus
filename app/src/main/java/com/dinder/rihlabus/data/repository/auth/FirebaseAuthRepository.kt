@@ -19,15 +19,17 @@ class FirebaseAuthRepository @Inject constructor(
 ) :
     AuthRepository {
     private val _ref = Firebase.firestore.collection(Constants.FireStoreCollection.USERS)
+
     init {
 //        firebaseAuth.signOut()
     }
+
     override suspend fun isLoggedIn(): Flow<Result<Boolean>> = flow {
         emit(Result.Success(firebaseAuth.currentUser != null))
     }
 
     override suspend fun isRegistered(phoneNumber: String) = callbackFlow {
-        withContext(CoroutineScope(ioDispatcher).coroutineContext) {
+        withContext(ioDispatcher) {
             trySend(Result.Loading)
             _ref.whereEqualTo("phoneNumber", phoneNumber).get()
                 .addOnSuccessListener {
@@ -37,15 +39,14 @@ class FirebaseAuthRepository @Inject constructor(
                     trySend(Result.Error("Failed to check registration"))
                 }
         }
-        awaitClose {
-        }
+        awaitClose()
     }
 
     override suspend fun login(
         credential: AuthCredential,
         phoneNumber: String
     ): Flow<Result<Boolean>> = callbackFlow {
-        withContext(CoroutineScope(ioDispatcher).coroutineContext) {
+        withContext(ioDispatcher) {
             trySend(Result.Loading)
             firebaseAuth.signInWithCredential(credential)
                 .addOnSuccessListener {
@@ -55,15 +56,14 @@ class FirebaseAuthRepository @Inject constructor(
                     trySend(Result.Error("Login Failed"))
                 }
         }
-        awaitClose {
-        }
+        awaitClose()
     }
 
     override suspend fun register(
         user: User
     ): Flow<Result<Boolean>> = callbackFlow {
         trySend(Result.Loading)
-        withContext(CoroutineScope(ioDispatcher).coroutineContext) {
+        withContext(ioDispatcher) {
             isLoggedIn().collect {
                 when (it) {
                     Result.Loading -> {}
@@ -86,7 +86,6 @@ class FirebaseAuthRepository @Inject constructor(
                 }
             }
         }
-        awaitClose {
-        }
+        awaitClose()
     }
 }

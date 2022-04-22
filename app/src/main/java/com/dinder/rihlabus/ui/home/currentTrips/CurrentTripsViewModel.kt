@@ -45,9 +45,9 @@ class CurrentTripsViewModel @Inject constructor(private val useCase: CurrentTrip
     }
 
     fun userMessageShown(messageId: Long) {
-        _state.update {
-            val messages = it.messages.filterNot { it.id == messageId }
-            it.copy(messages = messages)
+        _state.update { state ->
+            val messages = state.messages.filterNot { it.id == messageId }
+            state.copy(messages = messages)
         }
     }
 }

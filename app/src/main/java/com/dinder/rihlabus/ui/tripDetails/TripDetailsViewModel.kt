@@ -28,7 +28,7 @@ class TripDetailsViewModel @Inject constructor(private val repository: TripRepos
                 repository.getTrip(id).collect { result ->
                     when (result) {
                         is Result.Loading -> _state.update { it.copy(loading = true) }
-                        is Result.Error -> showErrorMessage(result.message)
+                        is Result.Error -> showUserMessage(result.message)
                         is Result.Success -> _state.update {
                             it.copy(
                                 loading = false,
@@ -46,24 +46,24 @@ class TripDetailsViewModel @Inject constructor(private val repository: TripRepos
             repository.updateSeatState(tripId, seatNumber, state).collect { result ->
                 when (result) {
                     Result.Loading -> _state.update { it.copy(loading = true) }
-                    is Result.Error -> showErrorMessage(result.message)
+                    is Result.Error -> showUserMessage(result.message)
                     is Result.Success -> getTrip(tripId)
                 }
             }
         }
     }
 
-    private fun showErrorMessage(message: String) {
+    private fun showUserMessage(content: String) {
         _state.update {
-            val messages = it.messages + Message(UUID.randomUUID().mostSignificantBits, message)
+            val messages = it.messages + Message(UUID.randomUUID().mostSignificantBits, content)
             it.copy(messages = messages, loading = false)
         }
     }
 
     fun userMessageShown(messageId: Long) {
-        _state.update { currentUiState ->
-            val messages = currentUiState.messages.filterNot { it.id == messageId }
-            currentUiState.copy(messages = messages)
+        _state.update { state ->
+            val messages = state.messages.filterNot { it.id == messageId }
+            state.copy(messages = messages)
         }
     }
 }

@@ -62,7 +62,7 @@ class VerificationFragment : RihlaFragment() {
         })
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.verificationUiState.collect {
+                viewModel.state.collect {
                     with(it.loading) {
                         binding.verificationProgressBar.isVisible = this
                         binding.verificationCode.isEnabled = this.not()

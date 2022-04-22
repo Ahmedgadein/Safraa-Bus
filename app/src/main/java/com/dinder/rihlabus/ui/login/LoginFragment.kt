@@ -62,7 +62,7 @@ class LoginFragment : RihlaFragment() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.loginUiState.collect {
+                viewModel.state.collect {
                     with(it.loading) {
                         binding.loginProgressBar.isVisible = this
                         binding.loginPhoneNumberContainer.editText?.isEnabled = this.not()

@@ -20,15 +20,15 @@ import javax.inject.Inject
 class VerificationViewModel @Inject constructor(private val repository: AuthRepository) :
     ViewModel() {
 
-    private val _verificationUiState = MutableStateFlow(VerificationUiState())
-    val verificationUiState = _verificationUiState.asStateFlow()
+    private val _state = MutableStateFlow(VerificationUiState())
+    val state = _state.asStateFlow()
 
     fun onVerificationAttempt(credential: AuthCredential, phoneNumber: String) {
         viewModelScope.launch {
             repository.isRegistered(phoneNumber).collect { registered ->
                 when (registered) {
                     is Result.Loading -> {
-                        _verificationUiState.update { it.copy(loading = true) }
+                        _state.update { it.copy(loading = true) }
                     }
                     is Result.Error -> {
                         showUserMessage(registered.message)
@@ -38,14 +38,14 @@ class VerificationViewModel @Inject constructor(private val repository: AuthRepo
                         repository.login(credential, phoneNumber).collect { login ->
                             when (login) {
                                 is Result.Loading -> {
-                                    _verificationUiState.update { it.copy(loading = true) }
+                                    _state.update { it.copy(loading = true) }
                                 }
                                 is Result.Error -> {
                                     showUserMessage(login.message)
                                 }
                                 is Result.Success -> {
                                     Log.i("LoginFlow", "Login Value: ${login.value}")
-                                    _verificationUiState.update {
+                                    _state.update {
                                         Log.i(
                                             "LoginFlow",
                                             "Navigate to Signup: ${login.value && !registered.value}"
@@ -66,16 +66,16 @@ class VerificationViewModel @Inject constructor(private val repository: AuthRepo
     }
 
     private fun showUserMessage(content: String) {
-        _verificationUiState.update {
+        _state.update {
             val messages = it.messages + Message(UUID.randomUUID().mostSignificantBits, content)
             it.copy(messages = messages, loading = false)
         }
     }
 
     fun userMessageShown(messageId: Long) {
-        _verificationUiState.update { currentUiState ->
-            val messages = currentUiState.messages.filterNot { it.id == messageId }
-            currentUiState.copy(messages = messages)
+        _state.update { state ->
+            val messages = state.messages.filterNot { it.id == messageId }
+            state.copy(messages = messages)
         }
     }
 }

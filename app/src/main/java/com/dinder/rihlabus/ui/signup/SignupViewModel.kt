@@ -7,8 +7,8 @@ import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.User
 import com.dinder.rihlabus.domain.RegisterUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -17,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignupViewModel @Inject constructor(private val useCase: RegisterUserUseCase) : ViewModel() {
-    private val _signupUiState = MutableStateFlow(SignupUiState())
-    val signupUiState: Flow<SignupUiState> = _signupUiState
+    private val _state = MutableStateFlow(SignupUiState())
+    val state = _state.asStateFlow()
 
     fun signup(
         user: User,
@@ -29,13 +29,13 @@ class SignupViewModel @Inject constructor(private val useCase: RegisterUserUseCa
             useCase(user, company, location).collect { result ->
                 when (result) {
                     is Result.Loading -> {
-                        _signupUiState.update { it.copy(loading = true) }
+                        _state.update { it.copy(loading = true) }
                     }
                     is Result.Error -> {
-                        showErrorMessage(result.message)
+                        showUserMessage(result.message)
                     }
                     is Result.Success -> {
-                        _signupUiState.update { state ->
+                        _state.update { state ->
                             state.copy(navigateToHome = result.value)
                         }
                     }
@@ -44,17 +44,17 @@ class SignupViewModel @Inject constructor(private val useCase: RegisterUserUseCa
         }
     }
 
-    private fun showErrorMessage(message: String) {
-        _signupUiState.update {
-            val messages = it.messages + Message(UUID.randomUUID().mostSignificantBits, message)
+    private fun showUserMessage(content: String) {
+        _state.update {
+            val messages = it.messages + Message(UUID.randomUUID().mostSignificantBits, content)
             it.copy(messages = messages, loading = false)
         }
     }
 
     fun userMessageShown(messageId: Long) {
-        _signupUiState.update { currentUiState ->
-            val messages = currentUiState.messages.filterNot { it.id == messageId }
-            currentUiState.copy(messages = messages)
+        _state.update { state ->
+            val messages = state.messages.filterNot { it.id == messageId }
+            state.copy(messages = messages)
         }
     }
 }
