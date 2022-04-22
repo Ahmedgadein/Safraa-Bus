@@ -37,6 +37,7 @@ class LastTripsFragment : RihlaFragment() {
         binding.lastTripsToolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.filterTrips -> {
+                    // TODO(implement trips filtering feature)
                     true
                 }
 

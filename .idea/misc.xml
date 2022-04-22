@@ -14,6 +14,7 @@
         <entry key="app/src/main/res/drawable/reserved_seat_background.xml" value="0.29814814814814816" />
         <entry key="app/src/main/res/drawable/seat_count_rectangle.xml" value="0.21410006497725795" />
         <entry key="app/src/main/res/drawable/splash_background.xml" value="0.19010416666666666" />
+        <entry key="app/src/main/res/font/arabic.xml" value="0.22547108512020791" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/blank_fragment.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/layout/current_trip_item_list.xml" value="0.4" />
