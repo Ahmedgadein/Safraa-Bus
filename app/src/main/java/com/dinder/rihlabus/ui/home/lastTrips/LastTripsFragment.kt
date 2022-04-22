@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dinder.rihlabus.R
 import com.dinder.rihlabus.adapters.LastTripsAdapter
 import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.databinding.LastTripsFragmentBinding
@@ -33,6 +34,16 @@ class LastTripsFragment : RihlaFragment() {
     }
 
     private fun setUI() {
+        binding.lastTripsToolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.filterTrips -> {
+                    true
+                }
+
+                else -> false
+            }
+        }
+
         val tripsAdapter = LastTripsAdapter()
         binding.lastTripsRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -48,7 +59,10 @@ class LastTripsFragment : RihlaFragment() {
                         showSnackbar(message.content)
                         viewModel.userMessageShown(message.id)
                     }
-                    tripsAdapter.submitList(it.trips)
+                    it.trips.let { trips ->
+                        tripsAdapter.submitList(trips)
+                        binding.noLastTrips.isVisible = trips.isNullOrEmpty() && !it.loading
+                    }
                 }
             }
         }

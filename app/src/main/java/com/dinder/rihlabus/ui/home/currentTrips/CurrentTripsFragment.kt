@@ -55,7 +55,10 @@ class CurrentTripsFragment : RihlaFragment() {
                         showSnackbar(message.content)
                         viewModel.userMessageShown(message.id)
                     }
-                    tripsAdapter.submitList(it.trips)
+                    it.trips.let { trips ->
+                        tripsAdapter.submitList(trips)
+                        binding.noCurrentTrips.isVisible = trips.isNullOrEmpty() && !it.loading
+                    }
                 }
             }
         }
