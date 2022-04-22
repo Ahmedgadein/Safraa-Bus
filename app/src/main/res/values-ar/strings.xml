@@ -44,4 +44,6 @@
     <string name="code">الرمز</string>
     <string name="no_current_trips">لا يوجد رحلات حاليا, قم بإضافة رحلة</string>
     <string name="no_last_trips">لا يوجد رحلات سابقة, قم بإضافة رحلة</string>
+    <string name="unbooked_seat">مقعد غير محجوز</string>
+    <string name="booked_seat">محجوز</string>
 </resources>

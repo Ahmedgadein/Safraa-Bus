@@ -73,7 +73,7 @@
                     android:id="@+id/seatDetailPassengerName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text='@{seat.passenger != null ? seat.passenger : seat.isAvailable ? "Empty" : "Booked Locally"}'
+                    android:text='@{seat.passenger != null ? seat.passenger : seat.isAvailable ? @string/unbooked_seat : @string/booked_seat }'
                     android:textSize="22sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"

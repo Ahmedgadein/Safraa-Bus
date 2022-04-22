@@ -45,4 +45,6 @@
     <string name="terms_and_conditions_label">By signing up you agree to the terms and conditions of Rihla</string>
     <string name="no_current_trips">No current trips, add a new trip</string>
     <string name="no_last_trips">No Previous trips, add a new trip</string>
+    <string name="unbooked_seat">Unbooked Seat</string>
+    <string name="booked_seat">Booked Seat</string>
 </resources>
