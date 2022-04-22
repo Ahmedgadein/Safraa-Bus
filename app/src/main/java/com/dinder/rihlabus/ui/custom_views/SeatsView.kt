@@ -212,7 +212,7 @@ class SeatsView : View {
         when (capability) {
             SeatViewCapability.SELECT_ONLY -> {
                 return if (seats["$seatNumber"] == SeatState.SELECTED) {
-                    Color.GREEN
+                    resources.getColor(R.color.green, context.theme)
                 } else {
                     Color.GRAY
                 }
@@ -220,10 +220,10 @@ class SeatsView : View {
             SeatViewCapability.BOOK_AND_CONFIRM -> {
                 return when (seats["$seatNumber"]) {
                     SeatState.UNBOOKED -> {
-                        Color.GREEN
+                        resources.getColor(R.color.green, context.theme)
                     }
                     SeatState.BOOKED -> {
-                        Color.YELLOW
+                        resources.getColor(R.color.orange, context.theme)
                     }
                     else -> {
                         Color.GRAY
