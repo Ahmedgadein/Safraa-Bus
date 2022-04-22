@@ -29,7 +29,6 @@ class UserRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
                     trySend(Result.Error("Cannot find user"))
                 }
         }
-        awaitClose {
-        }
+        awaitClose()
     }
 }

@@ -73,7 +73,7 @@ class SignupFragment : RihlaFragment() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.signupUiState.collect {
+                viewModel.state.collect {
                     with(it.loading) {
                         binding.signupProgressBar.isVisible = this
                         binding.signupCompanyContainer.editText?.isEnabled = this.not()

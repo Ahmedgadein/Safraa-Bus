@@ -24,7 +24,7 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
                     is Result.Loading -> {}
                     is Result.Error -> {}
                     is Result.Success -> {
-                        _loginUiState.update { state ->
+                        _state.update { state ->
                             state.copy(isLoggedIn = loggedIn.value)
                         }
                     }
@@ -33,15 +33,15 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
         }
     }
 
-    private val _loginUiState = MutableStateFlow(LoginUiState())
-    val loginUiState = _loginUiState.asStateFlow()
+    private val _state = MutableStateFlow(LoginUiState())
+    val state = _state.asStateFlow()
 
     fun onNumberVerified(credential: AuthCredential, phoneNumber: String) {
         viewModelScope.launch {
             repository.isRegistered(phoneNumber).collect { registered ->
                 when (registered) {
                     is Result.Loading -> {
-                        _loginUiState.update { it.copy(loading = true) }
+                        _state.update { it.copy(loading = true) }
                     }
                     is Result.Error -> {
                         showUserMessage(registered.message)
@@ -50,13 +50,13 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
                         repository.login(credential, phoneNumber).collect { login ->
                             when (login) {
                                 is Result.Loading -> {
-                                    _loginUiState.update { it.copy(loading = true) }
+                                    _state.update { it.copy(loading = true) }
                                 }
                                 is Result.Error -> {
                                     showUserMessage(login.message)
                                 }
                                 is Result.Success -> {
-                                    _loginUiState.update {
+                                    _state.update {
                                         it.copy(
                                             loading = false,
                                             navigateToHome = login.value && registered.value,
@@ -86,28 +86,28 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
     }
 
     private fun showLoading() {
-        _loginUiState.update {
+        _state.update {
             it.copy(loading = true)
         }
     }
 
     private fun hideLoading() {
-        _loginUiState.update {
+        _state.update {
             it.copy(loading = false)
         }
     }
 
     private fun showUserMessage(content: String) {
-        _loginUiState.update {
+        _state.update {
             val messages = it.messages + Message(UUID.randomUUID().mostSignificantBits, content)
             it.copy(messages = messages, loading = false)
         }
     }
 
     fun userMessageShown(messageId: Long) {
-        _loginUiState.update { currentUiState ->
-            val messages = currentUiState.messages.filterNot { it.id == messageId }
-            currentUiState.copy(messages = messages)
+        _state.update { state ->
+            val messages = state.messages.filterNot { it.id == messageId }
+            state.copy(messages = messages)
         }
     }
 }

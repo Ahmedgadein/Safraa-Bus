@@ -17,17 +17,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewTripViewModel @Inject constructor(private val useCase: AddTripUseCase) : ViewModel() {
-    private val _newTripUiState = MutableStateFlow(NewTripUiState())
-    val state = _newTripUiState.asStateFlow()
+    private val _state = MutableStateFlow(NewTripUiState())
+    val state = _state.asStateFlow()
 
     fun addTrip(trip: Trip) {
         viewModelScope.launch {
             useCase(trip).collect {
                 when (it) {
-                    Result.Loading -> _newTripUiState.update { state ->
+                    Result.Loading -> _state.update { state ->
                         state.copy(loading = true)
                     }
-                    is Result.Success -> _newTripUiState.update { state ->
+                    is Result.Success -> _state.update { state ->
                         state.copy(loading = false, isAdded = true)
                     }
                     is Result.Error -> showUserMessage(it.message)
@@ -37,16 +37,16 @@ class NewTripViewModel @Inject constructor(private val useCase: AddTripUseCase) 
     }
 
     private fun showUserMessage(content: String) {
-        _newTripUiState.update {
+        _state.update {
             val messages = it.messages + Message(UUID.randomUUID().mostSignificantBits, content)
             it.copy(messages = messages, loading = false)
         }
     }
 
     fun userMessageShown(messageId: Long) {
-        _newTripUiState.update { currentUiState ->
-            val messages = currentUiState.messages.filterNot { it.id == messageId }
-            currentUiState.copy(messages = messages)
+        _state.update { state ->
+            val messages = state.messages.filterNot { it.id == messageId }
+            state.copy(messages = messages)
         }
     }
 }
