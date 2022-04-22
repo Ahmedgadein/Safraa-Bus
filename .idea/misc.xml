@@ -6,8 +6,10 @@
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.19010416666666666" />
         <entry key="app/src/main/res/drawable/dropdown_item.xml" value="0.34322916666666664" />
         <entry key="app/src/main/res/drawable/ic_249.xml" value="0.34322916666666664" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.21410006497725795" />
         <entry key="app/src/main/res/drawable/ic_logo_background.xml" value="0.19010416666666666" />
         <entry key="app/src/main/res/drawable/ic_rihla.xml" value="0.4" />
+        <entry key="app/src/main/res/drawable/ic_rihla_text_logo.xml" value="0.21410006497725795" />
         <entry key="app/src/main/res/drawable/mobile_label.xml" value="0.34322916666666664" />
         <entry key="app/src/main/res/drawable/reserved_seat_background.xml" value="0.29814814814814816" />
         <entry key="app/src/main/res/drawable/splash_background.xml" value="0.19010416666666666" />
@@ -35,6 +37,8 @@
         <entry key="app/src/main/res/menu/bottom_nav.xml" value="0.2014294996751137" />
         <entry key="app/src/main/res/menu/companies.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/menu/navigation_items.xml" value="0.3229166666666667" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.21410006497725795" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.21410006497725795" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_logo.xml" value="0.19010416666666666" />
         <entry key="app/src/main/res/xml/companies.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/xml/preferences.xml" value="0.10822368421052632" />
