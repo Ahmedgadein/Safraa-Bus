@@ -26,15 +26,15 @@
         android:id="@+id/verificationFragment"
         android:name="com.dinder.rihlabus.ui.verification.VerificationFragment"
         android:label="VerificationFragment">
-        <argument
-            android:name="credentials"
-            app:argType="com.dinder.rihlabus.data.model.Credential" />
         <action
             android:id="@+id/action_verificationFragment_to_signupFragment"
             app:destination="@id/signupFragment" />
         <action
             android:id="@+id/action_verificationFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <argument
+            android:name="phoneNumber"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/signupFragment"

@@ -1,7 +1,6 @@
 package com.dinder.rihlabus.ui.login
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,19 +12,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dinder.rihlabus.common.RihlaFragment
-import com.dinder.rihlabus.data.model.Credential
 import com.dinder.rihlabus.databinding.LoginFragmentBinding
 import com.dinder.rihlabus.utils.PhoneNumberFormatter
 import com.dinder.rihlabus.utils.PhoneNumberValidator
-import com.google.firebase.FirebaseException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.PhoneAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class LoginFragment : RihlaFragment() {
@@ -57,7 +49,11 @@ class LoginFragment : RihlaFragment() {
                 return@setOnClickListener
             }
             binding.loginPhoneNumberContainer.editText?.isEnabled = false
-            sendSms()
+            val phoneNumber =
+                PhoneNumberFormatter.getFullNumber(
+                    binding.loginPhoneNumberContainer.editText?.text.toString()
+                )
+            navigateToVerification(phoneNumber)
         }
 
         lifecycleScope.launch {
@@ -104,43 +100,6 @@ class LoginFragment : RihlaFragment() {
         return binding.loginPhoneNumberContainer.helperText == null
     }
 
-    private fun sendSms() {
-        viewModel.onSendingSms()
-        val phoneNumber =
-            PhoneNumberFormatter.getFullNumber(
-                binding.loginPhoneNumberContainer.editText?.text.toString()
-            )
-        val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
-            .setPhoneNumber(phoneNumber) // Phone number to verify
-            .setTimeout(60L, TimeUnit.SECONDS)
-            .setActivity(requireActivity())
-            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                override fun onVerificationCompleted(credentials: PhoneAuthCredential) {
-                    with(viewModel) {
-                        onSmsSent()
-                        onNumberVerified(credentials, phoneNumber)
-                    }
-                }
-
-                override fun onVerificationFailed(exception: FirebaseException) {
-                    Log.i("Ahmed", "onVerificationFailed: $exception")
-                    viewModel.onVerificationFailed()
-                }
-
-                override fun onCodeSent(
-                    code: String,
-                    token: PhoneAuthProvider.ForceResendingToken
-                ) {
-                    super.onCodeSent(code, token)
-                    viewModel.onSmsSent()
-                    val codeToken =
-                        Credential(code = code, token = token, phoneNumber = phoneNumber)
-                    navigateToVerification(codeToken)
-                }
-            }).build()
-        PhoneAuthProvider.verifyPhoneNumber(options)
-    }
-
     private fun navigateToSignup() {
         val phoneNumber =
             PhoneNumberFormatter.getFullNumber(
@@ -156,8 +115,8 @@ class LoginFragment : RihlaFragment() {
         findNavController().navigate(action)
     }
 
-    private fun navigateToVerification(credential: Credential) {
-        val action = LoginFragmentDirections.actionLoginFragmentToVerificationFragment(credential)
+    private fun navigateToVerification(phoneNumber: String) {
+        val action = LoginFragmentDirections.actionLoginFragmentToVerificationFragment(phoneNumber)
         findNavController().navigate(action)
     }
 }
