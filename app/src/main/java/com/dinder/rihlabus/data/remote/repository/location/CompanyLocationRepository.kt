@@ -1,4 +1,4 @@
-package com.dinder.rihlabus.data.repository.location
+package com.dinder.rihlabus.data.remote.repository.location
 
 import com.dinder.rihlabus.common.Result
 import kotlinx.coroutines.flow.Flow

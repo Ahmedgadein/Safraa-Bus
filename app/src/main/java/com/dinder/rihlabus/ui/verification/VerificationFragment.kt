@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit
 class VerificationFragment : RihlaFragment() {
     private val viewModel: VerificationViewModel by viewModels()
     private lateinit var binding: VerificationFragmentBinding
-    private lateinit var verificationID: String
+    private var verificationID: String = "placeholder" // prevents creating credentials crash
     private val args: VerificationFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +62,7 @@ class VerificationFragment : RihlaFragment() {
                 if (s?.length == Constants.VERIFICATION_CODE_LENGTH) {
                     binding.verificationCode.isEnabled = false
                     val credentials =
-                        PhoneAuthProvider.getCredential(verificationID!!, s.toString())
+                        PhoneAuthProvider.getCredential(verificationID, s.toString())
                     viewModel.onVerificationAttempt(credentials, args.phoneNumber)
                 }
             }

@@ -1,4 +1,4 @@
-package com.dinder.rihlabus.data.repository.company
+package com.dinder.rihlabus.data.remote.repository.company
 
 import com.dinder.rihlabus.common.Constants
 import com.dinder.rihlabus.common.Result

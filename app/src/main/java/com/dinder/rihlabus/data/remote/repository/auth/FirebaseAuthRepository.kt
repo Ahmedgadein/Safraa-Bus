@@ -1,4 +1,4 @@
-package com.dinder.rihlabus.data.repository.auth
+package com.dinder.rihlabus.data.remote.repository.auth
 
 import com.dinder.rihlabus.common.Constants
 import com.dinder.rihlabus.common.Result

@@ -2,9 +2,9 @@ package com.dinder.rihlabus.domain
 
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.User
-import com.dinder.rihlabus.data.repository.auth.AuthRepository
-import com.dinder.rihlabus.data.repository.company.CompanyRepository
-import com.dinder.rihlabus.data.repository.location.CompanyLocationRepository
+import com.dinder.rihlabus.data.remote.repository.auth.AuthRepository
+import com.dinder.rihlabus.data.remote.repository.company.CompanyRepository
+import com.dinder.rihlabus.data.remote.repository.location.CompanyLocationRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
