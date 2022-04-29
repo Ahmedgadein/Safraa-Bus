@@ -64,7 +64,7 @@ class RihlaPreferences : PreferenceFragmentCompat() {
             preferences.getString("phone", "NA")
 
         findPreference<Preference>("companyName")?.summary =
-            preferences.getString("company", "NA")
+            preferences.getString("companyName", "NA")
 
         findPreference<Preference>("location")?.summary =
             preferences.getString("location", "NA")

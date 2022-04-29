@@ -11,4 +11,6 @@ object Constants {
     const val VERIFICATION_CODE_LENGTH = 6
     const val NUMBER_OF_SEATS_ROWS = 11
     const val NUMBER_OF_SEATS = 49
+
+    const val DATABASE_NAME = "rihlabus_database"
 }

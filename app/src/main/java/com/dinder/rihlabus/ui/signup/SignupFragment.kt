@@ -17,6 +17,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.data.model.User
@@ -31,12 +32,7 @@ import java.util.*
 class SignupFragment : RihlaFragment() {
     private val viewModel: SignupViewModel by viewModels()
     private lateinit var binding: SignupFragmentBinding
-    private lateinit var phoneNumber: String
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        phoneNumber = SignupFragmentArgs.fromBundle(arguments!!).phoneNumber
-    }
+    private val args: SignupFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,7 +63,7 @@ class SignupFragment : RihlaFragment() {
                 user = User(
                     id = "",
                     name = binding.signupNameContainer.editText?.text.toString(),
-                    phoneNumber = phoneNumber
+                    phoneNumber = args.phoneNumber
                 ),
                 company = binding.signupCompanyContainer.editText?.text.toString(),
                 location = binding.signupLocationContainer.editText?.text.toString()

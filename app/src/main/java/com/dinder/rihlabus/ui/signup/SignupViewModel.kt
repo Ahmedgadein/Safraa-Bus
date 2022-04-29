@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.User
+import com.dinder.rihlabus.data.remote.repository.user.UserRepository
+import com.dinder.rihlabus.domain.GetUserUseCase
 import com.dinder.rihlabus.domain.RegisterUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +18,11 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class SignupViewModel @Inject constructor(private val useCase: RegisterUserUseCase) : ViewModel() {
+class SignupViewModel @Inject constructor(
+    private val registerUseCase: RegisterUserUseCase,
+    private val getUserUseCase: GetUserUseCase,
+    private val userRepository: UserRepository
+) : ViewModel() {
     private val _state = MutableStateFlow(SignupUiState())
     val state = _state.asStateFlow()
 
@@ -26,7 +32,7 @@ class SignupViewModel @Inject constructor(private val useCase: RegisterUserUseCa
         location: String
     ) {
         viewModelScope.launch {
-            useCase(user, company, location).collect { result ->
+            registerUseCase(user, company, location).collect { result ->
                 when (result) {
                     is Result.Loading -> {
                         _state.update { it.copy(loading = true) }
@@ -35,8 +41,17 @@ class SignupViewModel @Inject constructor(private val useCase: RegisterUserUseCa
                         showUserMessage(result.message)
                     }
                     is Result.Success -> {
-                        _state.update { state ->
-                            state.copy(navigateToHome = result.value)
+                        getUserUseCase().collect { user ->
+                            when (user) {
+                                Result.Loading -> Unit
+                                is Result.Error -> showUserMessage(user.message)
+                                is Result.Success -> {
+                                    userRepository.add(user.value)
+                                    _state.update { state ->
+                                        state.copy(navigateToHome = result.value)
+                                    }
+                                }
+                            }
                         }
                     }
                 }

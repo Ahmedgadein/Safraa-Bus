@@ -46,4 +46,7 @@
     <string name="no_last_trips">لا يوجد رحلات سابقة, قم بإضافة رحلة</string>
     <string name="unbooked_seat">مقعد غير محجوز</string>
     <string name="booked_seat">محجوز</string>
+    <string name="there_are_no_trips">لا يوجد رحلات</string>
+    <string name="all_seats">جميع المقاعد</string>
+    <string name="not_booked">غير محجوزة</string>
 </resources>

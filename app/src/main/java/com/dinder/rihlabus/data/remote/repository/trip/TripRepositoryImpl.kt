@@ -1,4 +1,4 @@
-package com.dinder.rihlabus.data.repository.trip
+package com.dinder.rihlabus.data.remote.repository.trip
 
 import android.util.Log
 import com.dinder.rihlabus.common.Constants

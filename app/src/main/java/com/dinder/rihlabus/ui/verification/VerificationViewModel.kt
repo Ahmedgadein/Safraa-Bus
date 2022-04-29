@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
 import com.dinder.rihlabus.common.Result
-import com.dinder.rihlabus.data.repository.auth.AuthRepository
+import com.dinder.rihlabus.data.remote.repository.auth.AuthRepository
+import com.dinder.rihlabus.data.remote.repository.user.UserRepository
 import com.google.firebase.auth.AuthCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,10 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class VerificationViewModel @Inject constructor(private val repository: AuthRepository) :
+class VerificationViewModel @Inject constructor(
+    private val repository: AuthRepository,
+    private val userRepository: UserRepository
+) :
     ViewModel() {
 
     private val _state = MutableStateFlow(VerificationUiState())
@@ -35,26 +39,28 @@ class VerificationViewModel @Inject constructor(private val repository: AuthRepo
                     }
                     is Result.Success -> {
                         Log.i("LoginFlow", "isRegistered Value: ${registered.value}")
-                        repository.login(credential, phoneNumber).collect { login ->
-                            when (login) {
-                                is Result.Loading -> {
-                                    _state.update { it.copy(loading = true) }
-                                }
-                                is Result.Error -> {
-                                    showUserMessage(login.message)
-                                }
-                                is Result.Success -> {
-                                    Log.i("LoginFlow", "Login Value: ${login.value}")
-                                    _state.update {
-                                        Log.i(
-                                            "LoginFlow",
-                                            "Navigate to Signup: ${login.value && !registered.value}"
-                                        )
-                                        it.copy(
-                                            loading = false,
-                                            navigateToHome = login.value && registered.value,
-                                            navigateToSignup = login.value && !registered.value
-                                        )
+                        userRepository.user.collect { user ->
+                            repository.login(credential, phoneNumber).collect { login ->
+                                when (login) {
+                                    is Result.Loading -> {
+                                        _state.update { it.copy(loading = true) }
+                                    }
+                                    is Result.Error -> {
+                                        showUserMessage(login.message)
+                                    }
+                                    is Result.Success -> {
+                                        Log.i("LoginFlow", "Login Value: ${login.value}")
+                                        _state.update {
+                                            Log.i(
+                                                "LoginFlow",
+                                                "Navigate to Signup: ${login.value && !registered.value}"
+                                            )
+                                            it.copy(
+                                                loading = false,
+                                                navigateToHome = login.value && registered.value,
+                                                navigateToSignup = login.value && (!registered.value || user == null)
+                                            )
+                                        }
                                     }
                                 }
                             }

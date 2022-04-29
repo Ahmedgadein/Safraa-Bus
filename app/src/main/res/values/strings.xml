@@ -47,4 +47,7 @@
     <string name="no_last_trips">No Previous trips, add a new trip</string>
     <string name="unbooked_seat">Unbooked Seat</string>
     <string name="booked_seat">Booked Seat</string>
+    <string name="there_are_no_trips">There are no trips</string>
+    <string name="all_seats">All Seats</string>
+    <string name="not_booked">Not booked</string>
 </resources>

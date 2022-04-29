@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
 import com.dinder.rihlabus.common.Result
-import com.dinder.rihlabus.data.repository.trip.TripRepository
+import com.dinder.rihlabus.data.remote.repository.trip.TripRepository
 import com.dinder.rihlabus.utils.SeatState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
