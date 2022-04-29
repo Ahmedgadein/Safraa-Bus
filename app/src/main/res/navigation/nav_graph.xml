@@ -99,4 +99,9 @@
             android:id="@+id/action_landingPage_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/seatsInfoFragment"
+        android:name="com.dinder.rihlabus.ui.common.SeatsInfoFragment"
+        android:label="fragment_seats_info"
+        tools:layout="@layout/seats_info_fragment" />
 </navigation>

@@ -1,8 +1,12 @@
 package com.dinder.rihlabus.data.model
 
+import android.os.Parcelable
 import com.dinder.rihlabus.utils.SeatState
+import kotlinx.parcelize.Parcelize
 
-data class Seat(val number: Int, val passenger: String? = null, val status: SeatState) {
+@Parcelize
+data class Seat(val number: Int, val passenger: String? = null, val status: SeatState) :
+    Parcelable {
 
     val isAvailable: Boolean
         get() = status == SeatState.UNBOOKED && passenger == null
