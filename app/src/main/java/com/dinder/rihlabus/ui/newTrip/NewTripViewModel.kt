@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
 import com.dinder.rihlabus.common.Result
+import com.dinder.rihlabus.data.model.Destination
 import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.domain.AddTripUseCase
+import com.dinder.rihlabus.domain.GetDestinationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,13 +18,20 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class NewTripViewModel @Inject constructor(private val useCase: AddTripUseCase) : ViewModel() {
+class NewTripViewModel @Inject constructor(
+    private val addTripUseCase: AddTripUseCase,
+    private val locationsUseCase: GetDestinationsUseCase
+) : ViewModel() {
     private val _state = MutableStateFlow(NewTripUiState())
     val state = _state.asStateFlow()
 
+    init {
+        loadLocations()
+    }
+
     fun addTrip(trip: Trip) {
         viewModelScope.launch {
-            useCase(trip).collect {
+            addTripUseCase(trip.copy(to = _state.value.selectedLocation)).collect {
                 when (it) {
                     Result.Loading -> _state.update { state ->
                         state.copy(loading = true)
@@ -31,6 +40,23 @@ class NewTripViewModel @Inject constructor(private val useCase: AddTripUseCase) 
                         state.copy(loading = false, isAdded = true)
                     }
                     is Result.Error -> showUserMessage(it.message)
+                }
+            }
+        }
+    }
+
+    private fun loadLocations() {
+        viewModelScope.launch {
+            locationsUseCase().collect { result ->
+                when (result) {
+                    Result.Loading -> _state.update { it.copy(loading = true) }
+                    is Result.Error -> showUserMessage(result.message)
+                    is Result.Success -> _state.update {
+                        it.copy(
+                            locations = result.value,
+                            loading = false
+                        )
+                    }
                 }
             }
         }
@@ -48,5 +74,9 @@ class NewTripViewModel @Inject constructor(private val useCase: AddTripUseCase) 
             val messages = state.messages.filterNot { it.id == messageId }
             state.copy(messages = messages)
         }
+    }
+
+    fun onLocationSelected(destination: Destination) {
+        _state.update { it.copy(selectedLocation = destination) }
     }
 }

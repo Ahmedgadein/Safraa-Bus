@@ -13,7 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dinder.rihlabus.R
+import com.dinder.rihlabus.adapters.RihlaArrayAdapter
 import com.dinder.rihlabus.common.RihlaFragment
+import com.dinder.rihlabus.data.model.Destination
 import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.databinding.NewTripFragmentBinding
 import com.dinder.rihlabus.utils.DateTimeUtils
@@ -69,7 +71,6 @@ class NewTripFragment : RihlaFragment() {
                 time = DateTimeUtils.getTimeInstance(
                     binding.newTripTimeContainer.editText?.text.toString()
                 ),
-                to = binding.newTripDestinationContainer.editText?.text.toString(),
                 price = binding.newTripPriceContainer.editText?.text.toString().toInt(),
                 seats = SeatUtils.getSelectedSeatsAsUnbooked(binding.newTripSeatView.getSeats())
             )
@@ -124,6 +125,8 @@ class NewTripFragment : RihlaFragment() {
                         return@collect
                     }
 
+                    setLocationsDropdown(it.locations)
+
                     if (it.isAdded) {
                         showSnackbar("Added successfully")
                         findNavController().navigateUp()
@@ -131,6 +134,22 @@ class NewTripFragment : RihlaFragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun setLocationsDropdown(destinations: List<Destination>) {
+        val locationsAdapter =
+            RihlaArrayAdapter<Destination>(
+                requireContext(),
+                R.layout.dropdown_item,
+                destinations.toMutableList()
+            )
+        binding.newTripDestinationDropDown.setAdapter(locationsAdapter)
+        binding.newTripDestinationDropDown.setOnItemClickListener { _, _, position, _ ->
+            val location = locationsAdapter.getItem(
+                position
+            )
+            viewModel.onLocationSelected(location)
         }
     }
 
@@ -149,7 +168,7 @@ class NewTripFragment : RihlaFragment() {
 
     private fun _validateDestination(): String? {
         return with(binding.newTripDestinationContainer) {
-            val message = if (this.editText?.text.isNullOrEmpty()) "Required" else null
+            val message = if (viewModel.state.value.selectedLocation == null) "Required" else null
             this.helperText = message
             return@with message
         }

@@ -11,8 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        app:cardCornerRadius="4dp"
-        android:elevation="4dp">
+        android:elevation="4dp"
+        app:cardCornerRadius="4dp">
 
         <ProgressBar
             android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/newTripDestinationContainer"
-                style="?textInputOutlinedStyle"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -51,7 +51,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView3">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
+                    android:id="@+id/newTripDestinationDropDown"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -64,8 +65,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="4dp"
-                android:hint="@string/date"
                 android:clickable="true"
+                android:hint="@string/date"
                 app:helperTextTextColor="@android:color/holo_red_dark"
                 app:layout_constraintEnd_toStartOf="@+id/newTripTimeContainer"
                 app:layout_constraintStart_toStartOf="parent"
@@ -87,8 +88,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="16dp"
-                android:hint="@string/time"
                 android:clickable="true"
+                android:hint="@string/time"
                 app:helperTextTextColor="@android:color/holo_red_dark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/newTripDateContainer"
@@ -158,11 +159,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:baselineAligned="false"
                 android:gravity="center_vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                android:baselineAligned="false">
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -177,7 +178,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/seats"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/newTripSeatsCount"
@@ -210,10 +211,10 @@
                 android:id="@+id/newTripSeatView"
                 android:layout_width="300dp"
                 android:layout_height="600dp"
-                app:selectionCapability="select_only"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+                app:selectionCapability="select_only" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

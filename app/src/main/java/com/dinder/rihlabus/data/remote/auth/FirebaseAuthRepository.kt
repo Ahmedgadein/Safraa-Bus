@@ -1,6 +1,7 @@
-package com.dinder.rihlabus.data.remote.repository.auth
+package com.dinder.rihlabus.data.remote.auth
 
-import com.dinder.rihlabus.common.Constants
+import com.dinder.rihlabus.common.Collections
+import com.dinder.rihlabus.common.Fields
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.User
 import com.google.firebase.auth.AuthCredential
@@ -18,7 +19,7 @@ class FirebaseAuthRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth
 ) :
     AuthRepository {
-    private val _ref = Firebase.firestore.collection(Constants.FireStoreCollection.USERS)
+    private val _ref = Firebase.firestore.collection(Collections.COMPANY_USERS)
 
     init {
 //        firebaseAuth.signOut()
@@ -31,7 +32,7 @@ class FirebaseAuthRepository @Inject constructor(
     override suspend fun isRegistered(phoneNumber: String) = callbackFlow {
         withContext(ioDispatcher) {
             trySend(Result.Loading)
-            _ref.whereEqualTo("phoneNumber", phoneNumber).get()
+            _ref.whereEqualTo(Fields.PHONE_NUMBER, phoneNumber).get()
                 .addOnSuccessListener {
                     trySend(Result.Success(!it.isEmpty))
                 }

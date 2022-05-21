@@ -1,6 +1,7 @@
-package com.dinder.rihlabus.data.remote.repository.company
+package com.dinder.rihlabus.data.remote.company
 
-import com.dinder.rihlabus.common.Constants
+import com.dinder.rihlabus.common.Collections
+import com.dinder.rihlabus.common.Fields
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.Company
 import com.google.firebase.firestore.ktx.firestore
@@ -17,18 +18,16 @@ import javax.inject.Inject
 class CompanyRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher
 ) : CompanyRepository {
-    private val _ref = Firebase.firestore.collection(Constants.FireStoreCollection.COMPANIES)
+    private val _ref = Firebase.firestore.collection(Collections.COMPANIES)
 
-    override suspend fun upsert(name: String): Flow<Result<Company>> = callbackFlow {
+    override suspend fun upsert(company: Company): Flow<Result<Company>> = callbackFlow {
         withContext(ioDispatcher) {
             trySend(Result.Loading)
-            _ref.whereEqualTo("name", name).get()
+            _ref.whereEqualTo(Fields.NAME, company.name).get()
                 .addOnSuccessListener { it ->
                     if (it.documents.isNullOrEmpty()) {
                         _ref.add(
-                            mapOf(
-                                "name" to name
-                            )
+                            company.toJson()
                         ).addOnSuccessListener { addedCompanyReference ->
                             _ref.document(addedCompanyReference.id).get()
                                 .addOnSuccessListener { success ->
@@ -44,6 +43,21 @@ class CompanyRepositoryImpl @Inject constructor(
                 }
                 .addOnFailureListener {
                     trySend(Result.Error("Failed to find company"))
+                }
+        }
+        awaitClose()
+    }
+
+    override suspend fun getCompanies(): Flow<Result<List<Company>>> = callbackFlow {
+        withContext(ioDispatcher) {
+            trySend(Result.Loading)
+            _ref.get()
+                .addOnSuccessListener {
+                    val companies = it.documents.map { json -> Company.fromJson(json.data!!) }
+                    trySend(Result.Success(companies))
+                }
+                .addOnFailureListener {
+                    trySend(Result.Error("Failed To Load Companies"))
                 }
         }
         awaitClose()

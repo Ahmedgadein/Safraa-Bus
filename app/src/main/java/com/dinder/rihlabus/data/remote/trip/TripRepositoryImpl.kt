@@ -1,8 +1,11 @@
-package com.dinder.rihlabus.data.remote.repository.trip
+package com.dinder.rihlabus.data.remote.trip
 
 import android.util.Log
-import com.dinder.rihlabus.common.Constants
+import com.dinder.rihlabus.common.Collections
+import com.dinder.rihlabus.common.Fields
 import com.dinder.rihlabus.common.Result
+import com.dinder.rihlabus.data.model.Company
+import com.dinder.rihlabus.data.model.Destination
 import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.utils.SeatState
 import com.google.firebase.firestore.Query
@@ -22,7 +25,7 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 class TripRepositoryImpl @Inject constructor(private val ioDispatcher: CoroutineDispatcher) :
     TripRepository {
-    private val _ref = Firebase.firestore.collection(Constants.FireStoreCollection.TRIPS)
+    private val _ref = Firebase.firestore.collection(Collections.TRIPS)
     override suspend fun addTrip(trip: Trip): Flow<Result<Boolean>> = callbackFlow {
         withContext(ioDispatcher) {
             trySend(Result.Loading)
@@ -38,14 +41,14 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
     }
 
     override suspend fun getCurrentTrips(
-        company: String,
-        location: String
+        company: Company,
+        location: Destination
     ): Flow<Result<List<Trip>>> = callbackFlow {
         withContext(ioDispatcher) {
             trySend(Result.Loading)
-            _ref.whereEqualTo("from", location)
-                .whereEqualTo("company", company)
-                .whereGreaterThan("date", Date())
+            _ref.whereEqualTo(Fields.FROM, location.toJson())
+                .whereEqualTo(Fields.COMPANY, company.toJson())
+                .whereGreaterThan(Fields.DATE, Date())
                 .orderBy("date", Query.Direction.ASCENDING)
                 .get()
                 .addOnSuccessListener { snapshot ->
@@ -60,14 +63,17 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
         awaitClose()
     }
 
-    override suspend fun getLastTrips(company: String, location: String): Flow<Result<List<Trip>>> =
+    override suspend fun getLastTrips(
+        company: Company,
+        location: Destination
+    ): Flow<Result<List<Trip>>> =
         callbackFlow {
             withContext(ioDispatcher) {
                 trySend(Result.Loading)
-                _ref.whereEqualTo("from", location)
-                    .whereEqualTo("company", company)
-                    .whereLessThan("date", Date())
-                    .orderBy("date", Query.Direction.ASCENDING)
+                _ref.whereEqualTo(Fields.FROM, location.toJson())
+                    .whereEqualTo(Fields.COMPANY, company.toJson())
+                    .whereLessThan(Fields.DATE, Date())
+                    .orderBy(Fields.DATE, Query.Direction.ASCENDING)
                     .get()
                     .addOnSuccessListener { snapshot ->
                         val results = snapshot.documents.map { Trip.fromJson(it.data!!) }
@@ -83,7 +89,7 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
     override suspend fun getTrip(id: Long): Flow<Result<Trip>> = callbackFlow {
         withContext(ioDispatcher) {
             trySend(Result.Loading)
-            _ref.whereEqualTo("id", id).limit(1).get()
+            _ref.whereEqualTo(Fields.ID, id).limit(1).get()
                 .addOnSuccessListener {
                     trySend(Result.Success(Trip.fromJson(it.documents.first().data!!)))
                 }
@@ -101,14 +107,14 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
     ): Flow<Result<Boolean>> = callbackFlow {
         withContext(ioDispatcher) {
             trySend(Result.Loading)
-            _ref.whereEqualTo("id", tripId).limit(1).get()
+            _ref.whereEqualTo(Fields.ID, tripId).limit(1).get()
                 .addOnSuccessListener {
                     _ref.document(it.documents[0].id).set(
                         mapOf(
-                            "seats" to
+                            Fields.SEATS to
                                 mapOf(
                                     "$seatNumber" to mapOf(
-                                        "status" to state
+                                        Fields.STATUS to state
                                     )
                                 )
                         ),

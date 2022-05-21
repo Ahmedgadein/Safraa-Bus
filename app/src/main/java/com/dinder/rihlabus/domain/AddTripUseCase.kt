@@ -2,8 +2,8 @@ package com.dinder.rihlabus.domain
 
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.Trip
-import com.dinder.rihlabus.data.remote.repository.trip.TripRepository
-import com.dinder.rihlabus.data.remote.repository.user.UserRepository
+import com.dinder.rihlabus.data.remote.trip.TripRepository
+import com.dinder.rihlabus.data.remote.user.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -21,8 +21,8 @@ class AddTripUseCase @Inject constructor(
                 tripRepository.addTrip(
                     trip.copy(
                         id = UUID.randomUUID().mostSignificantBits,
-                        from = user.location,
-                        company = user.company
+                        from = user.location!!,
+                        company = user.company!!
                     )
                 )
                     .collect { result ->
