@@ -1,6 +1,7 @@
-package com.dinder.rihlabus.data.remote.repository.user
+package com.dinder.rihlabus.data.remote.user
 
-import com.dinder.rihlabus.common.Constants
+import com.dinder.rihlabus.common.Collections
+import com.dinder.rihlabus.common.Fields
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.local.UserDao
 import com.dinder.rihlabus.data.model.User
@@ -20,7 +21,7 @@ class UserRepositoryImpl @Inject constructor(
 ) :
     UserRepository {
 
-    private val _ref = Firebase.firestore.collection(Constants.FireStoreCollection.USERS)
+    private val _ref = Firebase.firestore.collection(Collections.COMPANY_USERS)
 
     override val user = channelFlow {
         withContext(ioDispatcher) {
@@ -32,7 +33,10 @@ class UserRepositoryImpl @Inject constructor(
     override fun get(id: String): Flow<Result<User>> = callbackFlow {
         withContext(ioDispatcher) {
             trySend(Result.Loading)
-            _ref.whereEqualTo("id", id).limit(1).get()
+            _ref.whereEqualTo(
+                Fields.ID,
+                id
+            ).limit(1).get()
                 .addOnSuccessListener {
                     trySend(Result.Success(User.fromJson(it.documents[0].data!!)))
                 }

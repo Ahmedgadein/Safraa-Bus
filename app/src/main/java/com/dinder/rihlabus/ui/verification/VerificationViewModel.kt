@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
 import com.dinder.rihlabus.common.Result
-import com.dinder.rihlabus.data.remote.repository.auth.AuthRepository
-import com.dinder.rihlabus.data.remote.repository.user.UserRepository
+import com.dinder.rihlabus.data.remote.auth.AuthRepository
+import com.dinder.rihlabus.data.remote.user.UserRepository
 import com.google.firebase.auth.AuthCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

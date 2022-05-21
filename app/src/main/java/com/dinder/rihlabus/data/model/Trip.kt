@@ -8,17 +8,17 @@ data class Trip(
     val id: Long? = null,
     val date: Date,
     val time: Date,
-    val company: String? = null,
-    val from: String? = null,
-    val to: String,
+    val company: Company? = null,
+    val from: Destination? = null,
+    val to: Destination? = null,
     val price: Int,
     val seats: List<Seat>
 ) {
-    fun toJson() = mapOf(
+    fun toJson(): Map<String, Any?> = mapOf(
         "id" to id,
-        "from" to from,
-        "to" to to,
-        "company" to company,
+        "from" to from?.toJson(),
+        "to" to to?.toJson(),
+        "company" to company?.toJson(),
         "time" to time,
         "date" to date,
         "seats" to SeatUtils.seatsModelToMap(seats),
@@ -30,9 +30,9 @@ data class Trip(
             id = json["id"] as Long,
             date = (json["date"] as Timestamp).toDate(),
             time = (json["time"] as Timestamp).toDate(),
-            company = json["company"].toString(),
-            from = json["from"].toString(),
-            to = json["to"].toString(),
+            company = Company.fromJson(json["company"] as Map<String, Any>),
+            from = Destination.fromJson(json["from"] as Map<String, Any>),
+            to = Destination.fromJson(json["to"] as Map<String, Any>),
             price = json["price"].toString().toInt(),
             seats = SeatUtils.seatsMapToModel(json["seats"] as Map<String, Map<String, Any?>>)
         )

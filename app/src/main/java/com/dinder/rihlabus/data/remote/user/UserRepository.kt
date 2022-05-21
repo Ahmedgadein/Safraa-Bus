@@ -1,4 +1,4 @@
-package com.dinder.rihlabus.data.remote.repository.user
+package com.dinder.rihlabus.data.remote.user
 
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.User

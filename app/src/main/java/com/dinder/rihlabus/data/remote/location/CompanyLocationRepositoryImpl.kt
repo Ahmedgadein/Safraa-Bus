@@ -1,7 +1,10 @@
-package com.dinder.rihlabus.data.remote.repository.location
+package com.dinder.rihlabus.data.remote.location
 
-import com.dinder.rihlabus.common.Constants
+import com.dinder.rihlabus.common.Collections
+import com.dinder.rihlabus.common.Fields
 import com.dinder.rihlabus.common.Result
+import com.dinder.rihlabus.data.model.Company
+import com.dinder.rihlabus.data.model.Destination
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,20 +19,20 @@ import javax.inject.Inject
 class CompanyLocationRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher
 ) : CompanyLocationRepository {
-    private val _ref = Firebase.firestore.collection(Constants.FireStoreCollection.LOCATIONS)
+    private val _ref = Firebase.firestore.collection(Collections.COMPANY_LOCATIONS)
 
-    override suspend fun upsert(location: String, company: String): Flow<Result<Boolean>> =
+    override suspend fun upsert(location: Destination, company: Company): Flow<Result<Boolean>> =
         callbackFlow {
             withContext(ioDispatcher) {
                 trySend(Result.Loading)
-                _ref.whereEqualTo("company", company)
-                    .whereEqualTo("location", location).get()
+                _ref.whereEqualTo(Fields.COMPANY, company.toJson())
+                    .whereEqualTo(Fields.LOCATION, location.toJson()).get()
                     .addOnSuccessListener {
                         if (it.isEmpty) {
                             _ref.add(
                                 mapOf(
-                                    "location" to location,
-                                    "company" to company,
+                                    "location" to location.toJson(),
+                                    "company" to company.toJson(),
                                     "isActive" to true
                                 )
                             ).addOnSuccessListener {

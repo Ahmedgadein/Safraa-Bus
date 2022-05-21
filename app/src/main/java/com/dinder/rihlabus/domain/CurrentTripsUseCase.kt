@@ -2,8 +2,8 @@ package com.dinder.rihlabus.domain
 
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.Trip
-import com.dinder.rihlabus.data.remote.repository.trip.TripRepository
-import com.dinder.rihlabus.data.remote.repository.user.UserRepository
+import com.dinder.rihlabus.data.remote.trip.TripRepository
+import com.dinder.rihlabus.data.remote.user.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -18,8 +18,8 @@ class CurrentTripsUseCase @Inject constructor(
         userRepository.user.collect { user ->
             user?.let {
                 tripRepository.getCurrentTrips(
-                    user.company,
-                    user.location
+                    user.company!!,
+                    user.location!!
                 ).collect {
                     when (it) {
                         Result.Loading -> Unit

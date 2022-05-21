@@ -10,7 +10,6 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -19,7 +18,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dinder.rihlabus.R
+import com.dinder.rihlabus.adapters.RihlaArrayAdapter
 import com.dinder.rihlabus.common.RihlaFragment
+import com.dinder.rihlabus.data.model.Company
+import com.dinder.rihlabus.data.model.Destination
 import com.dinder.rihlabus.data.model.User
 import com.dinder.rihlabus.databinding.SignupFragmentBinding
 import com.dinder.rihlabus.utils.NameValidator
@@ -40,14 +42,11 @@ class SignupFragment : RihlaFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = SignupFragmentBinding.inflate(inflater, container, false)
-        _setUI()
-
+        setUI()
         return binding.root
     }
 
-    private fun _setUI() {
-        _setCompaniesDropdown()
-        _setLocationsDropdown()
+    private fun setUI() {
         _setTermsAndConditionsView()
 
         binding.signupButton.setOnClickListener {
@@ -64,9 +63,7 @@ class SignupFragment : RihlaFragment() {
                     id = "",
                     name = binding.signupNameContainer.editText?.text.toString(),
                     phoneNumber = args.phoneNumber
-                ),
-                company = binding.signupCompanyContainer.editText?.text.toString(),
-                location = binding.signupLocationContainer.editText?.text.toString()
+                )
             )
         }
 
@@ -84,6 +81,9 @@ class SignupFragment : RihlaFragment() {
                         viewModel.userMessageShown(message.id)
                     }
 
+                    setLocationsDropdown(it.locations)
+                    setCompaniesDropdown(it.companies)
+
                     if (it.navigateToHome) {
                         navigateToHome()
                         return@collect
@@ -93,16 +93,34 @@ class SignupFragment : RihlaFragment() {
         }
     }
 
-    private fun _setCompaniesDropdown() {
-        val companies = resources.getStringArray(R.array.companies)
-        val companiesAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, companies)
+    private fun setCompaniesDropdown(companies: List<Company>) {
+        val companiesAdapter =
+            RihlaArrayAdapter<Company>(
+                requireContext(),
+                R.layout.dropdown_item,
+                companies.toMutableList()
+            )
         binding.companiesDropDown.setAdapter(companiesAdapter)
+        binding.companiesDropDown.setOnItemClickListener { _, _, position, _ ->
+            val company = companiesAdapter.getItem(position)
+            viewModel.onCompanySelected(company)
+        }
     }
 
-    private fun _setLocationsDropdown() {
-        val locations = resources.getStringArray(R.array.locations)
-        val locationsAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, locations)
+    private fun setLocationsDropdown(destinations: List<Destination>) {
+        val locationsAdapter =
+            RihlaArrayAdapter<Destination>(
+                requireContext(),
+                R.layout.dropdown_item,
+                destinations.toMutableList()
+            )
         binding.locationDropDown.setAdapter(locationsAdapter)
+        binding.locationDropDown.setOnItemClickListener { _, _, position, _ ->
+            val location = locationsAdapter.getItem(
+                position
+            )
+            viewModel.onLocationSelected(location)
+        }
     }
 
     private fun _setTermsAndConditionsView() {
@@ -152,13 +170,15 @@ class SignupFragment : RihlaFragment() {
 
     private fun _validateCompany() {
         with(binding.signupCompanyContainer) {
-            this.helperText = if (this.editText?.text.isNullOrEmpty()) "Required" else null
+            this.helperText =
+                if (viewModel.state.value.selectedCompany == null) "Required" else null
         }
     }
 
     private fun _validateLocation() {
         with(binding.signupLocationContainer) {
-            this.helperText = if (this.editText?.text.isNullOrEmpty()) "Required" else null
+            this.helperText =
+                if (viewModel.state.value.selectedLocation == null) "Required" else null
         }
     }
 

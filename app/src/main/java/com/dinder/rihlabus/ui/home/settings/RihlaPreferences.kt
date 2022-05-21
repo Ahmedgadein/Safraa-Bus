@@ -10,10 +10,13 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.dinder.rihlabus.R
+import com.dinder.rihlabus.data.model.Company
+import com.dinder.rihlabus.data.model.Destination
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.*
 
 @AndroidEntryPoint
 class RihlaPreferences : PreferenceFragmentCompat() {
@@ -45,8 +48,8 @@ class RihlaPreferences : PreferenceFragmentCompat() {
                         with(preferences.edit()) {
                             putString("name", it.name)
                             putString("phone", it.phoneNumber)
-                            putString("companyName", it.company)
-                            putString("location", it.location)
+                            putString("companyName", getCompanyName(it.company))
+                            putString("location", getCompanyLocation(it.location))
                             apply()
                         }
                         displayPreferences()
@@ -68,6 +71,23 @@ class RihlaPreferences : PreferenceFragmentCompat() {
 
         findPreference<Preference>("location")?.summary =
             preferences.getString("location", "NA")
+    }
+
+    private fun getCompanyName(company: Company?): String {
+        company?.let {
+            val isArabic = Locale.getDefault().language.equals(Locale("ar").language)
+            return if (isArabic) company.arabicName else company.name
+        }
+        return "NA"
+    }
+
+    private fun getCompanyLocation(destination: Destination?): String {
+        destination?.let {
+            val isArabic = Locale.getDefault().language.equals(Locale("ar").language)
+            return if (isArabic) destination.arabicName else destination.name
+        }
+
+        return "NA"
     }
 
     private fun showSnackbar(message: String) {

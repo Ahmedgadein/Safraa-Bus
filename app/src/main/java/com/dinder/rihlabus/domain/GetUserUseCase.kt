@@ -2,7 +2,7 @@ package com.dinder.rihlabus.domain
 
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.User
-import com.dinder.rihlabus.data.remote.repository.user.UserRepository
+import com.dinder.rihlabus.data.remote.user.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
