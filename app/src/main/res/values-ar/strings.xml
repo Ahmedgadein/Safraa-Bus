@@ -49,4 +49,18 @@
     <string name="there_are_no_trips">لا يوجد رحلات</string>
     <string name="all_seats">جميع المقاعد</string>
     <string name="not_booked">غير محجوزة</string>
+
+    <!--  Error Messages  -->
+    <string name="couldnt_find_user">لم يتم العثور على المستخدم</string>
+    <string name="failed_to_check_registration">فشل في التحقق من التسجيل</string>
+    <string name="login_failed">تعذر تسجيل الدخول, عاود المحاولة</string>
+    <string name="registration_failed">فشل في التسجيل, عاود المحاولة</string>
+    <string name="add_company_failed">فشل في حفظ الشركة, عاود المحاولة</string>
+    <string name="add_trip_failed">فشل في حفظ الرحلة, عاود المحاولة</string>
+    <string name="loading_companies_failed">فشل في عرض الشركات, تأكد من إتصال الإنترنت</string>
+    <string name="loading_destinations_failed">فشل في عرض المواقع, تأكد من إتصال الإنترنت</string>
+    <string name="loading_current_trips_failed">فشل في عرض الرحلات الحالية, تأكد من إتصال الإنترنت</string>
+    <string name="loading_last_trips_failed">فشل في عرض الرحلات السابقة, تأكد من إتصال الإنترنت</string>
+    <string name="loading_trip_failed">فشل في عرض الرحالة, تأكد من إتصال الإنترنت</string>
+    <string name="failed_to_update_seat">فشل في تعديل معلومات المقعد, عاود المحاولة</string>
 </resources>

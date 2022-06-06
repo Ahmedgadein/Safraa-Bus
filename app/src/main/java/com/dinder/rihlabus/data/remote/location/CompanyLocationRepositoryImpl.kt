@@ -5,6 +5,7 @@ import com.dinder.rihlabus.common.Fields
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.Company
 import com.dinder.rihlabus.data.model.Destination
+import com.dinder.rihlabus.utils.ErrorMessages
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class CompanyLocationRepositoryImpl @Inject constructor(
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val errorMessages: ErrorMessages
 ) : CompanyLocationRepository {
     private val _ref = Firebase.firestore.collection(Collections.COMPANY_LOCATIONS)
 
@@ -39,14 +41,14 @@ class CompanyLocationRepositoryImpl @Inject constructor(
                                 trySend(Result.Success(true))
                             }
                                 .addOnFailureListener {
-                                    trySend(Result.Error("Failed to add company"))
+                                    trySend(Result.Error(errorMessages.failedToAddCompany))
                                 }
                         } else {
                             trySend(Result.Success(true))
                         }
                     }
                     .addOnFailureListener {
-                        trySend(Result.Error("Failed to add company"))
+                        trySend(Result.Error(errorMessages.failedToAddCompany))
                     }
             }
             awaitClose()

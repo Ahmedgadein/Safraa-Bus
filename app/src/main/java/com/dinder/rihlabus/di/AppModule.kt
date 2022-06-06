@@ -1,6 +1,7 @@
 package com.dinder.rihlabus.di
 
 import android.content.Context
+import android.content.res.Resources
 import com.dinder.rihlabus.data.local.UserDao
 import com.dinder.rihlabus.data.local.db.RihlaBusDatabase
 import com.dinder.rihlabus.data.remote.auth.AuthRepository
@@ -15,6 +16,7 @@ import com.dinder.rihlabus.data.remote.trip.TripRepository
 import com.dinder.rihlabus.data.remote.trip.TripRepositoryImpl
 import com.dinder.rihlabus.data.remote.user.UserRepository
 import com.dinder.rihlabus.data.remote.user.UserRepositoryImpl
+import com.dinder.rihlabus.utils.ErrorMessages
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
@@ -36,6 +38,14 @@ object AppModule {
     fun provideDatabase(@ApplicationContext context: Context): RihlaBusDatabase =
         RihlaBusDatabase.getInstance(context)
 
+    @Singleton
+    @Provides
+    fun provideResources(@ApplicationContext context: Context): Resources =
+        context.resources
+
+    @Provides
+    fun provideErrorMessages(resources: Resources): ErrorMessages = ErrorMessages(resources)
+
     @Provides
     fun provideUserDao(database: RihlaBusDatabase): UserDao = database.userDao()
 
@@ -48,31 +58,39 @@ object AppModule {
     @Provides
     fun provideAuthRepository(
         ioDispatcher: CoroutineDispatcher,
-        firebaseAuth: FirebaseAuth
-    ): AuthRepository = FirebaseAuthRepository(ioDispatcher, firebaseAuth)
+        firebaseAuth: FirebaseAuth,
+        errorMessages: ErrorMessages
+    ): AuthRepository = FirebaseAuthRepository(ioDispatcher, firebaseAuth, errorMessages)
 
     @Provides
     fun provideTripRepository(
-        ioDispatcher: CoroutineDispatcher
-    ): TripRepository = TripRepositoryImpl(ioDispatcher)
+        ioDispatcher: CoroutineDispatcher,
+        errorMessages: ErrorMessages
+    ): TripRepository = TripRepositoryImpl(ioDispatcher, errorMessages)
 
     @Provides
     fun provideUserRepository(
         ioDispatcher: CoroutineDispatcher,
-        dao: UserDao
-    ): UserRepository = UserRepositoryImpl(ioDispatcher, dao)
+        dao: UserDao,
+        errorMessages: ErrorMessages
+    ): UserRepository = UserRepositoryImpl(ioDispatcher, dao, errorMessages)
 
     @Provides
     fun provideCompanyRepository(
-        ioDispatcher: CoroutineDispatcher
-    ): CompanyRepository = CompanyRepositoryImpl(ioDispatcher)
+        ioDispatcher: CoroutineDispatcher,
+        errorMessages: ErrorMessages
+    ): CompanyRepository = CompanyRepositoryImpl(ioDispatcher, errorMessages)
 
     @Provides
     fun provideCompanyLocationRepository(
-        ioDispatcher: CoroutineDispatcher
-    ): CompanyLocationRepository = CompanyLocationRepositoryImpl(ioDispatcher)
+        ioDispatcher: CoroutineDispatcher,
+        errorMessages: ErrorMessages
+    ): CompanyLocationRepository = CompanyLocationRepositoryImpl(ioDispatcher, errorMessages)
 
     @Provides
-    fun provideDestinationRepository(ioDispatcher: CoroutineDispatcher): DestinationRepository =
-        DestinationRepositoryImpl(ioDispatcher)
+    fun provideDestinationRepository(
+        ioDispatcher: CoroutineDispatcher,
+        errorMessages: ErrorMessages
+    ): DestinationRepository =
+        DestinationRepositoryImpl(ioDispatcher, errorMessages)
 }
