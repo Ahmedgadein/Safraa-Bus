@@ -5,6 +5,7 @@ import com.dinder.rihlabus.common.Fields
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.local.UserDao
 import com.dinder.rihlabus.data.model.User
+import com.dinder.rihlabus.utils.ErrorMessages
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 class UserRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
-    private val dao: UserDao
+    private val dao: UserDao,
+    private val errorMessages: ErrorMessages
 ) :
     UserRepository {
 
@@ -41,7 +43,7 @@ class UserRepositoryImpl @Inject constructor(
                     trySend(Result.Success(User.fromJson(it.documents[0].data!!)))
                 }
                 .addOnFailureListener {
-                    trySend(Result.Error("Cannot find user"))
+                    trySend(Result.Error(errorMessages.couldntFindUser))
                 }
         }
         awaitClose()

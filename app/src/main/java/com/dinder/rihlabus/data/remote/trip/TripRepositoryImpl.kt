@@ -7,6 +7,7 @@ import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.Company
 import com.dinder.rihlabus.data.model.Destination
 import com.dinder.rihlabus.data.model.Trip
+import com.dinder.rihlabus.utils.ErrorMessages
 import com.dinder.rihlabus.utils.SeatState
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
@@ -23,7 +24,10 @@ import java.util.*
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class TripRepositoryImpl @Inject constructor(private val ioDispatcher: CoroutineDispatcher) :
+class TripRepositoryImpl @Inject constructor(
+    private val ioDispatcher: CoroutineDispatcher,
+    private val errorMessages: ErrorMessages
+) :
     TripRepository {
     private val _ref = Firebase.firestore.collection(Collections.TRIPS)
     override suspend fun addTrip(trip: Trip): Flow<Result<Boolean>> = callbackFlow {
@@ -33,7 +37,7 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
                 trySend(Result.Success(true))
             }
                 .addOnFailureListener {
-                    trySend(Result.Error("Failed to add trip"))
+                    trySend(Result.Error(errorMessages.failedToAddTrip))
                     cancel()
                 }
         }
@@ -57,7 +61,7 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
                 }
                 .addOnFailureListener {
                     Log.i("CurrentTrips", "Error: $it")
-                    trySend(Result.Error(it.toString()))
+                    trySend(Result.Error(errorMessages.failedToLoadCurrentTrips))
                 }
         }
         awaitClose()
@@ -80,7 +84,7 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
                         trySend(Result.Success(results))
                     }
                     .addOnFailureListener {
-                        trySend(Result.Error(it.toString()))
+                        trySend(Result.Error(errorMessages.failedToLoadLastTrips))
                     }
             }
             awaitClose()
@@ -94,7 +98,7 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
                     trySend(Result.Success(Trip.fromJson(it.documents.first().data!!)))
                 }
                 .addOnFailureListener {
-                    trySend(Result.Error(it.toString()))
+                    trySend(Result.Error(errorMessages.failedToLoadTrip))
                 }
         }
         awaitClose()
@@ -126,11 +130,11 @@ class TripRepositoryImpl @Inject constructor(private val ioDispatcher: Coroutine
                         }
                         .addOnFailureListener {
                             Log.i("UpdateSeatState", "updateSeatState status: Failure")
-                            trySend(Result.Error("Failed to update seat state"))
+                            trySend(Result.Error(errorMessages.failedToUpdateSeatInfo))
                         }
                 }
                 .addOnFailureListener {
-                    trySend(Result.Error("Failed to find trip"))
+                    trySend(Result.Error(errorMessages.failedToLoadTrip))
                 }
         }
         awaitClose()

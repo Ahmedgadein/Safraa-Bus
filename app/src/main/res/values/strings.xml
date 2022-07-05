@@ -50,4 +50,18 @@
     <string name="there_are_no_trips">There are no trips</string>
     <string name="all_seats">All Seats</string>
     <string name="not_booked">Not booked</string>
+
+    <!--  Error Messages  -->
+    <string name="couldnt_find_user">Couldn\'t find user</string>
+    <string name="failed_to_check_registration">Failed to check registration</string>
+    <string name="login_failed">Login failed, please try again</string>
+    <string name="registration_failed">Registration failed, please try again</string>
+    <string name="add_company_failed">Failed to save company, please try again</string>
+    <string name="add_trip_failed">Failed to add trip, please try again</string>
+    <string name="loading_companies_failed">Failed to load companies, please check your connection</string>
+    <string name="loading_destinations_failed">Failed to load destinations, please check your connection</string>
+    <string name="loading_current_trips_failed">Failed to load current trips, please check your connection</string>
+    <string name="loading_last_trips_failed">Failed to load last trips, please check your connection</string>
+    <string name="loading_trip_failed">Failed to load trip, please check your connection</string>
+    <string name="failed_to_update_seat">Failed to update seat, please try again</string>
 </resources>
