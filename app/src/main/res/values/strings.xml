@@ -36,7 +36,7 @@
     <string name="add_trip">Add Trip</string>
     <string name="select_all">Select All</string>
     <string name="logout">Logout</string>
-    <string name="app_version" translatable="false">Rihla Bus Version 1.0.0</string>
+    <string name="rihla_version" translatable="false">Rihla Bus Version %s</string>
     <string name="personal_info">Personal Info</string>
     <string name="company_info">Company Info</string>
     <string name="verification">Verification</string>
