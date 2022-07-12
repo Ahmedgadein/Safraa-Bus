@@ -14,6 +14,8 @@ object Collections {
     const val TRIPS = "trips"
     const val COMPANIES = "companies"
     const val DESTINATIONS = "destinations"
+    const val CONSTANTS = "CONSTANTS"
+    const val APP_VERSION = "APP_VERSION"
 }
 
 object Fields {
@@ -26,4 +28,5 @@ object Fields {
     const val COMPANY = "company"
     const val FROM = "from"
     const val LOCATION = "location"
+    const val VERSION = "version"
 }

@@ -64,4 +64,6 @@
     <string name="loading_last_trips_failed">Failed to load last trips, please check your connection</string>
     <string name="loading_trip_failed">Failed to load trip, please check your connection</string>
     <string name="failed_to_update_seat">Failed to update seat, please try again</string>
+    <string name="failed_to_resolve_app_version">Failed to resolve app version, check your connection</string>
+    <string name="update_to_continue">Please update your App to continue</string>
 </resources>
