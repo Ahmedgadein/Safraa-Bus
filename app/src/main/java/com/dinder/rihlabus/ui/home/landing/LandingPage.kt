@@ -35,6 +35,16 @@ class LandingPage : RihlaFragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect {
+                    it.messages.firstOrNull()?.let { message ->
+                        showSnackbar(message.content)
+                        viewModel.userMessageShown(message.id)
+                    }
+
+                    if (it.navigateToUpdateScreen) {
+                        navigateToUpdate()
+                        return@collect
+                    }
+
                     if (it.navigateToHome) {
                         navigateToHome()
                         return@collect
@@ -54,5 +64,9 @@ class LandingPage : RihlaFragment() {
 
     private fun navigateToLogin() {
         findNavController().navigate(LandingPageDirections.actionLandingPageToLoginFragment())
+    }
+
+    private fun navigateToUpdate() {
+        findNavController().navigate(LandingPageDirections.actionLandingPageToUpdateAppFragment())
     }
 }

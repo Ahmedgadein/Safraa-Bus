@@ -16,6 +16,8 @@ import com.dinder.rihlabus.data.remote.trip.TripRepository
 import com.dinder.rihlabus.data.remote.trip.TripRepositoryImpl
 import com.dinder.rihlabus.data.remote.user.UserRepository
 import com.dinder.rihlabus.data.remote.user.UserRepositoryImpl
+import com.dinder.rihlabus.data.remote.version.AppVersionRepository
+import com.dinder.rihlabus.data.remote.version.AppVersionRepositoryImpl
 import com.dinder.rihlabus.utils.ErrorMessages
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
@@ -93,4 +95,11 @@ object AppModule {
         errorMessages: ErrorMessages
     ): DestinationRepository =
         DestinationRepositoryImpl(ioDispatcher, errorMessages)
+
+    @Provides
+    fun provideAppVersionRepository(
+        ioDispatcher: CoroutineDispatcher,
+        errorMessages: ErrorMessages
+    ): AppVersionRepository =
+        AppVersionRepositoryImpl(ioDispatcher, errorMessages)
 }

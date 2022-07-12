@@ -98,10 +98,18 @@
         <action
             android:id="@+id/action_landingPage_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_landingPage_to_updateAppFragment"
+            app:destination="@id/updateAppFragment" />
     </fragment>
     <fragment
         android:id="@+id/seatsInfoFragment"
         android:name="com.dinder.rihlabus.ui.common.SeatsInfoFragment"
         android:label="fragment_seats_info"
         tools:layout="@layout/seats_info_fragment" />
+    <fragment
+        android:id="@+id/updateAppFragment"
+        android:name="com.dinder.rihlabus.ui.update.UpdateAppFragment"
+        android:label="update_app_fragment"
+        tools:layout="@layout/update_app_fragment" />
 </navigation>
