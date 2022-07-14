@@ -4,6 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.RihlaFragment
@@ -11,12 +16,36 @@ import com.dinder.rihlabus.databinding.HomeFragmentBinding
 import com.dinder.rihlabus.ui.home.currentTrips.CurrentTripsFragment
 import com.dinder.rihlabus.ui.home.lastTrips.LastTripsFragment
 import com.dinder.rihlabus.ui.home.settings.SettingsFragment
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class HomeFragment : RihlaFragment() {
 
     private lateinit var binding: HomeFragmentBinding
+    private val viewModel: HomeViewModel by viewModels()
     val fragments =
         listOf(CurrentTripsFragment(), LastTripsFragment(), SettingsFragment())
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect {
+                    if (it.navigateToUserVerificationScreen) {
+                        navigateToUserVerificationScreen()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun navigateToUserVerificationScreen() {
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToVerifyCompanyUserScreen()
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -56,6 +56,9 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_homeFragment_to_verifyCompanyUserScreen"
+            app:destination="@id/verifyCompanyUserScreen" />
     </fragment>
     <fragment
         android:id="@+id/newTripFragment"
@@ -89,7 +92,7 @@
     </fragment>
     <fragment
         android:id="@+id/landingPage"
-        android:name="com.dinder.rihlabus.ui.home.landing.LandingPage"
+        android:name="com.dinder.rihlabus.ui.landing.LandingPage"
         android:label="landing_page_fragment"
         tools:layout="@layout/landing_page_fragment">
         <action
@@ -112,4 +115,9 @@
         android:name="com.dinder.rihlabus.ui.update.UpdateAppFragment"
         android:label="update_app_fragment"
         tools:layout="@layout/update_app_fragment" />
+    <fragment
+        android:id="@+id/verifyCompanyUserScreen"
+        android:name="com.dinder.rihlabus.ui.verifyCompanyUser.VerifyCompanyUserScreen"
+        android:label="fragment_verify_company_user_screen"
+        tools:layout="@layout/fragment_verify_company_user_screen" />
 </navigation>

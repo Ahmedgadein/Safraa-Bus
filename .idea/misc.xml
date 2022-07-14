@@ -28,7 +28,9 @@
         <entry key="app/src/main/res/layout/fragment_seats_info.xml" value="0.20394736842105263" />
         <entry key="app/src/main/res/layout/fragment_signup.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/layout/fragment_splash_screen.xml" value="0.3229166666666667" />
+        <entry key="app/src/main/res/layout/fragment_verify_company_user_screen.xml" value="0.19276315789473683" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.176" />
+        <entry key="app/src/main/res/layout/homes_fragment.xml" value="0.11710526315789474" />
         <entry key="app/src/main/res/layout/item_list_current_trip.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/layout/landing_page_fragment.xml" value="0.14901315789473685" />
         <entry key="app/src/main/res/layout/last_trip_item_list.xml" value="0.264" />

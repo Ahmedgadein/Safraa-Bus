@@ -1,4 +1,4 @@
-package com.dinder.rihlabus.ui.home.landing
+package com.dinder.rihlabus.ui.landing
 
 import android.os.Bundle
 import android.view.LayoutInflater

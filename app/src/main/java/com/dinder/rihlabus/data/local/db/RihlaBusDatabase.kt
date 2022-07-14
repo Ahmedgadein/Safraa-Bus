@@ -1,17 +1,18 @@
 package com.dinder.rihlabus.data.local.db
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.*
 import com.dinder.rihlabus.common.Constants.DATABASE_NAME
 import com.dinder.rihlabus.data.local.UserDao
 import com.dinder.rihlabus.data.model.User
 import com.dinder.rihlabus.utils.CompanyConverter
 import com.dinder.rihlabus.utils.DestinationConverter
 
-@Database(entities = [User::class], version = 1)
+@Database(
+    entities = [User::class],
+    version = 2,
+    autoMigrations = [AutoMigration(from = 1, to = 2)]
+)
 @TypeConverters(CompanyConverter::class, DestinationConverter::class)
 abstract class RihlaBusDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
