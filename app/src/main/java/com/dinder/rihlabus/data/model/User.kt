@@ -1,5 +1,6 @@
 package com.dinder.rihlabus.data.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -10,14 +11,17 @@ data class User(
     val name: String,
     val phoneNumber: String,
     val company: Company? = null,
-    val location: Destination? = null
+    val location: Destination? = null,
+    @ColumnInfo(defaultValue = "0")
+    val verified: Boolean = false
 ) {
     fun toJson(): Map<String, Any?> = mapOf(
         "id" to id,
         "name" to name,
         "phoneNumber" to phoneNumber,
         "company" to company?.toJson(),
-        "location" to location?.toJson()
+        "location" to location?.toJson(),
+        "verified" to verified
     )
 
     companion object {
@@ -27,7 +31,8 @@ data class User(
                 name = json["name"].toString(),
                 phoneNumber = json["phoneNumber"].toString(),
                 company = Company.fromJson(json["company"] as Map<String, Any>),
-                location = Destination.fromJson(json["location"] as Map<String, Any>)
+                location = Destination.fromJson(json["location"] as Map<String, Any>),
+                verified = json["verified"] as Boolean? ?: false
             )
     }
 }

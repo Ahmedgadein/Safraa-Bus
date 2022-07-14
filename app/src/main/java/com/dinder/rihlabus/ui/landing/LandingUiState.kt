@@ -1,4 +1,4 @@
-package com.dinder.rihlabus.ui.home.landing
+package com.dinder.rihlabus.ui.landing
 
 import com.dinder.rihlabus.common.Message
 

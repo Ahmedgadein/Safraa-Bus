@@ -14,7 +14,6 @@ class GetUserUseCase @Inject constructor(
     val userRepository: UserRepository
 ) {
     operator fun invoke(): Flow<Result<User>> = flow {
-        emit(Result.Loading)
         userRepository.get(firebaseAuth.uid!!).collect { result ->
             when (result) {
                 Result.Loading -> emit(Result.Loading)

@@ -7,7 +7,7 @@ import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.remote.auth.AuthRepository
 import com.dinder.rihlabus.data.remote.user.UserRepository
 import com.dinder.rihlabus.domain.UpdateAppUseCase
-import com.dinder.rihlabus.ui.home.landing.LandingUiState
+import com.dinder.rihlabus.ui.landing.LandingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
