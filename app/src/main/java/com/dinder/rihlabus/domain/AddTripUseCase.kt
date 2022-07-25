@@ -4,9 +4,11 @@ import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.data.remote.trip.TripRepository
 import com.dinder.rihlabus.data.remote.user.UserRepository
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 
@@ -14,15 +16,31 @@ class AddTripUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val tripRepository: TripRepository
 ) {
+
+    @Inject
+    lateinit var mixpanel: MixpanelAPI
+
     suspend operator fun invoke(trip: Trip): Flow<Result<Boolean>> = flow {
         emit(Result.Loading)
         userRepository.user.collect { user ->
             user?.let {
+                val props = JSONObject().apply {
+                    put("User", it.name)
+                    put("From", user.location?.name)
+                    put("To", trip.to?.name)
+                    put("Company", it.company?.name)
+                    put("Price", trip.price)
+                    put("Date", trip.date)
+                    put("Time", trip.time)
+                    put("Seats count", trip.seats.size)
+                }
+                mixpanel.track("Add trip", props)
+
                 tripRepository.addTrip(
                     trip.copy(
                         id = UUID.randomUUID().mostSignificantBits,
-                        from = user.location!!,
-                        company = user.company!!
+                        from = it.location!!,
+                        company = it.company!!
                     )
                 )
                     .collect { result ->

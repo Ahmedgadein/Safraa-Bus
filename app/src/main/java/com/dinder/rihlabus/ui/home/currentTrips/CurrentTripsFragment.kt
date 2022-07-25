@@ -15,15 +15,20 @@ import com.dinder.rihlabus.adapters.CurrentTripsAdapter
 import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.databinding.CurrentTripsFragmentBinding
 import com.dinder.rihlabus.ui.home.HomeFragmentDirections
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CurrentTripsFragment : RihlaFragment() {
     private val viewModel: CurrentTripsViewModel by viewModels()
     private lateinit var binding: CurrentTripsFragmentBinding
     private lateinit var tripsAdapter: CurrentTripsAdapter
+
+    @Inject
+    lateinit var mixpanel: MixpanelAPI
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +42,7 @@ class CurrentTripsFragment : RihlaFragment() {
 
     private fun setUI() {
         binding.newTripFab.setOnClickListener {
+            trackAddNewTrip()
             navigateToNewTrip()
         }
 
@@ -66,5 +72,9 @@ class CurrentTripsFragment : RihlaFragment() {
 
     private fun navigateToNewTrip() {
         findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToNewTripFragment())
+    }
+
+    private fun trackAddNewTrip() {
+        mixpanel.track("Add trip FAB clicked")
     }
 }
