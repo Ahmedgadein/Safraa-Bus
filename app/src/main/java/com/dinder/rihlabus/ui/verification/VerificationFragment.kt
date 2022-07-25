@@ -22,10 +22,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class VerificationFragment : RihlaFragment() {
@@ -33,6 +36,9 @@ class VerificationFragment : RihlaFragment() {
     private lateinit var binding: VerificationFragmentBinding
     private var verificationID: String = "placeholder" // prevents creating credentials crash
     private val args: VerificationFragmentArgs by navArgs()
+
+    @Inject
+    lateinit var mixpanelAPI: MixpanelAPI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,6 +125,7 @@ class VerificationFragment : RihlaFragment() {
                 }
 
                 override fun onVerificationFailed(exception: FirebaseException) {
+                    trackVerificationFailed()
                     Log.i("Ahmed", "onVerificationFailed: $exception")
                 }
 
@@ -127,9 +134,24 @@ class VerificationFragment : RihlaFragment() {
                     token: PhoneAuthProvider.ForceResendingToken
                 ) {
                     super.onCodeSent(verificationId, token)
+                    trackVerificationSend()
                     verificationID = verificationId
                 }
             }).build()
         PhoneAuthProvider.verifyPhoneNumber(options)
+    }
+
+    private fun trackVerificationSend() {
+        val props = JSONObject().apply {
+            put("Code", "Send")
+        }
+        mixpanelAPI.track("Verification", props)
+    }
+
+    private fun trackVerificationFailed() {
+        val props = JSONObject().apply {
+            put("Code", "Not Send")
+        }
+        mixpanelAPI.track("Verification", props)
     }
 }

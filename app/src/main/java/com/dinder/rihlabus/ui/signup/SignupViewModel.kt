@@ -12,12 +12,14 @@ import com.dinder.rihlabus.domain.GetCompaniesUseCase
 import com.dinder.rihlabus.domain.GetDestinationsUseCase
 import com.dinder.rihlabus.domain.GetUserUseCase
 import com.dinder.rihlabus.domain.RegisterUserUseCase
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 
@@ -32,6 +34,9 @@ class SignupViewModel @Inject constructor(
     private val _state = MutableStateFlow(SignupUiState())
     val state = _state.asStateFlow()
 
+    @Inject
+    lateinit var mixpanel: MixpanelAPI
+
     init {
         loadDestinations()
         loadCompanies()
@@ -43,6 +48,15 @@ class SignupViewModel @Inject constructor(
         viewModelScope.launch {
             val company = _state.value.selectedCompany
             val location = _state.value.selectedLocation
+
+            val props = JSONObject().apply {
+                put("Name", user.name)
+                put("Phone Number", user.phoneNumber)
+                put("Company", company?.name)
+                put("Location", location?.name)
+            }
+            mixpanel.track("Signup attempt", props)
+
             registerUseCase(user.copy(company = company, location = location)).collect { result ->
                 when (result) {
                     is Result.Loading -> {

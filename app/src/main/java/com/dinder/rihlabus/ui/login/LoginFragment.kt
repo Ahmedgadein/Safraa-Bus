@@ -10,12 +10,18 @@ import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.databinding.LoginFragmentBinding
 import com.dinder.rihlabus.utils.PhoneNumberFormatter
 import com.dinder.rihlabus.utils.PhoneNumberValidator
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import dagger.hilt.android.AndroidEntryPoint
+import org.json.JSONObject
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : RihlaFragment() {
 
     private lateinit var binding: LoginFragmentBinding
+
+    @Inject
+    lateinit var mixpanelAPI: MixpanelAPI
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +51,7 @@ class LoginFragment : RihlaFragment() {
                 PhoneNumberFormatter.getFullNumber(
                     binding.loginPhoneNumberContainer.editText?.text.toString()
                 )
+            trackLogin(phoneNumber)
             navigateToVerification(phoneNumber)
         }
     }
@@ -63,5 +70,12 @@ class LoginFragment : RihlaFragment() {
     private fun navigateToVerification(phoneNumber: String) {
         val action = LoginFragmentDirections.actionLoginFragmentToVerificationFragment(phoneNumber)
         findNavController().navigate(action)
+    }
+
+    private fun trackLogin(number: String) {
+        val props = JSONObject().apply {
+            put("Phone Number", number)
+        }
+        mixpanelAPI.track("Login", props)
     }
 }
