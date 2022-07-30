@@ -39,9 +39,11 @@ android {
             versionNameSuffix ".debug"
             resValue "string", "app_version",
                     "${defaultConfig.versionName}${versionNameSuffix}"
+            manifestPlaceholders = [appName: "DEBUG:Rihla Bus"]
         }
         release {
             resValue "string", "app_version", "${defaultConfig.versionName}"
+            manifestPlaceholders = [appName: "Rihla Bus"]
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
