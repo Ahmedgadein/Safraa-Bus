@@ -41,6 +41,7 @@ class CurrentTripsFragment : RihlaFragment() {
     }
 
     private fun setUI() {
+        binding.currentTripsShimmer.startShimmer()
         binding.newTripFab.setOnClickListener {
             trackAddNewTrip()
             navigateToNewTrip()
@@ -55,7 +56,16 @@ class CurrentTripsFragment : RihlaFragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getTrips()
                 viewModel.state.collect {
-                    binding.currentTripsProgressBar.isVisible = it.loading
+                    it.loading.let { loading ->
+                        if (loading) {
+                            binding.currentTripsRecyclerView.visibility = View.GONE
+                            binding.currentTripsShimmer.visibility = View.VISIBLE
+                        } else {
+                            binding.currentTripsRecyclerView.visibility = View.VISIBLE
+                            binding.currentTripsShimmer.visibility = View.GONE
+                            binding.currentTripsShimmer.stopShimmer()
+                        }
+                    }
 
                     it.messages.firstOrNull()?.let { message ->
                         showSnackbar(message.content)

@@ -11,4 +11,5 @@
     <color name="green">#006400</color>
     <color name="orange">#FF8C00</color>
     <color name="subtle_gray">#EDEDED</color>
+    <color name="shimmer_color">#8C8484</color>
 </resources>

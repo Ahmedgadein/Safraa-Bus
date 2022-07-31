@@ -34,6 +34,8 @@ class LastTripsFragment : RihlaFragment() {
     }
 
     private fun setUI() {
+        binding.lastTripsShimmer.startShimmer()
+
         binding.lastTripsToolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.filterTrips -> {
@@ -54,8 +56,16 @@ class LastTripsFragment : RihlaFragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getTrips()
                 viewModel.state.collect {
-                    binding.lastTripsProgressBar.isVisible = it.loading
-
+                    it.loading.let { loading ->
+                        if (loading) {
+                            binding.lastTripsRecyclerView.visibility = View.GONE
+                            binding.lastTripsShimmer.visibility = View.VISIBLE
+                        } else {
+                            binding.lastTripsRecyclerView.visibility = View.VISIBLE
+                            binding.lastTripsShimmer.visibility = View.GONE
+                            binding.lastTripsShimmer.stopShimmer()
+                        }
+                    }
                     it.messages.firstOrNull()?.let { message ->
                         showSnackbar(message.content)
                         viewModel.userMessageShown(message.id)
