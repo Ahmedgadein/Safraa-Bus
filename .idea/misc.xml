@@ -41,8 +41,12 @@
         <entry key="app/src/main/res/layout/seat_details_fragment.xml" value="0.12" />
         <entry key="app/src/main/res/layout/seats_info_fragment.xml" value="0.10822368421052632" />
         <entry key="app/src/main/res/layout/settings_fragment.xml" value="0.136" />
+        <entry key="app/src/main/res/layout/shimmer_current_trip_item_list.xml" value="0.536" />
+        <entry key="app/src/main/res/layout/shimmer_current_trips_fragment.xml" value="0.20394736842105263" />
+        <entry key="app/src/main/res/layout/shimmer_last_trip_item_list.xml" value="0.20394736842105263" />
+        <entry key="app/src/main/res/layout/shimmer_trip_details_fragment.xml" value="0.20394736842105263" />
         <entry key="app/src/main/res/layout/signup_fragment.xml" value="0.176" />
-        <entry key="app/src/main/res/layout/trip_details_fragment.xml" value="0.176" />
+        <entry key="app/src/main/res/layout/trip_details_fragment.xml" value="0.2" />
         <entry key="app/src/main/res/layout/update_app_fragment.xml" value="0.176" />
         <entry key="app/src/main/res/layout/verification_fragment.xml" value="0.2" />
         <entry key="app/src/main/res/menu/bottom_nav.xml" value="0.2014294996751137" />

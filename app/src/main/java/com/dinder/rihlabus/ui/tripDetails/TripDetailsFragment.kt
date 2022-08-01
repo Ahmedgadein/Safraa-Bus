@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -37,6 +36,8 @@ class TripDetailsFragment : RihlaFragment() {
     }
 
     private fun setUI() {
+        binding.tripDetailsShimmer.startShimmer()
+
         binding.seatDetailsButton.setOnClickListener {
             navigateToSeatDetails()
         }
@@ -45,7 +46,17 @@ class TripDetailsFragment : RihlaFragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getTrip(args.id)
                 viewModel.state.collect {
-                    binding.tripDetailProgressBar.isVisible = it.loading
+                    it.loading.let { loading ->
+                        if (loading) {
+                            binding.tripDetailsShimmer.startShimmer()
+                            binding.tripDetailsContent.visibility = View.GONE
+                            binding.tripDetailsShimmer.visibility = View.VISIBLE
+                        } else {
+                            binding.tripDetailsContent.visibility = View.VISIBLE
+                            binding.tripDetailsShimmer.visibility = View.GONE
+                            binding.tripDetailsShimmer.stopShimmer()
+                        }
+                    }
 
                     it.messages.firstOrNull()?.let {
                         showSnackbar(it.content)
