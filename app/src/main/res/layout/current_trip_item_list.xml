@@ -29,9 +29,9 @@
                 android:id="@+id/from"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:destination="@{trip.to}"
                 android:textSize="35sp"
                 android:textStyle="bold"
+                app:destination="@{trip.to}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -60,7 +60,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="@{DateTimeUtils.INSTANCE.getFormattedDate(trip.date)}"
-                    android:textColor="@color/teal_700" />
+                    android:textColor="@color/teal_700"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -86,7 +87,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="@{DateTimeUtils.INSTANCE.getFormattedTime(trip.time)}"
-                    android:textColor="@color/teal_700" />
+                    android:textColor="@color/teal_700"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -112,7 +114,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="@{@string/price_in_sdgs(trip.price)}"
-                    android:textColor="@color/teal_700" />
+                    android:textColor="@color/teal_700"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -146,8 +149,8 @@
                         android:background="@drawable/seat_count_rectangle"
                         android:backgroundTint="@color/teal_700"
                         android:gravity="center"
-                        android:textColor="@color/white"
-                        android:text="@{SeatUtils.INSTANCE.getTripSeatsCount(trip.seats)}" />
+                        android:text="@{SeatUtils.INSTANCE.getTripSeatsCount(trip.seats)}"
+                        android:textColor="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -171,8 +174,8 @@
                         android:layout_marginBottom="4dp"
                         android:background="@drawable/seat_count_rectangle"
                         android:gravity="center"
-                        android:textColor="@color/white"
-                        android:text="@{SeatUtils.INSTANCE.getTripReservedSeatsCount(trip.seats)}" />
+                        android:text="@{SeatUtils.INSTANCE.getTripReservedSeatsCount(trip.seats)}"
+                        android:textColor="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"

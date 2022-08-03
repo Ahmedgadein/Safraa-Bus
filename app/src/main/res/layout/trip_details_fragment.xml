@@ -61,6 +61,7 @@
                         android:id="@+id/textView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         app:destination="@{trip.from}"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -83,6 +84,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         app:destination="@{trip.to}"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -106,7 +108,8 @@
                         android:layout_gravity="center_horizontal"
                         android:contentDescription="@string/day_capitalized"
                         android:text='@{trip!= null ? DateTimeUtils.INSTANCE.getFormattedDate(trip.date) : ""}'
-                        android:textColor="@color/teal_700" />
+                        android:textColor="@color/teal_700"
+                        android:textSize="20sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -133,7 +136,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text='@{trip != null ?DateTimeUtils.INSTANCE.getFormattedTime(trip.time) : ""}'
-                        android:textColor="@color/teal_700" />
+                        android:textColor="@color/teal_700"
+                        android:textSize="20sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -160,7 +164,8 @@
                         android:layout_gravity="center_horizontal"
                         android:contentDescription="@string/price"
                         android:text='@{trip != null ? @string/price_in_sdgs(trip.price) : ""}'
-                        android:textColor="@color/teal_700" />
+                        android:textColor="@color/teal_700"
+                        android:textSize="20sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
