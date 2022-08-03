@@ -46,4 +46,7 @@ class ErrorMessages @Inject constructor(private val resources: Resources) {
 
     val failedToResolveAppVersion
         get() = getResource(R.string.failed_to_resolve_app_version)
+
+    val noNetworkConnection
+        get() = getResource(R.string.no_network)
 }

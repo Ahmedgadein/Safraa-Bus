@@ -12,8 +12,10 @@ import androidx.appcompat.app.AlertDialog
 import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.Constants.NUMBER_OF_SEATS_ROWS
 import com.dinder.rihlabus.data.model.SquareBound
+import com.dinder.rihlabus.utils.NetworkUtils
 import com.dinder.rihlabus.utils.SeatState
 import com.dinder.rihlabus.utils.SeatUtils
+import com.google.android.material.snackbar.Snackbar
 
 enum class SeatViewCapability {
     SELECT_ONLY,
@@ -179,10 +181,18 @@ class SeatsView : View {
                 }
             }
             SeatViewCapability.BOOK_AND_CONFIRM -> {
-                if (seats["$seatNumber"] == SeatState.UNBOOKED) {
-                    showBookOptionsDialog(seatNumber)
+                if (!NetworkUtils.isNetworkConnected(context)) {
+                    Snackbar.make(
+                        this,
+                        resources.getString(R.string.no_network),
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 } else {
-                    onShowBookedSeatPassengerDetails?.invoke(seatNumber)
+                    if (seats["$seatNumber"] == SeatState.UNBOOKED) {
+                        showBookOptionsDialog(seatNumber)
+                    } else {
+                        onShowBookedSeatPassengerDetails?.invoke(seatNumber)
+                    }
                 }
             }
         }

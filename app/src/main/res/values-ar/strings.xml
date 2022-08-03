@@ -49,6 +49,10 @@
     <string name="there_are_no_trips">لا يوجد رحلات</string>
     <string name="all_seats">جميع المقاعد</string>
     <string name="not_booked">غير محجوزة</string>
+    <string name="trip_added">تمت إضافة الرحلة بنجاح</string>
+    <string name="pick_date">إختر اليوم</string>
+    <string name="pick_time">إختر الزمن</string>
+    <string name="required">مطلوب</string>
 
     <!--  Error Messages  -->
     <string name="couldnt_find_user">لم يتم العثور على المستخدم</string>
@@ -66,4 +70,5 @@
     <string name="failed_to_resolve_app_version">تعذر الحصول على إصدار التطبيق, تأكد من إتصال الإنترنت</string>
     <string name="update_to_continue">رجاء قم بتحديث التطبيق للمواصلة</string>
     <string name="verifying_with_company">الرجاء الإنتظار حتى يتم تأكيد هويتك مع الشركة</string>
+    <string name="no_network">لا يوجد إتصال إنترنت, تأكد من شبكة الهاتف</string>
 </resources>
