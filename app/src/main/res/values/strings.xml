@@ -50,6 +50,10 @@
     <string name="there_are_no_trips">There are no trips</string>
     <string name="all_seats">All Seats</string>
     <string name="not_booked">Not booked</string>
+    <string name="trip_added">Trip added successfully</string>
+    <string name="pick_date">Pick Date</string>
+    <string name="pick_time">Pick Time</string>
+    <string name="required">Required</string>
 
     <!--  Error Messages  -->
     <string name="couldnt_find_user">Couldn\'t find user</string>
@@ -67,4 +71,5 @@
     <string name="failed_to_resolve_app_version">Failed to resolve app version, check your connection</string>
     <string name="update_to_continue">Please update your App to continue</string>
     <string name="verifying_with_company">Please wait while we verify you with your company</string>
+    <string name="no_network">No network, check your connection</string>
 </resources>

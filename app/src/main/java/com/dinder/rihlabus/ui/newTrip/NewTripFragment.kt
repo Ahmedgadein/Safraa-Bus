@@ -18,18 +18,20 @@ import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.data.model.Destination
 import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.databinding.NewTripFragmentBinding
-import com.dinder.rihlabus.utils.DateTimeUtils
-import com.dinder.rihlabus.utils.SeatState
-import com.dinder.rihlabus.utils.SeatUtils
+import com.dinder.rihlabus.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class NewTripFragment : RihlaFragment() {
     private val viewModel: NewTripViewModel by viewModels()
     private lateinit var binding: NewTripFragmentBinding
+
+    @Inject
+    lateinit var errorMessages: ErrorMessages
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,6 +62,11 @@ class NewTripFragment : RihlaFragment() {
         }
 
         binding.addTripButton.setOnClickListener {
+            if (!NetworkUtils.isNetworkConnected(requireContext())) {
+                showSnackbar(errorMessages.noNetworkConnection)
+                return@setOnClickListener
+            }
+
             if (!_validForm()) {
                 return@setOnClickListener
             }
@@ -90,7 +97,7 @@ class NewTripFragment : RihlaFragment() {
                 currentDate.get(Calendar.MONTH),
                 currentDate.get(Calendar.DAY_OF_MONTH)
             )
-            dialog.setTitle("Pick date")
+            dialog.setTitle(requireContext().resources.getString(R.string.pick_date))
             dialog.show()
         }
 
@@ -107,7 +114,7 @@ class NewTripFragment : RihlaFragment() {
                 currentDate.get(Calendar.MINUTE),
                 true
             )
-            dialog.setTitle("Pick date")
+            dialog.setTitle(requireContext().resources.getString(R.string.pick_time))
             dialog.show()
         }
 
@@ -128,7 +135,7 @@ class NewTripFragment : RihlaFragment() {
                     setLocationsDropdown(it.locations)
 
                     if (it.isAdded) {
-                        showSnackbar("Added successfully")
+                        showSnackbar(requireContext().resources.getString(R.string.trip_added))
                         findNavController().navigateUp()
                         return@collect
                     }
@@ -168,7 +175,10 @@ class NewTripFragment : RihlaFragment() {
 
     private fun _validateDestination(): String? {
         return with(binding.newTripDestinationContainer) {
-            val message = if (viewModel.state.value.selectedLocation == null) "Required" else null
+            val message =
+                if (viewModel.state.value.selectedLocation == null) requireContext().resources.getString(
+                    R.string.required
+                ) else null
             this.helperText = message
             return@with message
         }
@@ -176,7 +186,10 @@ class NewTripFragment : RihlaFragment() {
 
     private fun _validateDate(): String? {
         return with(binding.newTripDateContainer) {
-            val message = if (this.editText?.text.isNullOrEmpty()) "Required" else null
+            val message =
+                if (this.editText?.text.isNullOrEmpty()) requireContext().resources.getString(
+                    R.string.required
+                ) else null
             this.helperText = message
             return@with message
         }
@@ -184,7 +197,10 @@ class NewTripFragment : RihlaFragment() {
 
     private fun _validateTime(): String? {
         return with(binding.newTripTimeContainer) {
-            val message = if (this.editText?.text.isNullOrEmpty()) "Required" else null
+            val message =
+                if (this.editText?.text.isNullOrEmpty()) requireContext().resources.getString(
+                    R.string.required
+                ) else null
             this.helperText = message
             return@with message
         }
@@ -192,7 +208,10 @@ class NewTripFragment : RihlaFragment() {
 
     private fun _validatePrice(): String? {
         return with(binding.newTripPriceContainer) {
-            val message = if (this.editText?.text.isNullOrEmpty()) "Required" else null
+            val message =
+                if (this.editText?.text.isNullOrEmpty()) requireContext().resources.getString(
+                    R.string.required
+                ) else null
             this.helperText = message
             return@with message
         }
