@@ -50,6 +50,7 @@ class NewTripFragment : RihlaFragment() {
         )
 
         binding.newTripSeatView.setOnSeatSelectedListener {
+            binding.addTripButton.isEnabled = it != 0
             binding.newTripSeatsCount.setText(it.toString())
         }
 
@@ -123,7 +124,11 @@ class NewTripFragment : RihlaFragment() {
                 viewModel.state.collect {
                     with(binding) {
                         this.newTripProgressBar.isVisible = it.loading
-                        this.addTripButton.isEnabled = !it.loading
+                        this.addTripButton.isEnabled =
+                            !it.loading && !SeatUtils.getSelectedSeatsAsUnbooked(
+                            binding.newTripSeatView.getSeats()
+                        )
+                            .isNullOrEmpty()
                     }
 
                     it.messages.firstOrNull()?.let { message ->

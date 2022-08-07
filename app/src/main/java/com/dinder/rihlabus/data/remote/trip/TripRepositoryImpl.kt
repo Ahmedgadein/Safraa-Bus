@@ -107,6 +107,7 @@ class TripRepositoryImpl @Inject constructor(
     override suspend fun updateSeatState(
         tripId: Long,
         seatNumber: Int,
+        passenger: String?,
         state: SeatState
     ): Flow<Result<Boolean>> = callbackFlow {
         withContext(ioDispatcher) {
@@ -118,7 +119,8 @@ class TripRepositoryImpl @Inject constructor(
                             Fields.SEATS to
                                 mapOf(
                                     "$seatNumber" to mapOf(
-                                        Fields.STATUS to state
+                                        Fields.STATUS to state,
+                                        Fields.PASSENGER to passenger
                                     )
                                 )
                         ),

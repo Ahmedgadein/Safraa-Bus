@@ -8,14 +8,16 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import androidx.appcompat.app.AlertDialog
+import android.widget.Button
 import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.Constants.NUMBER_OF_SEATS_ROWS
 import com.dinder.rihlabus.data.model.SquareBound
 import com.dinder.rihlabus.utils.NetworkUtils
 import com.dinder.rihlabus.utils.SeatState
 import com.dinder.rihlabus.utils.SeatUtils
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 
 enum class SeatViewCapability {
     SELECT_ONLY,
@@ -38,7 +40,7 @@ class SeatsView : View {
     private val _space = 20f
     private var onSeatSelectedListener: ((Int) -> Unit)? = null
     private var onShowBookedSeatPassengerDetails: ((Int) -> Unit)? = null
-    private var onSeatStateUpdateListener: ((Int, SeatState) -> Unit)? = null
+    private var onSeatStateUpdateListener: ((Int, SeatState, String?) -> Unit)? = null
     private lateinit var capability: SeatViewCapability
     private var viewOnly: Boolean = false
 
@@ -86,7 +88,7 @@ class SeatsView : View {
         this.onShowBookedSeatPassengerDetails = listener
     }
 
-    fun setOnSeatStateUpdateListener(listener: (Int, SeatState) -> Unit) {
+    fun setOnSeatStateUpdateListener(listener: (Int, SeatState, String?) -> Unit) {
         this.onSeatStateUpdateListener = listener
     }
 
@@ -190,7 +192,7 @@ class SeatsView : View {
                 } else {
                     if (seats["$seatNumber"] == SeatState.UNBOOKED) {
                         showBookOptionsDialog(seatNumber)
-                    } else {
+                    } else if (seats["$seatNumber"] == SeatState.BOOKED) {
                         onShowBookedSeatPassengerDetails?.invoke(seatNumber)
                     }
                 }
@@ -201,13 +203,21 @@ class SeatsView : View {
     }
 
     private fun showBookOptionsDialog(seatNumber: Int) {
-        AlertDialog.Builder(this.context)
-            .setTitle("Seat $seatNumber")
-            .setMessage("Not booked yet, click the book button to book locally")
-            .setPositiveButton("Booked") { dialog, which ->
-                onSeatStateUpdateListener?.invoke(seatNumber, SeatState.BOOKED)
-            }
-            .create().show()
+        val bottomSheetDialog = BottomSheetDialog(context)
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog)
+        bottomSheetDialog.findViewById<Button>(R.id.reserveSeatButton)?.setOnClickListener {
+            bottomSheetDialog.dismiss()
+            onSeatStateUpdateListener?.invoke(
+                seatNumber,
+                SeatState.BOOKED,
+                bottomSheetDialog
+                    .findViewById<TextInputLayout>(R.id.reserveSeatNameContainer)
+                    ?.editText
+                    ?.text.toString()
+            )
+        }
+
+        bottomSheetDialog.show()
     }
 
     private fun selectSeat(seatNumber: Int) {
