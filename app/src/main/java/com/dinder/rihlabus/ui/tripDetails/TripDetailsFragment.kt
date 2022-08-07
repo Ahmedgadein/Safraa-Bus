@@ -68,12 +68,12 @@ class TripDetailsFragment : RihlaFragment() {
                         binding.tripDetailSeatView.setSeats(
                             SeatUtils.getSeatsListAsStateMap(it.seats)
                         )
-                        binding.tripDetailSeatView.setOnSeatStateUpdateListener { seatNumber, seatState -> // ktlint-disable max-line-length
-                            viewModel.updateSeatState(it.id!!, seatNumber, seatState)
+                        binding.tripDetailSeatView.setOnSeatStateUpdateListener { seatNumber, seatState, passenger -> // ktlint-disable max-line-length
+                            viewModel.updateSeatState(it.id!!, seatNumber, passenger, seatState)
                         }
                         binding.tripDetailSeatView.setOnShowBookedSeatPassengerDetails { seatNumber -> // ktlint-disable max-line-length
                             val passenger =
-                                it.seats.first { seat -> seat.number == seatNumber }.passenger
+                                it.seats.firstOrNull() { seat -> seat.number == seatNumber }?.passenger
                             showPassengerDetailDialog(seatNumber, passenger)
                         }
                     }

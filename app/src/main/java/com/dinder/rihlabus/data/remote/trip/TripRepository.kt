@@ -25,6 +25,7 @@ interface TripRepository {
     suspend fun updateSeatState(
         tripId: Long,
         seatNumber: Int,
+        passenger: String?,
         state: SeatState
     ): Flow<Result<Boolean>>
 }

@@ -72,4 +72,6 @@
     <string name="update_to_continue">Please update your App to continue</string>
     <string name="verifying_with_company">Please wait while we verify you with your company</string>
     <string name="no_network">No network, check your connection</string>
+    <string name="name_of_passenger">Name of passenger</string>
+    <string name="reserve">Reserve</string>
 </resources>

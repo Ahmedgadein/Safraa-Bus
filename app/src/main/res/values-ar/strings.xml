@@ -71,4 +71,6 @@
     <string name="update_to_continue">رجاء قم بتحديث التطبيق للمواصلة</string>
     <string name="verifying_with_company">الرجاء الإنتظار حتى يتم تأكيد هويتك مع الشركة</string>
     <string name="no_network">لا يوجد إتصال إنترنت, تأكد من شبكة الهاتف</string>
+    <string name="name_of_passenger">إسم الراكب</string>
+    <string name="reserve">حجز</string>
 </resources>

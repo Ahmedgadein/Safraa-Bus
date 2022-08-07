@@ -41,9 +41,14 @@ class TripDetailsViewModel @Inject constructor(private val repository: TripRepos
         }
     }
 
-    fun updateSeatState(tripId: Long, seatNumber: Int, state: SeatState) {
+    fun updateSeatState(
+        tripId: Long,
+        seatNumber: Int,
+        passenger: String? = null,
+        state: SeatState
+    ) {
         viewModelScope.launch {
-            repository.updateSeatState(tripId, seatNumber, state).collect { result ->
+            repository.updateSeatState(tripId, seatNumber, passenger, state).collect { result ->
                 when (result) {
                     Result.Loading -> _state.update { it.copy(loading = true) }
                     is Result.Error -> showUserMessage(result.message)
