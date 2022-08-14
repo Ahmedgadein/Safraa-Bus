@@ -220,6 +220,24 @@ class SeatsView : View {
         bottomSheetDialog.show()
     }
 
+    private fun showPassengerDetails(seatNumber: Int) {
+        val bottomSheetDialog = BottomSheetDialog(context)
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog)
+        bottomSheetDialog.findViewById<Button>(R.id.reserveSeatButton)?.setOnClickListener {
+            bottomSheetDialog.dismiss()
+            onSeatStateUpdateListener?.invoke(
+                seatNumber,
+                SeatState.BOOKED,
+                bottomSheetDialog
+                    .findViewById<TextInputLayout>(R.id.reserveSeatNameContainer)
+                    ?.editText
+                    ?.text.toString()
+            )
+        }
+
+        bottomSheetDialog.show()
+    }
+
     private fun selectSeat(seatNumber: Int) {
         seats["$seatNumber"] = SeatState.SELECTED
     }

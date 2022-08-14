@@ -38,6 +38,8 @@
         <entry key="app/src/main/res/layout/last_trips_fragment.xml" value="0.2" />
         <entry key="app/src/main/res/layout/login_fragment.xml" value="0.152" />
         <entry key="app/src/main/res/layout/new_trip_fragment.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/passenger_detail_dialog.xml" value="0.176" />
+        <entry key="app/src/main/res/layout/passenger_details_dialog.xml" value="0.20230263157894737" />
         <entry key="app/src/main/res/layout/seat_detail_item_list.xml" value="0.264" />
         <entry key="app/src/main/res/layout/seat_details_fragment.xml" value="0.12" />
         <entry key="app/src/main/res/layout/seats_info_fragment.xml" value="0.10822368421052632" />

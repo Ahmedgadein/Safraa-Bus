@@ -1,7 +1,10 @@
 package com.dinder.rihlabus.adapters
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +31,12 @@ class SeatAdapter : ListAdapter<Seat, SeatAdapter.SeatHolder>(SeatDiffUtils()) {
         RecyclerView.ViewHolder(binding.root) {
         fun bind(seat: Seat) {
             binding.seat = seat
+            binding.callPassengerButton.setOnClickListener {
+                // Call Passenger Number
+                val intent = Intent(Intent.ACTION_DIAL)
+                intent.data = Uri.parse("tel:${seat.passengerPhoneNumber}")
+                startActivity(itemView.context, intent, null)
+            }
         }
     }
 }
