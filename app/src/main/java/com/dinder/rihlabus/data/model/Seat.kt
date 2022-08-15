@@ -5,7 +5,12 @@ import com.dinder.rihlabus.utils.SeatState
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Seat(val number: Int, val passenger: String? = null, val status: SeatState) :
+data class Seat(
+    val number: Int,
+    val passenger: String? = null,
+    val passengerPhoneNumber: String? = null,
+    val status: SeatState
+) :
     Parcelable {
 
     val isAvailable: Boolean
@@ -14,6 +19,7 @@ data class Seat(val number: Int, val passenger: String? = null, val status: Seat
     fun toJson() = mapOf(
         "$number" to mapOf(
             "passenger" to passenger,
+            "passengerPhoneNumber" to passengerPhoneNumber,
             "status" to status
         )
     )
@@ -23,9 +29,10 @@ data class Seat(val number: Int, val passenger: String? = null, val status: Seat
             Seat(
                 number = json.keys.first().toInt(),
                 passenger = json.values.first()["passenger"] as String?,
+                passengerPhoneNumber = json.values.first()["passengerPhoneNumber"] as String?,
                 status = SeatState.valueOf(json.values.first()["status"].toString())
             )
 
-        fun empty(): Seat = Seat(0, null, SeatState.UN_SELECTED)
+        fun empty(): Seat = Seat(0, null, null, SeatState.UN_SELECTED)
     }
 }

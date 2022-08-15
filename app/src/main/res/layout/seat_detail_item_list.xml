@@ -19,6 +19,7 @@
         android:elevation="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constrantLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp">
@@ -89,6 +90,16 @@
                     android:visibility='@{seat.available? View.GONE : View.VISIBLE}'/>
 
             </LinearLayout>
+            <ImageView
+                android:id="@+id/callPassengerButton"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                app:showCallButton="@{seat}"
+                android:background="@drawable/ic_phone"
+                android:backgroundTint="@color/teal_700"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </layout>

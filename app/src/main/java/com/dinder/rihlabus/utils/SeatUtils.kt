@@ -46,7 +46,8 @@ object SeatUtils {
             mapOf(
                 it.key to mapOf(
                     "passenger" to it.value["passenger"] as String?,
-                    "status" to SeatState.valueOf(it.value["status"].toString())
+                    "status" to SeatState.valueOf(it.value["status"].toString()),
+                    "passengerPhoneNumber" to it.value["passengerPhoneNumber"] as String?
                 )
             )
         )
