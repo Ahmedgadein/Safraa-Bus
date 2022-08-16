@@ -38,9 +38,9 @@
     <string name="logout">تسجيل الخروج</string>
     <string name="personal_info">المعلومات شخصية</string>
     <string name="company_info">معلومات الشركة</string>
-    <string name="verification">التحقق</string>
+    <string name="verification">التأكيد</string>
     <string name="terms_and_conditions_label">بالتسجيل توافق على الشروط و الأحكام الخاصىة برحلة</string>
-    <string name="please_enter_the_verification_code">الرجاء إدخال رمز التحقق</string>
+    <string name="please_enter_the_verification_code">الرجاء إدخال رمز التأكيد</string>
     <string name="code">الرمز</string>
     <string name="no_current_trips">لا يوجد رحلات حاليا, قم بإضافة رحلة</string>
     <string name="no_last_trips">لا يوجد رحلات سابقة, قم بإضافة رحلة</string>

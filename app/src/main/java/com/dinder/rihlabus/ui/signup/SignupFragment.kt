@@ -25,6 +25,7 @@ import com.dinder.rihlabus.data.model.Destination
 import com.dinder.rihlabus.data.model.User
 import com.dinder.rihlabus.databinding.SignupFragmentBinding
 import com.dinder.rihlabus.utils.NameValidator
+import com.dinder.rihlabus.utils.NetworkUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -50,6 +51,11 @@ class SignupFragment : RihlaFragment() {
         _setTermsAndConditionsView()
 
         binding.signupButton.setOnClickListener {
+            if (!NetworkUtils.isNetworkConnected(requireContext())) {
+                showSnackbar(resources.getString(R.string.no_network))
+                return@setOnClickListener
+            }
+
             if (!_validForm()) {
                 return@setOnClickListener
             }

@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
+import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.databinding.LoginFragmentBinding
+import com.dinder.rihlabus.utils.NetworkUtils
 import com.dinder.rihlabus.utils.PhoneNumberFormatter
 import com.dinder.rihlabus.utils.PhoneNumberValidator
 import com.mixpanel.android.mpmetrics.MixpanelAPI
@@ -43,6 +45,11 @@ class LoginFragment : RihlaFragment() {
         }
 
         binding.loginButton.setOnClickListener {
+            if (!NetworkUtils.isNetworkConnected(requireContext())) {
+                showSnackbar(resources.getString(R.string.no_network))
+                return@setOnClickListener
+            }
+
             if (!_validForm()) {
                 return@setOnClickListener
             }
