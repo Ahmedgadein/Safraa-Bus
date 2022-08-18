@@ -23,6 +23,7 @@
         <entry key="app/src/main/res/layout/book_seat_bottom_sheet_dialog.xml" value="0.2636752136752137" />
         <entry key="app/src/main/res/layout/bottom_sheet_dialog.xml" value="0.2" />
         <entry key="app/src/main/res/layout/confirm_payment_bottom_sheet_dialog.xml" value="0.264" />
+        <entry key="app/src/main/res/layout/confirm_payment_list_item.xml" value="0.2636752136752137" />
         <entry key="app/src/main/res/layout/current_trip_item_list.xml" value="0.4" />
         <entry key="app/src/main/res/layout/current_trips_fragment.xml" value="0.176" />
         <entry key="app/src/main/res/layout/dropdown_item.xml" value="0.2" />
