@@ -81,7 +81,7 @@ class SeatDetailsFragment : RihlaFragment() {
     private fun mapSeatsToIndex(seats: List<Seat>, index: Int): List<Seat> {
         return when (index) {
             0 -> seats
-            1 -> seats.filter { it.status == SeatState.BOOKED }
+            1 -> seats.filter { it.status == SeatState.UN_SELECTED }
             else -> seats.filter { it.status == SeatState.UNBOOKED }
         }
     }

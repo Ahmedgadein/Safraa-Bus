@@ -5,6 +5,8 @@ import com.dinder.rihlabus.data.model.Trip
 
 data class TripDetailUiState(
     val loading: Boolean = false,
+    val confirmPaymentLoading: Boolean = false,
+    val bookSeatLoading: Boolean = false,
     val messages: List<Message> = emptyList(),
     val trip: Trip? = null
 )

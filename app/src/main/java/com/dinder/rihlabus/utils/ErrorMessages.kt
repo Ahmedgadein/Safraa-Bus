@@ -49,4 +49,7 @@ class ErrorMessages @Inject constructor(private val resources: Resources) {
 
     val noNetworkConnection
         get() = getResource(R.string.no_network)
+
+    val couldntConfirmPayment
+        get() = getResource(R.string.couldnt_confirm_payment)
 }

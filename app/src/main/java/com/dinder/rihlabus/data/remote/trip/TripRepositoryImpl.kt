@@ -104,12 +104,93 @@ class TripRepositoryImpl @Inject constructor(
         awaitClose()
     }
 
-    override suspend fun updateSeatState(
+    override fun observeTrip(id: Long): Flow<Result<Trip>> = callbackFlow {
+        withContext(ioDispatcher) {
+            trySend(Result.Loading)
+            _ref.whereEqualTo(Fields.ID, id).addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    trySend(Result.Error(errorMessages.failedToLoadTrip))
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.documents.isNotEmpty()) {
+                    val trip = Trip.fromJson(snapshot.documents.first().data!!)
+                    trySend(Result.Success(trip))
+                } else {
+                    trySend(Result.Error(errorMessages.failedToLoadTrip))
+                }
+            }
+        }
+        awaitClose()
+    }
+
+    override suspend fun confirmPayment(tripId: Long, seatNumber: Int): Flow<Result<Unit>> =
+        callbackFlow {
+            withContext(ioDispatcher) {
+                trySend(Result.Loading)
+                _ref.whereEqualTo(Fields.ID, tripId).limit(1).get()
+                    .addOnSuccessListener {
+                        _ref.document(it.documents[0].id).set(
+                            mapOf(
+                                Fields.SEATS to
+                                    mapOf(
+                                        "$seatNumber" to mapOf(
+                                            Fields.STATUS to SeatState.PAID
+                                        )
+                                    )
+                            ),
+                            SetOptions.merge()
+                        )
+                            .addOnSuccessListener {
+                                trySend(Result.Success(Unit))
+                            }
+                            .addOnFailureListener {
+                                trySend(Result.Error(errorMessages.couldntConfirmPayment))
+                            }
+                    }
+                    .addOnFailureListener {
+                        trySend(Result.Error(errorMessages.failedToLoadTrip))
+                    }
+            }
+            awaitClose()
+        }
+
+    override suspend fun disprovePayment(tripId: Long, seatNumber: Int): Flow<Result<Unit>> =
+        callbackFlow {
+            withContext(ioDispatcher) {
+                trySend(Result.Loading)
+                _ref.whereEqualTo(Fields.ID, tripId).limit(1).get()
+                    .addOnSuccessListener {
+                        _ref.document(it.documents[0].id).set(
+                            mapOf(
+                                Fields.SEATS to
+                                    mapOf(
+                                        "$seatNumber" to mapOf(
+                                            Fields.STATUS to SeatState.UNBOOKED
+                                        )
+                                    )
+                            ),
+                            SetOptions.merge()
+                        )
+                            .addOnSuccessListener {
+                                trySend(Result.Success(Unit))
+                            }
+                            .addOnFailureListener {
+                                trySend(Result.Error(errorMessages.couldntConfirmPayment))
+                            }
+                    }
+                    .addOnFailureListener {
+                        trySend(Result.Error(errorMessages.failedToLoadTrip))
+                    }
+            }
+            awaitClose()
+        }
+
+    override suspend fun bookSeat(
         tripId: Long,
         seatNumber: Int,
-        passenger: String?,
-        state: SeatState
-    ): Flow<Result<Boolean>> = callbackFlow {
+        passenger: String?
+    ): Flow<Result<Unit>> = callbackFlow {
         withContext(ioDispatcher) {
             trySend(Result.Loading)
             _ref.whereEqualTo(Fields.ID, tripId).limit(1).get()
@@ -119,7 +200,7 @@ class TripRepositoryImpl @Inject constructor(
                             Fields.SEATS to
                                 mapOf(
                                     "$seatNumber" to mapOf(
-                                        Fields.STATUS to state,
+                                        Fields.STATUS to SeatState.PAID,
                                         Fields.PASSENGER to passenger
                                     )
                                 )
@@ -127,12 +208,10 @@ class TripRepositoryImpl @Inject constructor(
                         SetOptions.merge()
                     )
                         .addOnSuccessListener {
-                            Log.i("UpdateSeatState", "updateSeatState status: Successful")
-                            trySend(Result.Success(true))
+                            trySend(Result.Success(Unit))
                         }
                         .addOnFailureListener {
-                            Log.i("UpdateSeatState", "updateSeatState status: Failure")
-                            trySend(Result.Error(errorMessages.failedToUpdateSeatInfo))
+                            trySend(Result.Error(errorMessages.failedToLoadTrip))
                         }
                 }
                 .addOnFailureListener {
@@ -142,3 +221,42 @@ class TripRepositoryImpl @Inject constructor(
         awaitClose()
     }
 }
+
+//    override suspend fun updateSeatState(
+//        tripId: Long,
+//        seatNumber: Int,
+//        passenger: String?,
+//        state: SeatState
+//    ): Flow<Result<Boolean>> = callbackFlow {
+//        withContext(ioDispatcher) {
+//            trySend(Result.Loading)
+//            _ref.whereEqualTo(Fields.ID, tripId).limit(1).get()
+//                .addOnSuccessListener {
+//                    _ref.document(it.documents[0].id).set(
+//                        mapOf(
+//                            Fields.SEATS to
+//                                mapOf(
+//                                    "$seatNumber" to mapOf(
+//                                        Fields.STATUS to state,
+//                                        Fields.PASSENGER to passenger
+//                                    )
+//                                )
+//                        ),
+//                        SetOptions.merge()
+//                    )
+//                        .addOnSuccessListener {
+//                            Log.i("UpdateSeatState", "updateSeatState status: Successful")
+//                            trySend(Result.Success(true))
+//                        }
+//                        .addOnFailureListener {
+//                            Log.i("UpdateSeatState", "updateSeatState status: Failure")
+//                            trySend(Result.Error(errorMessages.failedToUpdateSeatInfo))
+//                        }
+//                }
+//                .addOnFailureListener {
+//                    trySend(Result.Error(errorMessages.failedToLoadTrip))
+//                }
+//        }
+//        awaitClose()
+//    }
+// }

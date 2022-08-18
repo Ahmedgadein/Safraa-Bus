@@ -1,58 +1,92 @@
 package com.dinder.rihlabus.ui.tripDetails
 
+import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.Message
 import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.remote.trip.TripRepository
-import com.dinder.rihlabus.utils.SeatState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class TripDetailsViewModel @Inject constructor(private val repository: TripRepository) :
+class TripDetailsViewModel @Inject constructor(
+    private val repository: TripRepository,
+    private val resources: Resources
+) :
     ViewModel() {
     private val _state = MutableStateFlow(TripDetailUiState())
     val state = _state.asStateFlow()
 
     fun getTrip(id: Long) {
+        observeTrip(id)
+    }
+
+    private fun observeTrip(id: Long) {
         viewModelScope.launch {
-            withContext(viewModelScope.coroutineContext) {
-                repository.getTrip(id).collect { result ->
-                    when (result) {
-                        is Result.Loading -> _state.update { it.copy(loading = true) }
-                        is Result.Error -> showUserMessage(result.message)
-                        is Result.Success -> _state.update {
-                            it.copy(
-                                loading = false,
-                                trip = result.value
-                            )
-                        }
+            repository.observeTrip(id).collect { result ->
+                when (result) {
+                    Result.Loading -> _state.update { it.copy(loading = true) }
+                    is Result.Error -> showUserMessage(result.message)
+                    is Result.Success -> _state.update {
+                        it.copy(
+                            trip = result.value,
+                            loading = false
+                        )
                     }
                 }
             }
         }
     }
 
-    fun updateSeatState(
-        tripId: Long,
-        seatNumber: Int,
-        passenger: String? = null,
-        state: SeatState
-    ) {
+    fun confirmPayment(tripId: Long, seatNumber: Int) {
         viewModelScope.launch {
-            repository.updateSeatState(tripId, seatNumber, passenger, state).collect { result ->
+            repository.confirmPayment(tripId, seatNumber).collect { result ->
                 when (result) {
                     Result.Loading -> _state.update { it.copy(loading = true) }
                     is Result.Error -> showUserMessage(result.message)
-                    is Result.Success -> getTrip(tripId)
+                    is Result.Success -> showUserMessage(
+                        resources.getString(R.string.payment_confirmed)
+                    )
+                }
+            }
+        }
+    }
+
+    fun disprovePayment(tripId: Long, seatNumber: Int) {
+        viewModelScope.launch {
+            repository.disprovePayment(tripId, seatNumber).collect { result ->
+                when (result) {
+                    Result.Loading -> _state.update { it.copy(loading = true) }
+                    is Result.Error -> showUserMessage(result.message)
+                    is Result.Success -> showUserMessage(
+                        resources.getString(R.string.seat_reservation_cancelled)
+                    )
+                }
+            }
+        }
+    }
+
+    fun bookSeat(
+        tripId: Long,
+        seatNumber: Int,
+        passenger: String?
+    ) {
+        viewModelScope.launch {
+            repository.bookSeat(tripId, seatNumber, passenger).collect { result ->
+                when (result) {
+                    Result.Loading -> _state.update { it.copy(loading = true) }
+                    is Result.Error -> showUserMessage(result.message)
+                    is Result.Success -> showUserMessage(
+                        resources.getString(R.string.seat_reserved)
+                    )
                 }
             }
         }
