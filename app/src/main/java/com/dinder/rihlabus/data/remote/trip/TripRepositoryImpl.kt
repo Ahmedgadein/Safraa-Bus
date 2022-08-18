@@ -13,6 +13,8 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.*
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
@@ -20,8 +22,6 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
-import java.util.*
-import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class TripRepositoryImpl @Inject constructor(
@@ -221,42 +221,3 @@ class TripRepositoryImpl @Inject constructor(
         awaitClose()
     }
 }
-
-//    override suspend fun updateSeatState(
-//        tripId: Long,
-//        seatNumber: Int,
-//        passenger: String?,
-//        state: SeatState
-//    ): Flow<Result<Boolean>> = callbackFlow {
-//        withContext(ioDispatcher) {
-//            trySend(Result.Loading)
-//            _ref.whereEqualTo(Fields.ID, tripId).limit(1).get()
-//                .addOnSuccessListener {
-//                    _ref.document(it.documents[0].id).set(
-//                        mapOf(
-//                            Fields.SEATS to
-//                                mapOf(
-//                                    "$seatNumber" to mapOf(
-//                                        Fields.STATUS to state,
-//                                        Fields.PASSENGER to passenger
-//                                    )
-//                                )
-//                        ),
-//                        SetOptions.merge()
-//                    )
-//                        .addOnSuccessListener {
-//                            Log.i("UpdateSeatState", "updateSeatState status: Successful")
-//                            trySend(Result.Success(true))
-//                        }
-//                        .addOnFailureListener {
-//                            Log.i("UpdateSeatState", "updateSeatState status: Failure")
-//                            trySend(Result.Error(errorMessages.failedToUpdateSeatInfo))
-//                        }
-//                }
-//                .addOnFailureListener {
-//                    trySend(Result.Error(errorMessages.failedToLoadTrip))
-//                }
-//        }
-//        awaitClose()
-//    }
-// }

@@ -80,17 +80,17 @@ class SeatDetailsFragment : RihlaFragment() {
 
     private fun mapSeatsToIndex(seats: List<Seat>, index: Int): List<Seat> {
         return when (index) {
-            0 -> seats
-            1 -> seats.filter { it.status == SeatState.UN_SELECTED }
-            else -> seats.filter { it.status == SeatState.UNBOOKED }
+            0 -> seats.filter { it.status == SeatState.PAID }
+            1 -> seats.filter { it.status == SeatState.PAYMENT_CONFIRMATION }
+            else -> seats.filter { it.status == SeatState.PRE_BOOK }
         }
     }
 
     private fun mapTabTitle(position: Int): String {
         return when (position) {
-            0 -> getString(R.string.all_seats)
-            1 -> resources.getString(R.string.reserved_capitalized)
-            else -> resources.getString(R.string.not_booked)
+            0 -> getString(R.string.paid)
+            1 -> resources.getString(R.string.payment_confirmation)
+            else -> resources.getString(R.string.pre_book)
         }
     }
 }
