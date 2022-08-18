@@ -9,6 +9,7 @@ data class Seat(
     val number: Int,
     val passenger: String? = null,
     val passengerPhoneNumber: String? = null,
+    val paidAmount: Int? = null,
     val status: SeatState
 ) :
     Parcelable {
@@ -30,9 +31,8 @@ data class Seat(
                 number = json.keys.first().toInt(),
                 passenger = json.values.first()["passenger"] as String?,
                 passengerPhoneNumber = json.values.first()["passengerPhoneNumber"] as String?,
-                status = SeatState.valueOf(json.values.first()["status"].toString())
+                status = SeatState.valueOf(json.values.first()["status"].toString()),
+                paidAmount = json.values.first()["paidAmount"].toString().toIntOrNull() ?: 0
             )
-
-        fun empty(): Seat = Seat(0, null, null, SeatState.UN_SELECTED)
     }
 }

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.core.view.setPadding
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,11 +15,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.RihlaFragment
 import com.dinder.rihlabus.data.model.Seat
+import com.dinder.rihlabus.databinding.ConfirmPaymentBottomSheetDialogBinding
 import com.dinder.rihlabus.databinding.SeatDetailItemListBinding
+import com.dinder.rihlabus.databinding.SecondPaymentConfirmationBottomSheetDialogBindingImpl
 import com.dinder.rihlabus.databinding.TripDetailsFragmentBinding
 import com.dinder.rihlabus.utils.SeatUtils
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -32,7 +38,7 @@ class TripDetailsFragment : RihlaFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         binding = TripDetailsFragmentBinding.inflate(inflater, container, false)
         binding.viewOnly = args.viewOnly
@@ -73,12 +79,31 @@ class TripDetailsFragment : RihlaFragment() {
                         binding.tripDetailSeatView.setSeats(
                             SeatUtils.getSeatsListAsStateMap(it.seats)
                         )
-                        binding.tripDetailSeatView.setOnSeatStateUpdateListener { seatNumber, seatState, passenger -> // ktlint-disable max-line-length
-                            viewModel.updateSeatState(it.id!!, seatNumber, passenger, seatState)
-                        }
-                        binding.tripDetailSeatView.setOnShowBookedSeatPassengerDetails { seatNumber -> // ktlint-disable max-line-length
+
+                        // Show Passenger
+                        binding.tripDetailSeatView.setOnShowPassengerDetailsListener { seatNumber -> // ktlint-disable max-line-length
                             val seat = it.seats.firstOrNull { seat -> seat.number == seatNumber }
-                            showPassengerDetailDialog(seat)
+                            if (seat == null) {
+                                // TODO: 1) Track this 2) Show message 3) Investigate cause
+                            } else {
+                                showPassengerDetailDialog(seat)
+                            }
+                        }
+
+                        // Book Seat
+                        binding.tripDetailSeatView.setOnBookSeatListener { seatNumber -> // ktlint-disable max-line-length
+                            val seat = it.seats.firstOrNull { seat -> seat.number == seatNumber }
+                            if (seat == null) {
+                                // TODO: 1) Track this 2) Show message 3) Investigate cause
+                            } else {
+                                showBookSeatDialog(seat)
+                            }
+                        }
+
+                        // Payment Confirmation
+                        binding.tripDetailSeatView.setOnPaymentConfirmationListener { seatNumber -> // ktlint-disable max-line-length
+                            val seat = it.seats.firstOrNull { seat -> seat.number == seatNumber }
+                            showConfirmPaymentDialog(seat)
                         }
                     }
                 }
@@ -102,6 +127,65 @@ class TripDetailsFragment : RihlaFragment() {
             .setView(dialogBinding.root)
 
         dialogBuilder.show()
+    }
+
+    private fun showBookSeatDialog(seat: Seat?) {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.book_seat_bottom_sheet_dialog)
+        bottomSheetDialog.findViewById<Button>(R.id.reserveSeatButton)?.setOnClickListener {
+            bottomSheetDialog.dismiss()
+            val name =
+                bottomSheetDialog.findViewById<TextInputLayout>(R.id.reserveSeatNameContainer)
+                    ?.editText
+                    ?.text
+                    .toString()
+            viewModel.bookSeat(args.id, seat?.number!!, name)
+        }
+
+        bottomSheetDialog.show()
+    }
+
+    private fun showConfirmPaymentDialog(seat: Seat?) {
+        val dialogBinding =
+            ConfirmPaymentBottomSheetDialogBinding.inflate(layoutInflater, null, false)
+        dialogBinding.seat = seat
+
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(dialogBinding.root)
+
+        // Payment Confirmed
+        bottomSheetDialog.findViewById<Button>(R.id.paymentConfirmedButton)?.setOnClickListener {
+            bottomSheetDialog.dismiss()
+            viewModel.confirmPayment(args.id, seat?.number!!)
+        }
+        // Payment Declined
+        bottomSheetDialog.findViewById<Button>(R.id.paymentDeclinedButton)?.setOnClickListener {
+            bottomSheetDialog.dismiss()
+            showPaymentNotMadeConfirmationDialog(seat)
+        }
+
+        bottomSheetDialog.show()
+    }
+
+    private fun showPaymentNotMadeConfirmationDialog(seat: Seat?) {
+        val dialogBinding =
+            SecondPaymentConfirmationBottomSheetDialogBindingImpl.inflate(
+                layoutInflater,
+                null,
+                false
+            )
+        dialogBinding.seat = seat
+
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(dialogBinding.root)
+
+        bottomSheetDialog.findViewById<Button>(R.id.secondPaymentDeclineConfirmation)
+            ?.setOnClickListener {
+                bottomSheetDialog.dismiss()
+                viewModel.disprovePayment(args.id, seat?.number!!)
+            }
+
+        bottomSheetDialog.show()
     }
 
     private fun navigateToSeatDetails() {

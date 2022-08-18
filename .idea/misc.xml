@@ -20,7 +20,9 @@
         <entry key="app/src/main/res/font/arabic.xml" value="0.22547108512020791" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/blank_fragment.xml" value="0.3229166666666667" />
+        <entry key="app/src/main/res/layout/book_seat_bottom_sheet_dialog.xml" value="0.2636752136752137" />
         <entry key="app/src/main/res/layout/bottom_sheet_dialog.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/confirm_payment_bottom_sheet_dialog.xml" value="0.264" />
         <entry key="app/src/main/res/layout/current_trip_item_list.xml" value="0.4" />
         <entry key="app/src/main/res/layout/current_trips_fragment.xml" value="0.176" />
         <entry key="app/src/main/res/layout/dropdown_item.xml" value="0.2" />
@@ -43,13 +45,14 @@
         <entry key="app/src/main/res/layout/seat_detail_item_list.xml" value="0.264" />
         <entry key="app/src/main/res/layout/seat_details_fragment.xml" value="0.12" />
         <entry key="app/src/main/res/layout/seats_info_fragment.xml" value="0.10822368421052632" />
+        <entry key="app/src/main/res/layout/second_payment_confirmation_bottom_sheet_dialog.xml" value="0.264" />
         <entry key="app/src/main/res/layout/settings_fragment.xml" value="0.136" />
         <entry key="app/src/main/res/layout/shimmer_current_trip_item_list.xml" value="0.536" />
         <entry key="app/src/main/res/layout/shimmer_current_trips_fragment.xml" value="0.20394736842105263" />
         <entry key="app/src/main/res/layout/shimmer_last_trip_item_list.xml" value="0.20394736842105263" />
         <entry key="app/src/main/res/layout/shimmer_trip_details_fragment.xml" value="0.20394736842105263" />
         <entry key="app/src/main/res/layout/signup_fragment.xml" value="0.176" />
-        <entry key="app/src/main/res/layout/trip_details_fragment.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/trip_details_fragment.xml" value="0.264" />
         <entry key="app/src/main/res/layout/update_app_fragment.xml" value="0.176" />
         <entry key="app/src/main/res/layout/verification_fragment.xml" value="0.2" />
         <entry key="app/src/main/res/menu/bottom_nav.xml" value="0.2014294996751137" />
@@ -69,5 +72,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.264" />
+      </ProjectState>
+    </option>
   </component>
 </project>

@@ -28,7 +28,7 @@
     <string name="last_trips">الرحلات السابقة</string>
     <string name="settings">الإعدادات</string>
     <string name="trip_details">تفاصيل الرحلة</string>
-    <string name="see_seats_details">عرض تفاصيل المقاعد</string>
+    <string name="seat_details">تفاصيل المقاعد</string>
     <string name="new_trip">رحلة جديدة</string>
     <string name="select_seats">إختر المقاعد</string>
     <string name="select_the_seats_available_to_book">إختر المقاعد المتوفرة للحجز</string>
@@ -53,7 +53,18 @@
     <string name="pick_date">إختر اليوم</string>
     <string name="pick_time">إختر الزمن</string>
     <string name="required">مطلوب</string>
-
+    <string name="reserve">حجز</string>
+    <string name="pre_book">مبدئي</string>
+    <string name="payment_confirmation">تأكيد الدفع</string>
+    <string name="paid">مدفوع</string>
+    <string name="paid_amount">المبلغ المدفوع</string>
+    <string name="payment_not_made">لم يتم الدفع</string>
+    <string name="payment_not_made_confirmation">تأكيد عدم إستلام المعاملة المالية</string>
+    <string name="payment_details">تفاصيل الدفع</string>
+    <string name="confirm_payment_not_paid_question">هل أنت متأكد من عدم إستلام هذه المعاملة المالية؟</string>
+    <string name="payment_confirmed">تم تأكيد الدفع</string>
+    <string name="seat_reserved">تم حجز المقعد</string>
+    <string name="seat_reservation_cancelled">تم إلغاء حجز المقعد</string>
     <!--  Error Messages  -->
     <string name="couldnt_find_user">لم يتم العثور على المستخدم</string>
     <string name="failed_to_check_registration">فشل في التحقق من التسجيل</string>
@@ -72,5 +83,5 @@
     <string name="verifying_with_company">الرجاء الإنتظار حتى يتم تأكيد هويتك مع الشركة</string>
     <string name="no_network">لا يوجد إتصال إنترنت, تأكد من شبكة الهاتف</string>
     <string name="name_of_passenger">إسم الراكب</string>
-    <string name="reserve">حجز</string>
+    <string name="couldnt_confirm_payment">تعذر تأكيد الدفع</string>
 </resources>

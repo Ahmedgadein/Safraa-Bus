@@ -8,16 +8,13 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Button
 import com.dinder.rihlabus.R
 import com.dinder.rihlabus.common.Constants.NUMBER_OF_SEATS_ROWS
 import com.dinder.rihlabus.data.model.SquareBound
 import com.dinder.rihlabus.utils.NetworkUtils
 import com.dinder.rihlabus.utils.SeatState
 import com.dinder.rihlabus.utils.SeatUtils
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputLayout
 
 enum class SeatViewCapability {
     SELECT_ONLY,
@@ -39,8 +36,9 @@ class SeatsView : View {
     private val _bounds: MutableList<SquareBound> = mutableListOf()
     private val _space = 20f
     private var onSeatSelectedListener: ((Int) -> Unit)? = null
-    private var onShowBookedSeatPassengerDetails: ((Int) -> Unit)? = null
-    private var onSeatStateUpdateListener: ((Int, SeatState, String?) -> Unit)? = null
+    private var onShowPassengerDetails: ((Int) -> Unit)? = null
+    private var onPaymentConfirmation: ((Int) -> Unit)? = null
+    private var onBookSeat: ((Int) -> Unit)? = null
     private lateinit var capability: SeatViewCapability
     private var viewOnly: Boolean = false
 
@@ -84,12 +82,16 @@ class SeatsView : View {
         this.onSeatSelectedListener = listener
     }
 
-    fun setOnShowBookedSeatPassengerDetails(listener: (Int) -> Unit) {
-        this.onShowBookedSeatPassengerDetails = listener
+    fun setOnShowPassengerDetailsListener(listener: (Int) -> Unit) {
+        this.onShowPassengerDetails = listener
     }
 
-    fun setOnSeatStateUpdateListener(listener: (Int, SeatState, String?) -> Unit) {
-        this.onSeatStateUpdateListener = listener
+    fun setOnPaymentConfirmationListener(listener: (Int) -> Unit) {
+        this.onPaymentConfirmation = listener
+    }
+
+    fun setOnBookSeatListener(listener: (Int) -> Unit) {
+        this.onBookSeat = listener
     }
 
     fun selectAll() {
@@ -190,34 +192,18 @@ class SeatsView : View {
                         Snackbar.LENGTH_LONG
                     ).show()
                 } else {
-                    if (seats["$seatNumber"] == SeatState.UNBOOKED) {
-                        showBookOptionsDialog(seatNumber)
-                    } else if (seats["$seatNumber"] == SeatState.BOOKED) {
-                        onShowBookedSeatPassengerDetails?.invoke(seatNumber)
+                    when (seats["$seatNumber"]) {
+                        SeatState.PAID -> onShowPassengerDetails?.invoke(seatNumber)
+                        SeatState.PAYMENT_CONFIRMATION -> onPaymentConfirmation?.invoke(seatNumber)
+                        SeatState.PRE_BOOK -> onShowPassengerDetails?.invoke(seatNumber)
+                        SeatState.UNBOOKED -> onBookSeat?.invoke(seatNumber)
+                        else -> Unit
                     }
                 }
             }
         }
 
         this.onSeatSelectedListener?.invoke(seats.values.filter { it == SeatState.SELECTED }.size)
-    }
-
-    private fun showBookOptionsDialog(seatNumber: Int) {
-        val bottomSheetDialog = BottomSheetDialog(context)
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog)
-        bottomSheetDialog.findViewById<Button>(R.id.reserveSeatButton)?.setOnClickListener {
-            bottomSheetDialog.dismiss()
-            onSeatStateUpdateListener?.invoke(
-                seatNumber,
-                SeatState.BOOKED,
-                bottomSheetDialog
-                    .findViewById<TextInputLayout>(R.id.reserveSeatNameContainer)
-                    ?.editText
-                    ?.text.toString()
-            )
-        }
-
-        bottomSheetDialog.show()
     }
 
     private fun selectSeat(seatNumber: Int) {
@@ -239,15 +225,18 @@ class SeatsView : View {
             }
             SeatViewCapability.BOOK_AND_CONFIRM -> {
                 return when (seats["$seatNumber"]) {
-                    SeatState.UNBOOKED -> {
-                        resources.getColor(R.color.green, context.theme)
-                    }
-                    SeatState.BOOKED -> {
-                        resources.getColor(R.color.orange, context.theme)
-                    }
-                    else -> {
-                        Color.GRAY
-                    }
+                    SeatState.PAID -> resources.getColor(R.color.green, context.theme)
+
+                    SeatState.PAYMENT_CONFIRMATION -> resources.getColor(
+                        R.color.orange,
+                        context.theme
+                    )
+
+                    SeatState.PRE_BOOK -> resources.getColor(R.color.teal_200, context.theme)
+
+                    SeatState.UNBOOKED -> Color.GRAY
+
+                    else -> Color.LTGRAY
                 }
             }
         }

@@ -4,7 +4,6 @@ import com.dinder.rihlabus.common.Result
 import com.dinder.rihlabus.data.model.Company
 import com.dinder.rihlabus.data.model.Destination
 import com.dinder.rihlabus.data.model.Trip
-import com.dinder.rihlabus.utils.SeatState
 import kotlinx.coroutines.flow.Flow
 
 interface TripRepository {
@@ -22,10 +21,21 @@ interface TripRepository {
 
     suspend fun getTrip(id: Long): Flow<Result<Trip>>
 
-    suspend fun updateSeatState(
+    fun observeTrip(id: Long): Flow<Result<Trip>>
+
+    suspend fun confirmPayment(
+        tripId: Long,
+        seatNumber: Int
+    ): Flow<Result<Unit>>
+
+    suspend fun disprovePayment(
+        tripId: Long,
+        seatNumber: Int
+    ): Flow<Result<Unit>>
+
+    suspend fun bookSeat(
         tripId: Long,
         seatNumber: Int,
-        passenger: String?,
-        state: SeatState
-    ): Flow<Result<Boolean>>
+        passenger: String?
+    ): Flow<Result<Unit>>
 }
