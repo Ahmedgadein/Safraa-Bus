@@ -12,6 +12,7 @@ data class User(
     val phoneNumber: String,
     val company: Company? = null,
     val location: Destination? = null,
+    val token: String? = null,
     @ColumnInfo(defaultValue = "0")
     val verified: Boolean = false
 ) {
@@ -19,6 +20,7 @@ data class User(
         "id" to id,
         "name" to name,
         "phoneNumber" to phoneNumber,
+        "token" to token,
         "company" to company?.toJson(),
         "location" to location?.toJson(),
         "verified" to verified
@@ -32,7 +34,8 @@ data class User(
                 phoneNumber = json["phoneNumber"].toString(),
                 company = Company.fromJson(json["company"] as Map<String, Any>),
                 location = Destination.fromJson(json["location"] as Map<String, Any>),
-                verified = json["verified"] as Boolean? ?: false
+                verified = json["verified"] as Boolean? ?: false,
+                token = json["token"] as String? ?: ""
             )
     }
 }

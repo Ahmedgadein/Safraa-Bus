@@ -12,4 +12,6 @@ interface AuthRepository {
     suspend fun register(
         user: User
     ): Flow<Result<Boolean>>
+
+    suspend fun updateToken(id: String, token: String): Boolean
 }

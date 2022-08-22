@@ -6,6 +6,7 @@ object Constants {
     const val NUMBER_OF_SEATS = 49
 
     const val DATABASE_NAME = "rihlabus_database"
+    const val TOKEN = "token"
 }
 
 object Collections {
