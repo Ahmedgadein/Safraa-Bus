@@ -25,11 +25,11 @@ class TripDetailsViewModel @Inject constructor(
     private val _state = MutableStateFlow(TripDetailUiState())
     val state = _state.asStateFlow()
 
-    fun getTrip(id: Long) {
+    fun getTrip(id: String) {
         observeTrip(id)
     }
 
-    private fun observeTrip(id: Long) {
+    private fun observeTrip(id: String) {
         viewModelScope.launch {
             repository.observeTrip(id).collect { result ->
                 when (result) {
@@ -46,7 +46,7 @@ class TripDetailsViewModel @Inject constructor(
         }
     }
 
-    fun confirmPayment(tripId: Long, seatNumber: Int) {
+    fun confirmPayment(tripId: String, seatNumber: Int) {
         viewModelScope.launch {
             repository.confirmPayment(tripId, seatNumber).collect { result ->
                 when (result) {
@@ -60,7 +60,7 @@ class TripDetailsViewModel @Inject constructor(
         }
     }
 
-    fun disprovePayment(tripId: Long, seatNumber: Int) {
+    fun disprovePayment(tripId: String, seatNumber: Int) {
         viewModelScope.launch {
             repository.disprovePayment(tripId, seatNumber).collect { result ->
                 when (result) {
@@ -75,7 +75,7 @@ class TripDetailsViewModel @Inject constructor(
     }
 
     fun bookSeat(
-        tripId: Long,
+        tripId: String,
         seatNumber: Int,
         passenger: String?
     ) {
