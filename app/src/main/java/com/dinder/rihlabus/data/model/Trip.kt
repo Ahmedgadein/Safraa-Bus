@@ -5,7 +5,7 @@ import com.google.firebase.Timestamp
 import java.util.*
 
 data class Trip(
-    val id: Long? = null,
+    val id: String? = null,
     val date: Date,
     val time: Date,
     val company: Company? = null,
@@ -27,7 +27,7 @@ data class Trip(
 
     companion object {
         fun fromJson(json: Map<String, Any>) = Trip(
-            id = json["id"] as Long,
+            id = json["id"] as String? ?: "",
             date = (json["date"] as Timestamp).toDate(),
             time = (json["time"] as Timestamp).toDate(),
             company = Company.fromJson(json["company"] as Map<String, Any>),

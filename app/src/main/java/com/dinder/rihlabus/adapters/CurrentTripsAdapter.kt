@@ -40,7 +40,7 @@ class CurrentTripsAdapter :
             }
         }
 
-        private fun navigateToTripDetails(id: Long) {
+        private fun navigateToTripDetails(id: String) {
             itemView.findNavController()
                 .navigate(HomeFragmentDirections.actionHomeFragmentToTripDetailsFragment(id))
         }

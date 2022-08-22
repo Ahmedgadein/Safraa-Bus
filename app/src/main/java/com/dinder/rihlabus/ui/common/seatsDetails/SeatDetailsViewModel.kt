@@ -8,7 +8,6 @@ import com.dinder.rihlabus.data.remote.trip.TripRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.*
@@ -22,7 +21,7 @@ class SeatDetailsViewModel @Inject constructor(
     private val _state = MutableStateFlow(SeatDetailsUiState())
     val state = _state.asStateFlow()
 
-    fun getTrip(id: Long) {
+    fun getTrip(id: String) {
         viewModelScope.launch {
             repository.getTrip(id).collect { result ->
                 when (result) {

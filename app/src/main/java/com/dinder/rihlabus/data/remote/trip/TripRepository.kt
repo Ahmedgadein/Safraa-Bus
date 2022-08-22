@@ -19,22 +19,22 @@ interface TripRepository {
         location: Destination
     ): Flow<Result<List<Trip>>>
 
-    suspend fun getTrip(id: Long): Flow<Result<Trip>>
+    suspend fun getTrip(id: String): Flow<Result<Trip>>
 
-    fun observeTrip(id: Long): Flow<Result<Trip>>
+    fun observeTrip(id: String): Flow<Result<Trip>>
 
     suspend fun confirmPayment(
-        tripId: Long,
+        tripId: String,
         seatNumber: Int
     ): Flow<Result<Unit>>
 
     suspend fun disprovePayment(
-        tripId: Long,
+        tripId: String,
         seatNumber: Int
     ): Flow<Result<Unit>>
 
     suspend fun bookSeat(
-        tripId: Long,
+        tripId: String,
         seatNumber: Int,
         passenger: String?
     ): Flow<Result<Unit>>

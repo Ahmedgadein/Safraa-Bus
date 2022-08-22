@@ -34,7 +34,15 @@ class TripRepositoryImpl @Inject constructor(
         withContext(ioDispatcher) {
             trySend(Result.Loading)
             _ref.add(trip.toJson()).addOnSuccessListener {
-                trySend(Result.Success(true))
+                it.set(
+                    mapOf(Fields.ID to it.id),
+                    SetOptions.merge()
+                ).addOnSuccessListener {
+                    trySend(Result.Success(true))
+                }
+                    .addOnFailureListener {
+                        trySend(Result.Error(errorMessages.failedToAddTrip))
+                    }
             }
                 .addOnFailureListener {
                     trySend(Result.Error(errorMessages.failedToAddTrip))
@@ -90,7 +98,7 @@ class TripRepositoryImpl @Inject constructor(
             awaitClose()
         }
 
-    override suspend fun getTrip(id: Long): Flow<Result<Trip>> = callbackFlow {
+    override suspend fun getTrip(id: String): Flow<Result<Trip>> = callbackFlow {
         withContext(ioDispatcher) {
             trySend(Result.Loading)
             _ref.whereEqualTo(Fields.ID, id).limit(1).get()
@@ -104,7 +112,7 @@ class TripRepositoryImpl @Inject constructor(
         awaitClose()
     }
 
-    override fun observeTrip(id: Long): Flow<Result<Trip>> = callbackFlow {
+    override fun observeTrip(id: String): Flow<Result<Trip>> = callbackFlow {
         withContext(ioDispatcher) {
             trySend(Result.Loading)
             _ref.whereEqualTo(Fields.ID, id).addSnapshotListener { snapshot, error ->
@@ -124,7 +132,7 @@ class TripRepositoryImpl @Inject constructor(
         awaitClose()
     }
 
-    override suspend fun confirmPayment(tripId: Long, seatNumber: Int): Flow<Result<Unit>> =
+    override suspend fun confirmPayment(tripId: String, seatNumber: Int): Flow<Result<Unit>> =
         callbackFlow {
             withContext(ioDispatcher) {
                 trySend(Result.Loading)
@@ -155,7 +163,7 @@ class TripRepositoryImpl @Inject constructor(
             awaitClose()
         }
 
-    override suspend fun disprovePayment(tripId: Long, seatNumber: Int): Flow<Result<Unit>> =
+    override suspend fun disprovePayment(tripId: String, seatNumber: Int): Flow<Result<Unit>> =
         callbackFlow {
             withContext(ioDispatcher) {
                 trySend(Result.Loading)
@@ -187,7 +195,7 @@ class TripRepositoryImpl @Inject constructor(
         }
 
     override suspend fun bookSeat(
-        tripId: Long,
+        tripId: String,
         seatNumber: Int,
         passenger: String?
     ): Flow<Result<Unit>> = callbackFlow {

@@ -92,7 +92,7 @@
         tools:layout="@layout/trip_details_fragment">
         <argument
             android:name="id"
-            app:argType="long" />
+            app:argType="string" />
         <action
             android:id="@+id/action_tripDetailsFragment_to_seatDetailsFragment"
             app:destination="@id/seatDetailsFragment" />
@@ -108,7 +108,7 @@
         tools:layout="@layout/seat_details_fragment">
         <argument
             android:name="tripId"
-            app:argType="long" />
+            app:argType="string" />
     </fragment>
 
     <fragment

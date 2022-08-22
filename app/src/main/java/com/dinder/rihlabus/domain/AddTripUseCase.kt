@@ -38,7 +38,7 @@ class AddTripUseCase @Inject constructor(
 
                 tripRepository.addTrip(
                     trip.copy(
-                        id = UUID.randomUUID().mostSignificantBits,
+                        id = "",
                         from = it.location!!,
                         company = it.company!!
                     )
