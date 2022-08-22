@@ -1,5 +1,6 @@
 package com.dinder.rihlabus.data.remote.auth
 
+import android.util.Log
 import com.dinder.rihlabus.common.Collections
 import com.dinder.rihlabus.common.Fields
 import com.dinder.rihlabus.common.Result
@@ -7,11 +8,18 @@ import com.dinder.rihlabus.data.model.User
 import com.dinder.rihlabus.utils.ErrorMessages
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.*
+import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -73,9 +81,16 @@ class FirebaseAuthRepository @Inject constructor(
                             return@collect
                         } else {
                             val id = firebaseAuth.currentUser?.uid!!
-                            _ref.document(id).set(user.copy(id = id).toJson())
-                                .addOnSuccessListener {
-                                    trySend(Result.Success(true))
+                            FirebaseMessaging.getInstance().token
+                                .addOnSuccessListener { token ->
+                                    _ref.document(id)
+                                        .set(user.copy(id = id, token = token).toJson())
+                                        .addOnSuccessListener {
+                                            trySend(Result.Success(true))
+                                        }
+                                        .addOnFailureListener {
+                                            trySend(Result.Error(errorMessages.registrationFailed))
+                                        }
                                 }
                                 .addOnFailureListener {
                                     trySend(Result.Error(errorMessages.registrationFailed))
@@ -86,5 +101,25 @@ class FirebaseAuthRepository @Inject constructor(
             }
         }
         awaitClose()
+    }
+
+    override suspend fun updateToken(id: String, token: String): Boolean {
+        try {
+            val user = _ref.whereEqualTo(Fields.ID, id).get().await()
+            if (user.isEmpty) {
+                return false
+            }
+            user.documents.first().reference.set(
+                mapOf(
+                    "token" to token
+                ),
+                SetOptions.merge()
+            ).await()
+
+            return true
+        } catch (e: Exception) {
+            Log.e("Token", e.toString())
+            return false
+        }
     }
 }
