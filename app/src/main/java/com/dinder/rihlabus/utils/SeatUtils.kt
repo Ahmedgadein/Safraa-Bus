@@ -32,7 +32,7 @@ object SeatUtils {
     fun getSelectedSeatsAsUnbooked(seats: Map<String, SeatState>): List<Seat> {
         val selected = getSelectedSeats(seats)
         return selected.map {
-            Seat(number = it.toInt(), passenger = null, status = SeatState.UNBOOKED)
+            Seat(number = it.toInt(), status = SeatState.UNBOOKED)
         }
     }
 
@@ -69,7 +69,6 @@ object SeatUtils {
     // Convert list of [Seat] to map
     fun seatsModelToMap(seats: List<Seat>): Map<String, Map<String, Any?>> = seats.associate {
         it.number.toString() to mapOf(
-            "passenger" to it.passenger,
             "status" to it.status
         )
     }
