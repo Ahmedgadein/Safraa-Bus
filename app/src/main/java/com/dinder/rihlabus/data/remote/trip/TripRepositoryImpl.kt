@@ -60,8 +60,8 @@ class TripRepositoryImpl @Inject constructor(
             trySend(Result.Loading)
             _ref.whereEqualTo(Fields.FROM, location.toJson())
                 .whereEqualTo(Fields.COMPANY, company.toJson())
-                .whereGreaterThan(Fields.DATE, Date())
-                .orderBy("date", Query.Direction.ASCENDING)
+                .whereGreaterThan(Fields.DEPARTURE, Date())
+                .orderBy(Fields.DEPARTURE, Query.Direction.ASCENDING)
                 .get()
                 .addOnSuccessListener { snapshot ->
                     val results = snapshot.documents.map { Trip.fromJson(it.data!!) }
@@ -84,8 +84,8 @@ class TripRepositoryImpl @Inject constructor(
                 trySend(Result.Loading)
                 _ref.whereEqualTo(Fields.FROM, location.toJson())
                     .whereEqualTo(Fields.COMPANY, company.toJson())
-                    .whereLessThan(Fields.DATE, Date())
-                    .orderBy(Fields.DATE, Query.Direction.ASCENDING)
+                    .whereLessThan(Fields.DEPARTURE, Date())
+                    .orderBy(Fields.DEPARTURE, Query.Direction.ASCENDING)
                     .get()
                     .addOnSuccessListener { snapshot ->
                         val results = snapshot.documents.map { Trip.fromJson(it.data!!) }

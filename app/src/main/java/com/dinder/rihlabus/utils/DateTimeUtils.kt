@@ -18,6 +18,20 @@ object DateTimeUtils {
         return date.time
     }
 
+    fun tripDeparture(date: String, time: String): Date {
+        val date = getDateInstance(date)
+        val time = getTimeInstance(time)
+
+        val cal = Calendar.getInstance()
+        cal.time = time
+        val hour = cal[Calendar.HOUR_OF_DAY]
+        val min = cal[Calendar.MINUTE]
+        cal.time = date
+        cal[Calendar.HOUR_OF_DAY] = hour
+        cal[Calendar.MINUTE] = min
+        return cal.time
+    }
+
     fun getFormattedDate(date: Date): String {
         val calendar = GregorianCalendar.getInstance().apply {
             this.time = date

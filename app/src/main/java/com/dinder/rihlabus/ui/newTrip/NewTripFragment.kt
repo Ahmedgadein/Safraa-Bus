@@ -20,7 +20,6 @@ import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.databinding.NewTripFragmentBinding
 import com.dinder.rihlabus.utils.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -73,10 +72,8 @@ class NewTripFragment : RihlaFragment() {
             }
 
             val trip = Trip(
-                date = DateTimeUtils.getDateInstance(
-                    binding.newTripDateContainer.editText?.text.toString()
-                ),
-                time = DateTimeUtils.getTimeInstance(
+                departure = DateTimeUtils.tripDeparture(
+                    binding.newTripDateContainer.editText?.text.toString(),
                     binding.newTripTimeContainer.editText?.text.toString()
                 ),
                 price = binding.newTripPriceContainer.editText?.text.toString().toInt(),
@@ -113,7 +110,7 @@ class NewTripFragment : RihlaFragment() {
                 },
                 currentDate.get(Calendar.HOUR_OF_DAY),
                 currentDate.get(Calendar.MINUTE),
-                true
+                false
             )
             dialog.setTitle(requireContext().resources.getString(R.string.pick_time))
             dialog.show()
@@ -127,8 +124,7 @@ class NewTripFragment : RihlaFragment() {
                         this.addTripButton.isEnabled =
                             !it.loading && !SeatUtils.getSelectedSeatsAsUnbooked(
                             binding.newTripSeatView.getSeats()
-                        )
-                            .isNullOrEmpty()
+                        ).isNullOrEmpty()
                     }
 
                     it.messages.firstOrNull()?.let { message ->
@@ -181,9 +177,11 @@ class NewTripFragment : RihlaFragment() {
     private fun _validateDestination(): String? {
         return with(binding.newTripDestinationContainer) {
             val message =
-                if (viewModel.state.value.selectedLocation == null) requireContext().resources.getString(
-                    R.string.required
-                ) else null
+                if (viewModel.state.value.selectedLocation == null) {
+                    requireContext().resources.getString(
+                        R.string.required
+                    )
+                } else null
             this.helperText = message
             return@with message
         }
