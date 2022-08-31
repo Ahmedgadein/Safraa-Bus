@@ -98,7 +98,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:contentDescription="@string/day_capitalized"
-                        android:text='@{trip!= null ? DateTimeUtils.INSTANCE.getFormattedDate(trip.date) : ""}'
+                        android:text='@{trip!= null ? DateTimeUtils.INSTANCE.getFormattedDate(trip.departure) : ""}'
                         android:textColor="@color/teal_700"
                         android:textSize="20sp" />
 
@@ -126,7 +126,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text='@{trip != null ?DateTimeUtils.INSTANCE.getFormattedTime(trip.time) : ""}'
+                        android:text='@{trip != null ?DateTimeUtils.INSTANCE.getFormattedTime(trip.departure) : ""}'
                         android:textColor="@color/teal_700"
                         android:textSize="20sp" />
 

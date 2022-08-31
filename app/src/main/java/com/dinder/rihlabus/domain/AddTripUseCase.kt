@@ -6,10 +6,8 @@ import com.dinder.rihlabus.data.remote.trip.TripRepository
 import com.dinder.rihlabus.data.remote.user.UserRepository
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import org.json.JSONObject
-import java.util.*
 import javax.inject.Inject
 
 class AddTripUseCase @Inject constructor(
@@ -30,8 +28,7 @@ class AddTripUseCase @Inject constructor(
                     put("To", trip.to?.name)
                     put("Company", it.company?.name)
                     put("Price", trip.price)
-                    put("Date", trip.date)
-                    put("Time", trip.time)
+                    put("departure", trip.departure)
                     put("Seats count", trip.seats.size)
                 }
                 mixpanel.track("Add trip", props)
