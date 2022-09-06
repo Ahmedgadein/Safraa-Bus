@@ -26,7 +26,6 @@ import com.dinder.rihlabus.utils.SeatUtils
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -156,7 +155,7 @@ class TripDetailsFragment : RihlaFragment() {
         // Payment Confirmed
         bottomSheetDialog.findViewById<Button>(R.id.paymentConfirmedButton)?.setOnClickListener {
             bottomSheetDialog.dismiss()
-            viewModel.confirmPayment(args.id, seat?.number!!)
+            viewModel.confirmPayment(args.id, seat?.passenger!!)
         }
         // Payment Declined
         bottomSheetDialog.findViewById<Button>(R.id.paymentDeclinedButton)?.setOnClickListener {
@@ -182,7 +181,7 @@ class TripDetailsFragment : RihlaFragment() {
         bottomSheetDialog.findViewById<Button>(R.id.secondPaymentDeclineConfirmation)
             ?.setOnClickListener {
                 bottomSheetDialog.dismiss()
-                viewModel.disprovePayment(args.id, seat?.number!!)
+                viewModel.disprovePayment(args.id, seat?.passenger!!)
             }
 
         bottomSheetDialog.show()

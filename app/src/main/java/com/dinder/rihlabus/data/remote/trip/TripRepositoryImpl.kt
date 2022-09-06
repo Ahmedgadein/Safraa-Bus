@@ -12,6 +12,7 @@ import com.dinder.rihlabus.utils.SeatState
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -132,63 +133,70 @@ class TripRepositoryImpl @Inject constructor(
         awaitClose()
     }
 
-    override suspend fun confirmPayment(tripId: String, seatNumber: Int): Flow<Result<Unit>> =
+    override suspend fun confirmPayment(tripId: String, passengerName: String): Flow<Result<Unit>> =
         callbackFlow {
             withContext(ioDispatcher) {
                 trySend(Result.Loading)
-                _ref.whereEqualTo(Fields.ID, tripId).limit(1).get()
+                // Create the arguments to the callable function.
+                val data = mapOf(
+                    "tripId" to tripId,
+                    "passengerName" to passengerName
+                )
+
+                Log.e("functions", "$data")
+
+                FirebaseFunctions.getInstance()
+                    .getHttpsCallable("trips-confirmPayment")
+                    .call(data)
                     .addOnSuccessListener {
-                        _ref.document(it.documents[0].id).set(
-                            mapOf(
-                                Fields.SEATS to
-                                    mapOf(
-                                        "$seatNumber" to mapOf(
-                                            Fields.STATUS to SeatState.PAID
-                                        )
-                                    )
-                            ),
-                            SetOptions.merge()
-                        )
-                            .addOnSuccessListener {
-                                trySend(Result.Success(Unit))
-                            }
-                            .addOnFailureListener {
-                                trySend(Result.Error(errorMessages.couldntConfirmPayment))
-                            }
+                        val result: Map<String, Any> = it.data as Map<String, Any>
+                        val isSuccessful = result["success"] as Boolean
+                        if (isSuccessful) {
+                            trySend(Result.Success(Unit))
+                        } else {
+                            trySend(Result.Error(errorMessages.couldntConfirmPayment))
+                            Log.e("functions", "reserveSeats: not successful")
+                        }
                     }
                     .addOnFailureListener {
-                        trySend(Result.Error(errorMessages.failedToLoadTrip))
+                        trySend(Result.Error(errorMessages.couldntConfirmPayment))
+                        Log.e("functions", "reserveSeats: $it")
                     }
             }
             awaitClose()
         }
 
-    override suspend fun disprovePayment(tripId: String, seatNumber: Int): Flow<Result<Unit>> =
+    override suspend fun disprovePayment(
+        tripId: String,
+        passengerName: String
+    ): Flow<Result<Unit>> =
         callbackFlow {
             withContext(ioDispatcher) {
                 trySend(Result.Loading)
-                _ref.whereEqualTo(Fields.ID, tripId).limit(1).get()
+                // Create the arguments to the callable function.
+                val data = mapOf(
+                    "tripId" to tripId,
+                    "passengerName" to passengerName
+                )
+
+                Log.e("functions", "$data")
+
+                FirebaseFunctions.getInstance()
+                    .getHttpsCallable("trips-disprovePayment")
+                    .call(data)
                     .addOnSuccessListener {
-                        _ref.document(it.documents[0].id).set(
-                            mapOf(
-                                Fields.SEATS to
-                                    mapOf(
-                                        "$seatNumber" to mapOf(
-                                            Fields.STATUS to SeatState.UNBOOKED
-                                        )
-                                    )
-                            ),
-                            SetOptions.merge()
-                        )
-                            .addOnSuccessListener {
-                                trySend(Result.Success(Unit))
-                            }
-                            .addOnFailureListener {
-                                trySend(Result.Error(errorMessages.couldntConfirmPayment))
-                            }
+                        val result: Map<String, Any> = it.data as Map<String, Any>
+                        val isSuccessful = result["success"] as Boolean
+                        if (isSuccessful) {
+                            trySend(Result.Success(Unit))
+                        } else {
+                            trySend(Result.Error(errorMessages.couldntConfirmPayment))
+                            Log.e("functions", "reserveSeats: not successful")
+                        }
                     }
                     .addOnFailureListener {
-                        trySend(Result.Error(errorMessages.failedToLoadTrip))
+                        trySend(Result.Error(errorMessages.couldntConfirmPayment))
+                        Log.e("functions", "reserveSeats: $it")
                     }
             }
             awaitClose()
