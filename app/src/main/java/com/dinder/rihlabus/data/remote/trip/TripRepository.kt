@@ -25,12 +25,12 @@ interface TripRepository {
 
     suspend fun confirmPayment(
         tripId: String,
-        seatNumber: Int
+        passengerName: String
     ): Flow<Result<Unit>>
 
     suspend fun disprovePayment(
         tripId: String,
-        seatNumber: Int
+        passengerName: String
     ): Flow<Result<Unit>>
 
     suspend fun bookSeat(

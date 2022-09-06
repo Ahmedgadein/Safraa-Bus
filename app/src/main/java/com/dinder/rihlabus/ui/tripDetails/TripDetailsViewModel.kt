@@ -10,7 +10,6 @@ import com.dinder.rihlabus.data.remote.trip.TripRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.*
@@ -46,9 +45,9 @@ class TripDetailsViewModel @Inject constructor(
         }
     }
 
-    fun confirmPayment(tripId: String, seatNumber: Int) {
+    fun confirmPayment(tripId: String, passengerName: String) {
         viewModelScope.launch {
-            repository.confirmPayment(tripId, seatNumber).collect { result ->
+            repository.confirmPayment(tripId, passengerName).collect { result ->
                 when (result) {
                     Result.Loading -> _state.update { it.copy(loading = true) }
                     is Result.Error -> showUserMessage(result.message)
@@ -60,9 +59,9 @@ class TripDetailsViewModel @Inject constructor(
         }
     }
 
-    fun disprovePayment(tripId: String, seatNumber: Int) {
+    fun disprovePayment(tripId: String, passengerName: String) {
         viewModelScope.launch {
-            repository.disprovePayment(tripId, seatNumber).collect { result ->
+            repository.disprovePayment(tripId, passengerName).collect { result ->
                 when (result) {
                     Result.Loading -> _state.update { it.copy(loading = true) }
                     is Result.Error -> showUserMessage(result.message)
