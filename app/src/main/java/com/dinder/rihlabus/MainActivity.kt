@@ -1,6 +1,7 @@
 package com.dinder.rihlabus
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -8,7 +9,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.dinder.rihlabus.utils.ContextWrapper
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -53,5 +56,11 @@ class MainActivity : AppCompatActivity() {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        var newLocale = Locale("ar")
+        val context: Context = ContextWrapper.wrap(newBase!!, newLocale)
+        super.attachBaseContext(context)
     }
 }
