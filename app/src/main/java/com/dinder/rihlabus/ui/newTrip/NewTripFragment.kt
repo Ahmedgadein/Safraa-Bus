@@ -19,6 +19,7 @@ import com.dinder.rihlabus.data.model.Destination
 import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.databinding.NewTripFragmentBinding
 import com.dinder.rihlabus.utils.*
+import kotlinx.coroutines.flow.collect
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
