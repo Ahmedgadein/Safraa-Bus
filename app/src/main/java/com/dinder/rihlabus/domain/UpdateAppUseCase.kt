@@ -20,7 +20,8 @@ class UpdateAppUseCase @Inject constructor(
                 is Result.Error -> emit(Result.Error(result.message))
                 is Result.Success -> {
                     val currentVersion = resources.getString(R.string.app_version)
-                    val shouldUpdateApp = result.value != currentVersion
+                    val shouldUpdateApp =
+                        result.value.version != currentVersion && result.value.updateRequired
                     emit(Result.Success(shouldUpdateApp))
                 }
             }

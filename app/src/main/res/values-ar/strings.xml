@@ -84,4 +84,5 @@
     <string name="no_network">لا يوجد إتصال إنترنت, تأكد من شبكة الهاتف</string>
     <string name="name_of_passenger">إسم الراكب</string>
     <string name="couldnt_confirm_payment">تعذر تأكيد الدفع</string>
+    <string name="update">تحديث</string>
 </resources>

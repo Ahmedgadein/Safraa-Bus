@@ -1,8 +1,8 @@
 package com.dinder.rihlabus.data.remote.version
 
 import com.dinder.rihlabus.common.Collections
-import com.dinder.rihlabus.common.Fields
 import com.dinder.rihlabus.common.Result
+import com.dinder.rihlabus.data.model.UpdateApp
 import com.dinder.rihlabus.utils.ErrorMessages
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -22,12 +22,12 @@ class AppVersionRepositoryImpl @Inject constructor(
 
     private val _ref = Firebase.firestore.collection(Collections.CONSTANTS)
 
-    override fun getAppVersion(): Flow<Result<String>> = callbackFlow {
+    override fun getAppVersion(): Flow<Result<UpdateApp>> = callbackFlow {
         withContext(ioDispatcher) {
             trySend(Result.Loading)
             _ref.document(Collections.APP_VERSION).get()
                 .addOnSuccessListener {
-                    trySend(Result.Success(it.data!![Fields.VERSION].toString()))
+                    trySend(Result.Success(UpdateApp.fromJson(it.data!!)))
                 }
                 .addOnFailureListener {
                     trySend(Result.Error(errorMessages.failedToResolveAppVersion))

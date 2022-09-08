@@ -31,5 +31,6 @@ object Fields {
     const val COMPANY = "company"
     const val FROM = "from"
     const val LOCATION = "location"
-    const val VERSION = "version"
+    const val VERSION = "bus"
+    const val UPDATE_REQUIRED = "bus_require_update"
 }

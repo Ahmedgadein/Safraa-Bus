@@ -15,12 +15,12 @@ def versionMinor = 0
 def versionPatch = 0
 
 android {
-    compileSdk 33
+    compileSdk 32
 
     defaultConfig {
         applicationId "com.dinder.rihlabus"
         minSdk 24
-        targetSdk 33
+        targetSdk 32
         versionCode versionMajor * 1000 + versionMinor * 100 + versionPatch
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
@@ -85,7 +85,6 @@ dependencies {
     implementation 'androidx.hilt:hilt-work:1.0.0'
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
     kapt("com.google.dagger:hilt-android-compiler:2.38.1")
-    implementation "androidx.work:work-runtime-ktx:2.8.0-alpha03"
     // SafetyNet
     implementation 'com.google.android.gms:play-services-safetynet:18.0.1'
     //ViewPager2

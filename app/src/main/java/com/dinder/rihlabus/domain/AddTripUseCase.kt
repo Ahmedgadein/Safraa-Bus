@@ -6,6 +6,7 @@ import com.dinder.rihlabus.data.remote.trip.TripRepository
 import com.dinder.rihlabus.data.remote.user.UserRepository
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import org.json.JSONObject
 import javax.inject.Inject
