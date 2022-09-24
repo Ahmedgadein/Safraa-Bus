@@ -86,4 +86,6 @@
     <string name="name_of_passenger">Name of passenger</string>
     <string name="couldnt_confirm_payment">Couldn\'t confirm payment</string>
     <string name="update">Update</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
 </resources>

@@ -15,12 +15,13 @@ import androidx.navigation.fragment.findNavController
 import com.dinder.rihlabus.R
 import com.dinder.rihlabus.adapters.RihlaArrayAdapter
 import com.dinder.rihlabus.common.RihlaFragment
+import com.dinder.rihlabus.data.model.Company
 import com.dinder.rihlabus.data.model.Destination
 import com.dinder.rihlabus.data.model.Trip
 import com.dinder.rihlabus.databinding.NewTripFragmentBinding
 import com.dinder.rihlabus.utils.*
-import kotlinx.coroutines.flow.collect
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -135,6 +136,7 @@ class NewTripFragment : RihlaFragment() {
                     }
 
                     setLocationsDropdown(it.locations)
+                    setCompaniesDropdown(it.companies)
 
                     if (it.isAdded) {
                         showSnackbar(requireContext().resources.getString(R.string.trip_added))
@@ -147,42 +149,98 @@ class NewTripFragment : RihlaFragment() {
     }
 
     private fun setLocationsDropdown(destinations: List<Destination>) {
-        val locationsAdapter =
+        val fromLocationsAdapter =
             RihlaArrayAdapter<Destination>(
                 requireContext(),
                 R.layout.dropdown_item,
                 destinations.toMutableList()
             )
-        binding.newTripDestinationDropDown.setAdapter(locationsAdapter)
-        binding.newTripDestinationDropDown.setOnItemClickListener { _, _, position, _ ->
-            val location = locationsAdapter.getItem(
+
+        val toLocationsAdapter =
+            RihlaArrayAdapter<Destination>(
+                requireContext(),
+                R.layout.dropdown_item,
+                destinations.toMutableList()
+            )
+
+        binding.fromDropdown.setAdapter(fromLocationsAdapter)
+        binding.fromDropdown.setOnItemClickListener { _, _, position, _ ->
+            val location = fromLocationsAdapter.getItem(
                 position
             )
-            viewModel.onLocationSelected(location)
+            viewModel.onFromLocationSelected(location)
+        }
+
+        binding.toDropdown.setAdapter(toLocationsAdapter)
+        binding.toDropdown.setOnItemClickListener { _, _, position, _ ->
+            val location = toLocationsAdapter.getItem(
+                position
+            )
+            viewModel.onToLocationSelected(location)
+        }
+    }
+
+    private fun setCompaniesDropdown(companies: List<Company>) {
+        val companyAdapter =
+            RihlaArrayAdapter<Company>(
+                requireContext(),
+                R.layout.dropdown_item,
+                companies.toMutableList()
+            )
+
+        binding.companyDropdown.setAdapter(companyAdapter)
+        binding.companyDropdown.setOnItemClickListener { _, _, position, _ ->
+            val company = companyAdapter.getItem(
+                position
+            )
+            viewModel.onCompanySelected(company)
         }
     }
 
     private fun _validForm(): Boolean {
-        _validateDestination()
+        _validateDestinations()
+        _validateCompany()
         _validateDate()
         _validateTime()
         _validatePrice()
         return with(binding) {
-            return@with this.newTripDestinationContainer.helperText.isNullOrEmpty() &&
+            return@with this.fromContainer.helperText.isNullOrEmpty() &&
+                this.toContainer.helperText.isNullOrEmpty() &&
+                this.companyContainer.helperText.isNullOrEmpty() &&
                 this.newTripDateContainer.helperText.isNullOrEmpty() &&
                 this.newTripTimeContainer.helperText.isNullOrEmpty() &&
                 this.newTripPriceContainer.helperText.isNullOrEmpty()
         }
     }
 
-    private fun _validateDestination(): String? {
-        return with(binding.newTripDestinationContainer) {
-            val message =
-                if (viewModel.state.value.selectedLocation == null) {
+    private fun _validateDestinations(): String? {
+        return with(binding) {
+            val fromMessage =
+                if (viewModel.state.value.from == null) {
                     requireContext().resources.getString(
                         R.string.required
                     )
                 } else null
+
+            val toMessage = if (viewModel.state.value.to == null) {
+                requireContext().resources.getString(
+                    R.string.required
+                )
+            } else null
+
+            this.fromContainer.helperText = fromMessage
+            this.toContainer.helperText = toMessage
+
+            return@with null
+        }
+    }
+
+    private fun _validateCompany(): String? {
+        return with(binding.companyContainer) {
+            val message =
+                if (this.editText?.text.isNullOrEmpty()) requireContext().resources.getString(
+                    R.string.required
+                ) else null
             this.helperText = message
             return@with message
         }

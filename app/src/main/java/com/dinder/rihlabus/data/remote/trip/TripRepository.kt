@@ -9,10 +9,12 @@ import kotlinx.coroutines.flow.Flow
 interface TripRepository {
     suspend fun addTrip(trip: Trip): Flow<Result<Boolean>>
 
-    suspend fun getCurrentTrips(
-        company: Company,
-        location: Destination
-    ): Flow<Result<List<Trip>>>
+//    suspend fun getCurrentTrips(
+//        company: Company,
+//        location: Destination
+//    ): Flow<Result<List<Trip>>>
+
+    suspend fun getCurrentTrips(): Flow<Result<List<Trip>>>
 
     suspend fun getLastTrips(
         company: Company,
