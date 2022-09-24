@@ -35,11 +35,7 @@ class AddTripUseCase @Inject constructor(
                 mixpanel.track("Add trip", props)
 
                 tripRepository.addTrip(
-                    trip.copy(
-                        id = "",
-                        from = it.location!!,
-                        company = it.company!!
-                    )
+                    trip
                 )
                     .collect { result ->
                         when (result) {
