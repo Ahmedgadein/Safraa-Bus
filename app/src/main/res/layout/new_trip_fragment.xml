@@ -40,19 +40,42 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/newTripDestinationContainer"
+                android:id="@+id/fromContainer"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                app:layout_constraintEnd_toStartOf="@id/toContainer"
                 android:layout_marginTop="32dp"
-                android:hint="@string/destination"
+                android:hint="@string/from"
                 app:helperTextTextColor="@android:color/holo_red_dark"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView3">
 
                 <AutoCompleteTextView
-                    android:id="@+id/newTripDestinationDropDown"
+                    android:id="@+id/fromDropdown"
+                    android:inputType="none"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/toContainer"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="32dp"
+                android:hint="@string/to"
+                app:helperTextTextColor="@android:color/holo_red_dark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/fromContainer"
+                app:layout_constraintTop_toBottomOf="@+id/textView3">
+
+                <AutoCompleteTextView
+                    android:id="@+id/toDropdown"
+                    android:inputType="none"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -70,7 +93,7 @@
                 app:helperTextTextColor="@android:color/holo_red_dark"
                 app:layout_constraintEnd_toStartOf="@+id/newTripTimeContainer"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/newTripDestinationContainer">
+                app:layout_constraintTop_toBottomOf="@+id/toContainer">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -93,7 +116,7 @@
                 app:helperTextTextColor="@android:color/holo_red_dark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/newTripDateContainer"
-                app:layout_constraintTop_toBottomOf="@+id/newTripDestinationContainer">
+                app:layout_constraintTop_toBottomOf="@+id/toContainer">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -101,6 +124,26 @@
                     android:clickable="true"
                     android:focusable="false"
                     android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/companyContainer"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="@string/company"
+                app:helperTextTextColor="@android:color/holo_red_dark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/newTripDateContainer">
+
+                <AutoCompleteTextView
+                    android:id="@+id/companyDropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -113,7 +156,7 @@
                 app:helperTextTextColor="@android:color/holo_red_dark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/newTripDateContainer">
+                app:layout_constraintTop_toBottomOf="@+id/companyContainer">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"

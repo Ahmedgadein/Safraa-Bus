@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dinder.rihlabus.common.Message
 import com.dinder.rihlabus.common.Result
+import com.dinder.rihlabus.data.model.Company
 import com.dinder.rihlabus.data.model.Destination
 import com.dinder.rihlabus.data.model.Trip
+import com.dinder.rihlabus.data.remote.company.CompanyRepository
 import com.dinder.rihlabus.domain.AddTripUseCase
 import com.dinder.rihlabus.domain.GetDestinationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,18 +22,26 @@ import javax.inject.Inject
 @HiltViewModel
 class NewTripViewModel @Inject constructor(
     private val addTripUseCase: AddTripUseCase,
-    private val locationsUseCase: GetDestinationsUseCase
+    private val locationsUseCase: GetDestinationsUseCase,
+    private val companyRepository: CompanyRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(NewTripUiState())
     val state = _state.asStateFlow()
 
     init {
         loadLocations()
+        loadCompanies()
     }
 
     fun addTrip(trip: Trip) {
         viewModelScope.launch {
-            addTripUseCase(trip.copy(to = _state.value.selectedLocation)).collect {
+            addTripUseCase(
+                trip.copy(
+                    to = _state.value.to,
+                    from = _state.value.from,
+                    company = _state.value.company
+                )
+            ).collect {
                 when (it) {
                     Result.Loading -> _state.update { state ->
                         state.copy(loading = true)
@@ -62,6 +72,23 @@ class NewTripViewModel @Inject constructor(
         }
     }
 
+    private fun loadCompanies() {
+        viewModelScope.launch {
+            companyRepository.getCompanies().collect { result ->
+                when (result) {
+                    Result.Loading -> _state.update { it.copy(loading = true) }
+                    is Result.Error -> showUserMessage(result.message)
+                    is Result.Success -> _state.update {
+                        it.copy(
+                            companies = result.value,
+                            loading = false
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     private fun showUserMessage(content: String) {
         _state.update {
             val messages = it.messages + Message(UUID.randomUUID().mostSignificantBits, content)
@@ -76,7 +103,15 @@ class NewTripViewModel @Inject constructor(
         }
     }
 
-    fun onLocationSelected(destination: Destination) {
-        _state.update { it.copy(selectedLocation = destination) }
+    fun onFromLocationSelected(destination: Destination) {
+        _state.update { it.copy(from = destination) }
+    }
+
+    fun onToLocationSelected(destination: Destination) {
+        _state.update { it.copy(to = destination) }
+    }
+
+    fun onCompanySelected(company: Company) {
+        _state.update { it.copy(company = company) }
     }
 }

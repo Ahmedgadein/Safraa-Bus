@@ -53,14 +53,12 @@ class TripRepositoryImpl @Inject constructor(
         awaitClose()
     }
 
-    override suspend fun getCurrentTrips(
-        company: Company,
-        location: Destination
-    ): Flow<Result<List<Trip>>> = callbackFlow {
+    override suspend fun getCurrentTrips(): Flow<Result<List<Trip>>> = callbackFlow {
         withContext(ioDispatcher) {
             trySend(Result.Loading)
-            _ref.whereEqualTo(Fields.FROM, location.toJson())
-                .whereEqualTo(Fields.COMPANY, company.toJson())
+            _ref
+//                .whereEqualTo(Fields.FROM, location.toJson())
+//                .whereEqualTo(Fields.COMPANY, company.toJson())
                 .whereGreaterThan(Fields.DEPARTURE, Date())
                 .orderBy(Fields.DEPARTURE, Query.Direction.ASCENDING)
                 .get()
