@@ -15,6 +15,14 @@ def versionMinor = 0
 def versionPatch = 0
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('/home/ahmed/Documents/keystore/upload-keystore.jks')
+            storePassword 'Sudan2468!'
+            keyAlias 'upload'
+            keyPassword 'Sudan2468!'
+        }
+    }
     compileSdk 32
 
     defaultConfig {
@@ -32,6 +40,7 @@ android {
                                       "$projectDir/schemas".toString()]
             }
         }
+        signingConfig signingConfigs.debug
     }
 
     buildTypes {
@@ -42,6 +51,7 @@ android {
             manifestPlaceholders = [appName: "DEBUG:Safraa Bus"]
         }
         release {
+            applicationIdSuffix ".release"
             resValue "string", "app_version", "${defaultConfig.versionName}"
             manifestPlaceholders = [appName: "Safraa Bus"]
             minifyEnabled false
